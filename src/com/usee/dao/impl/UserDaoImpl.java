@@ -16,9 +16,9 @@ public class UserDaoImpl implements UserDao {
 @Resource
 private SessionFactory sessionFactory;  
 
-public void setSessionFactory(SessionFactory sessionFactory) {  
-    this.sessionFactory = sessionFactory;  
-}  
+//public void setSessionFactory(SessionFactory sessionFactory) {  
+//    this.sessionFactory = sessionFactory;  
+//}  
 
 /**
  * 根据用户id查询用户
