@@ -1,6 +1,5 @@
 package com.usee.controller;
 
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,14 +14,22 @@ public class DanmuController {
 	@Autowired
 	private DanmuServiceImp danmuService;
 	
+	@RequestMapping(value = "test")
+	public String test(Model model){
+		return "getdm";
+	}
+	
 	@RequestMapping(value = "getdmbytopic", method = RequestMethod.POST)
-	public void getDanmubyTopic(Model model,String topicId,String pageNum,String pageSize){
+	public String getDanmubyTopic(Model model,String topicId,String pageNum,String pageSize){
 		String danmu = danmuService.getDanmubyTopic(topicId, pageNum, pageSize);
 		model.addAttribute("danmu", danmu);
+		return "getdm";
 	}
 	
 	@RequestMapping(value = "getdmdetails", method = RequestMethod.POST)
-	public void getDanmuDetails(Model model, String danmuID){
-		
+	public String getDanmuDetails(Model model, String danmuId){
+		String danmuDetails = danmuService.getDanmuDetails(danmuId);
+		model.addAttribute("danmuDetails", danmuDetails);
+		return "getdm";
 	}
 }

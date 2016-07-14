@@ -69,9 +69,9 @@ public boolean updateUser(User user) {
 
     String hql = "update User u set u.userName = ?,u.age=? where u.id = ?";  
     Query query = sessionFactory.getCurrentSession().createQuery(hql);  
-    query.setString(0, user.getUserName());  
-    query.setString(1, user.getAge());  
-    query.setString(2, user.getId());  
+//    query.setString(0, user.getUserName());  
+//    query.setString(1, user.getAge());  
+//    query.setString(2, user.getId());  
 
     return (query.executeUpdate() > 0);  
 }  

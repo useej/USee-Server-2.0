@@ -41,7 +41,7 @@ public class UserController {
 	
 	@RequestMapping("/addUser")  
 	public String addUser(User user,HttpServletRequest request){  
-	    System.out.println("用户名：======"+user.getUserName());  
+//	    System.out.println("用户名：======"+user.getUserName());  
 	    userManager.addUser(user);  
 	    return "redirect:/user/getAllUser";  
 	}  
@@ -64,7 +64,7 @@ public class UserController {
 	@RequestMapping("/updateUser")  
 	public String updateUser(User user,HttpServletRequest request){  
 	    if(userManager.updateUser(user)){  
-	        user = userManager.getUser(user.getId());  
+//	        user = userManager.getUser(user.getId());  
 	        request.setAttribute("user", user);  
 	        return "redirect:/user/getAllUser";  
 	    }else{  

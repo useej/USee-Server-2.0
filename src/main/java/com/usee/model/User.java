@@ -19,39 +19,55 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "USER")
 public class User {
-
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column
-	private String id;
-
+	private String userId;
 	@Column
-	private String userName;
-
+	private int gender;
 	@Column
-	private String age;
-
-	public String getId() {
-		return id;
+	private String nickname;
+	@Column
+	private String userIcon;
+	@Column
+	private String cellphone;
+	@Column
+	private String password;
+	
+	public String getUserId() {
+		return userId;
 	}
-
-	public void setId(String id) {
-		this.id = id;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
-
-	public String getUserName() {
-		return userName;
+	public int getGender() {
+		return gender;
 	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setGender(int gender) {
+		this.gender = gender;
 	}
-
-	public String getAge() {
-		return age;
+	public String getNickname() {
+		return nickname;
 	}
-
-	public void setAge(String age) {
-		this.age = age;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+	public String getUserIcon() {
+		return userIcon;
+	}
+	public void setUserIcon(String userIcon) {
+		this.userIcon = userIcon;
+	}
+	public String getCellphone() {
+		return cellphone;
+	}
+	public void setCellphone(String cellphone) {
+		this.cellphone = cellphone;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }
