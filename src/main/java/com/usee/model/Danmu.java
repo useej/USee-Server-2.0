@@ -14,7 +14,6 @@ public class Danmu {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column
 	private int id;
-	
 	@Column
 	private String userId;
 	@Column
