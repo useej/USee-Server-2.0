@@ -253,15 +253,16 @@
 	
 	    <!-- 转成json格式所需jar包 -->
 	    <dependency>
-	      <groupId>org.codehaus.jackson</groupId>
-	      <artifactId>jackson-mapper-asl</artifactId>
-	      <version>1.9.13</version>
-	    </dependency>
-	    <dependency>
 	      <groupId>com.fasterxml.jackson.core</groupId>
 	      <artifactId>jackson-core</artifactId>
-	      <version>2.7.4</version>
+	      <version>2.7.5</version>
 	    </dependency>
+	    
+	    <dependency>  
+		    <groupId>com.fasterxml.jackson.core</groupId>  
+		    <artifactId>jackson-databind</artifactId>  
+		    <version>2.7.5</version>
+		</dependency>  
 	
 	    <dependency>
 			<groupId>junit</groupId>
@@ -290,19 +291,13 @@
 	      <version>2.1</version>
 	      <scope>provided</scope>
 	    </dependency>
-	    
-	    <dependency>  
-		    <groupId>com.fasterxml.jackson.core</groupId>  
-		    <artifactId>jackson-databind</artifactId>  
-		    <version>2.2.3</version>  
-		</dependency>  
   
 		<dependency>  
 		    <groupId>com.jayway.jsonpath</groupId>  
 		    <artifactId>json-path</artifactId>  
-		    <version>0.9.0</version>  
+		    <version>2.0.0</version>  
 		    <scope>test</scope>  
-		</dependency>  
+		</dependency>
 	
 		<!-- httpclient所需的 -->
 	    <dependency>
@@ -320,7 +315,21 @@
           <artifactId>httpcore</artifactId> 
           <version>4.3</version>
 	    </dependency>
+		
+		<dependency>
+		    <groupId>net.minidev</groupId>
+		    <artifactId>json-smart</artifactId>
+		    <version>2.2.1</version>
+		</dependency>
+		
+		<dependency>
+    		<groupId>net.minidev</groupId>
+    		<artifactId>asm</artifactId>
+    		<version>1.0.2</version>
+		</dependency>
+		
 	 </dependencies>
+	 
   <build>
     <finalName>server2.0</finalName>
   </build>

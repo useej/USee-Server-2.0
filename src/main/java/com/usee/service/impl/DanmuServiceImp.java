@@ -1,6 +1,7 @@
 package com.usee.service.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -63,24 +64,12 @@ public class DanmuServiceImp implements DanmuService{
 	}
 
 	@Override
-	public String getDanmuDetails(String danmuId) {
-		// TODO Auto-generated method stub
-		List<Object[]> list = new ArrayList<Object[]>();
-		list = danmudao.getDanmuDetails(danmuId);
-		JSONArray array = JSONArray.fromObject(list);
-		JSONObject object = new JSONObject();
-		object.put("danmu", array.toString());
-		
-		return object.toString();
-	}
-
-	@Override
 	public String getDanmubyTopic(String topicId, String pageNum,
 			String pageSize) {
 		// TODO Auto-generated method stub
 		List<Danmu> list = new ArrayList<Danmu>();
-		if(pageNum == null && pageSize == null){
-			list=danmudao.getDanmuList(topicId);
+		if((pageNum == "" && pageSize == "")||(pageNum == null && pageSize == null)){
+			list = danmudao.getDanmuList(topicId);
 			System.out.println(list.get(0).getMessages());
 		}
 		else {
@@ -96,6 +85,18 @@ public class DanmuServiceImp implements DanmuService{
 		return object.toString();
 	}
 
+	@Override
+	public String getDanmuDetails(String danmuId) {
+		// TODO Auto-generated method stub
+		List<Object[]> list = new ArrayList<Object[]>();
+		list = danmudao.getDanmuDetails(danmuId);
+		JSONArray array = JSONArray.fromObject(list);
+		JSONObject object = new JSONObject();
+		object.put("danmudetails", array.toString());
+		
+		return object.toString();
+	}
+	
 	@Override
 	public void postMessage() {
 		// TODO Auto-generated method stub

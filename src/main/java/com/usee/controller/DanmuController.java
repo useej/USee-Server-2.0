@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.usee.service.impl.DanmuServiceImp;
 
@@ -19,17 +20,21 @@ public class DanmuController {
 		return "getdm";
 	}
 	
-	@RequestMapping(value = "getdmbytopic", method = RequestMethod.POST)
+	@RequestMapping(value = "getdmbytopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
 	public String getDanmubyTopic(Model model,String topicId,String pageNum,String pageSize){
 		String danmu = danmuService.getDanmubyTopic(topicId, pageNum, pageSize);
-		model.addAttribute("danmu", danmu);
-		return "getdm";
+		//model.addAttribute("danmu", danmu);
+		System.out.println(danmu);
+		return danmu;
 	}
 	
-	@RequestMapping(value = "getdmdetails", method = RequestMethod.POST)
+	@RequestMapping(value = "getdmdetails", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
 	public String getDanmuDetails(Model model, String danmuId){
 		String danmuDetails = danmuService.getDanmuDetails(danmuId);
-		model.addAttribute("danmuDetails", danmuDetails);
-		return "getdm";
+		//model.addAttribute("danmuDetails", danmuDetails);
+		System.out.println(danmuDetails);
+		return danmuDetails;
 	}
 }
