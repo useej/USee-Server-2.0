@@ -72,8 +72,8 @@ public class DanmuServiceImp implements DanmuService{
 			String pageSize) {
 		// TODO Auto-generated method stub
 		List<Danmu> list = new ArrayList<Danmu>();
-		if(pageNum == null && pageSize == null){
-			list=danmudao.getDanmuList(topicId);
+		if((pageNum == "" && pageSize == "")||(pageNum == null && pageSize == null)){
+			list = danmudao.getDanmuList(topicId);
 			System.out.println(list.get(0).getMessages());
 		}
 		else {

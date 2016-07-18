@@ -46,8 +46,8 @@ public class DanmuDaoImp implements DanmuDao {
 		String hql = "from Danmu d where d.topicId = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, topicId);
-		query.setFirstResult(0);
-		query.setMaxResults(pageSize * pageNum);
+		query.setFirstResult((pageNum - 1) * pageSize);
+		query.setMaxResults(pageSize);
 		return query.list();
 	}
 	
