@@ -17,7 +17,6 @@ public class TopicDaoImpl implements TopicDao {
 	@Resource
 	private SessionFactory sessionFactory;
 	
-	@Override
 	public Topic getTopic(String id) {
 		String hql = "from Topic t where t.id=?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
@@ -26,7 +25,6 @@ public class TopicDaoImpl implements TopicDao {
 		return (Topic) query.uniqueResult();
 	}
 
-	@Override
 	public List<Topic> getAllTopic() {
 		String hql = "from Topic";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
@@ -34,12 +32,10 @@ public class TopicDaoImpl implements TopicDao {
 		return query.list();
 	}
 
-	@Override
 	public void addTopic(Topic topic) {
 		sessionFactory.getCurrentSession().save(topic);
 	}
 
-	@Override
 	public boolean delTopic(String id) {
 		String hql = "delete Topic t where t.id = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);

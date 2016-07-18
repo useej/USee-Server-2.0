@@ -51,7 +51,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
      * }
      * 
      */
-	@Override
+	
 	public User handleQQUserInfo(String access_token, String openid) {
 	
         if (access_token.isEmpty() || openid.isEmpty()) {
@@ -101,7 +101,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
      *   uid
      * 
      */
-	@Override
+	
 	public User handleWeiboUserInfo(String access_token, String uid) {
 	
         if (access_token.isEmpty() || uid.isEmpty()) {
@@ -149,7 +149,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
      *   openid
      *   
      */
-	@Override
+	
 	public User handleWeinxinUserInfo(String access_token, String openid) {
 	
         if (access_token.isEmpty() || openid.isEmpty()) {

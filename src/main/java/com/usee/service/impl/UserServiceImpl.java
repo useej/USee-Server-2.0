@@ -24,12 +24,12 @@ public class UserServiceImpl implements UserService {
 		return userDao.getUser(id);
 	}
 
-	@Override
+	
 	public User getUserByOpenId(String tag, String openId) {
 		return userDao.getUserByOpenId(tag, openId);
 	}
 
-	@Override
+	
 	public User getUserByCellphone(String cellphone) {
 		return userDao.getUserByCellphone(cellphone);
 	}
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
 		return userDao.updateUser(user);
 	}
 
-	@Override
+	
 	public boolean changePassword(User user) {
 		return userDao.changePassword(user);
 	}

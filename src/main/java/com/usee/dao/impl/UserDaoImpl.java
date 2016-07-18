@@ -83,7 +83,6 @@ public class UserDaoImpl implements UserDao {
 	/**
 	 * 根据用户的openId得到用户信息
 	 */
-	@Override
 	public User getUserByOpenId(String tag, String openId) {
 		String hql = "from User u where u." + tag + "=?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
@@ -95,7 +94,6 @@ public class UserDaoImpl implements UserDao {
 	/**
 	 * 根据用户的cellphone得到用户信息
 	 */
-	@Override
 	public User getUserByCellphone(String cellphone) {
 		String hql = "from User u where u.cellphone=?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
@@ -104,7 +102,6 @@ public class UserDaoImpl implements UserDao {
 		return (User) query.uniqueResult();
 	}
 
-	@Override
 	public boolean changePassword(User user) {
 		String hql = "update User u set u.password = ? "
 				+ "where u.cellphone = ?";

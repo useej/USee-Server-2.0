@@ -19,7 +19,7 @@ import net.sf.json.JSONObject;
 public class DanmuServiceImp implements DanmuService{
 	@Resource
 	private DanmuDaoImp danmudao;
-	@Override
+	
 	public void sendDammu(Danmu danmu) {
 		// TODO Auto-generated method stub
 		Danmu d1=new Danmu ();
@@ -63,7 +63,7 @@ public class DanmuServiceImp implements DanmuService{
 		
 	}
 
-	@Override
+	
 	public String getDanmubyTopic(String topicId, String pageNum,
 			String pageSize) {
 		// TODO Auto-generated method stub
@@ -85,7 +85,7 @@ public class DanmuServiceImp implements DanmuService{
 		return object.toString();
 	}
 
-	@Override
+	
 	public String getDanmuDetails(String danmuId) {
 		// TODO Auto-generated method stub
 		List<Object[]> list = new ArrayList<Object[]>();
@@ -97,7 +97,7 @@ public class DanmuServiceImp implements DanmuService{
 		return object.toString();
 	}
 	
-	@Override
+	
 	public void postMessage() {
 		// TODO Auto-generated method stub
 		

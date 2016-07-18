@@ -30,7 +30,7 @@ public class CellphoneValidateController {
     private static final String SEND_CODE_TIME = "send_code_time";  
       
       
-    @RequestMapping("sendcode")  
+    @RequestMapping("getcode")  
     @ResponseBody  
     protected Map<String, Object> sendCode(@RequestBody String cellphoneJson) {  
     	Map<String, Object> returnMap = new HashMap<String, Object>();
