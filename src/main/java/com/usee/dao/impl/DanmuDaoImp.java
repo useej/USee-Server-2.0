@@ -5,13 +5,11 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
 import com.usee.dao.DanmuDao;
 import com.usee.model.Danmu;
-import com.usee.model.User;
 @Service
 public class DanmuDaoImp implements DanmuDao {
 	@Resource

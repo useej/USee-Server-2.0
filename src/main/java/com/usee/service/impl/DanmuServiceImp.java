@@ -1,22 +1,18 @@
 package com.usee.service.impl;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import org.springframework.stereotype.Service;
 
 import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.model.Danmu;
 import com.usee.service.DanmuService;
-import com.usee.utils.API;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Service
 public class DanmuServiceImp implements DanmuService{
