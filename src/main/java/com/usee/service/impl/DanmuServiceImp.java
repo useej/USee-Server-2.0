@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -67,18 +68,6 @@ public class DanmuServiceImp implements DanmuService{
 	}
 
 	@Override
-	public String getDanmuDetails(String danmuId) {
-		// TODO Auto-generated method stub
-		List<Object[]> list = new ArrayList<Object[]>();
-		list = danmudao.getDanmuDetails(danmuId);
-		JSONArray array = JSONArray.fromObject(list);
-		JSONObject object = new JSONObject();
-		object.put("danmu", array.toString());
-		
-		return object.toString();
-	}
-
-	@Override
 	public String getDanmubyTopic(String topicId, String pageNum,
 			String pageSize) {
 		// TODO Auto-generated method stub
@@ -100,6 +89,18 @@ public class DanmuServiceImp implements DanmuService{
 		return object.toString();
 	}
 
+	@Override
+	public String getDanmuDetails(String danmuId) {
+		// TODO Auto-generated method stub
+		List<Object[]> list = new ArrayList<Object[]>();
+		list = danmudao.getDanmuDetails(danmuId);
+		JSONArray array = JSONArray.fromObject(list);
+		JSONObject object = new JSONObject();
+		object.put("danmudetails", array.toString());
+		
+		return object.toString();
+	}
+	
 	@Override
 	public void postMessage() {
 		// TODO Auto-generated method stub

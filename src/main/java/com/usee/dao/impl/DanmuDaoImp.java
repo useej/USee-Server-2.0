@@ -54,8 +54,9 @@ public class DanmuDaoImp implements DanmuDao {
 	@Override
 	public List<Object[]> getDanmuDetails(String danmuId){
 		//String hql = "from Danmu as d, User as u where d.userId = u.userId and d.id = ?";
-		String sql = "SELECT id, devid, d.userID AS userID, status, topicID, lon, lat, praisenum, downnum, commentnum, hitnum, create_time, address, delete_time, head, messages, gender, nickname, userIcon, cellphone, password FROM danmu d LEFT JOIN user u ON d.userID = u.userID WHERE d.id = ?";
+		String sql = "SELECT d.id AS danmuid, devid, d.userID AS userid, status, topicID, lon, lat, praisenum, downnum, commentnum, hitnum, d.create_time AS dcreatetime, address, delete_time, head, messages, gender, nickname, userIcon, cellphone, password, c.id AS commontid, sender, receiver, content, c.reply_commentID AS replycommontid, type, c.create_time AS ccreatetime FROM danmu d INNER JOIN user u ON d.userID = u.userID INNER JOIN comment c ON d.id = c.danmuID WHERE d.id = ?";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setResultTransformer(org.hibernate.transform.Transformers.ALIAS_TO_ENTITY_MAP);  
 		query.setString(0, danmuId);
 		List<Object[]> lobj = query.list();
 		return lobj;
