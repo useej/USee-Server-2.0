@@ -1,7 +1,5 @@
 package com.usee.service;
 
-import java.util.List;
-
 import com.usee.model.Danmu;
 
 public interface DanmuService {

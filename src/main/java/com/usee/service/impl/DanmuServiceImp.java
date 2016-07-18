@@ -1,29 +1,25 @@
 package com.usee.service.impl;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.springframework.stereotype.Service;
 
 import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.model.Danmu;
 import com.usee.service.DanmuService;
-import com.usee.utils.API;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Service
 public class DanmuServiceImp implements DanmuService{
 	@Resource
 	private DanmuDaoImp danmudao;
-	@Override
+	
 	public void sendDammu(Danmu danmu) {
 		// TODO Auto-generated method stub
 		Danmu d1=new Danmu ();
@@ -67,7 +63,7 @@ public class DanmuServiceImp implements DanmuService{
 		
 	}
 
-	@Override
+	
 	public String getDanmubyTopic(String topicId, String pageNum,
 			String pageSize) {
 		// TODO Auto-generated method stub
@@ -89,7 +85,7 @@ public class DanmuServiceImp implements DanmuService{
 		return object.toString();
 	}
 
-	@Override
+	
 	public String getDanmuDetails(String danmuId) {
 		// TODO Auto-generated method stub
 		List<Object[]> list = new ArrayList<Object[]>();
@@ -101,7 +97,7 @@ public class DanmuServiceImp implements DanmuService{
 		return object.toString();
 	}
 	
-	@Override
+	
 	public void postMessage() {
 		// TODO Auto-generated method stub
 		

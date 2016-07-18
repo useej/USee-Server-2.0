@@ -13,67 +13,103 @@ import com.usee.model.User;
 
 @Service
 public class UserDaoImpl implements UserDao {
-@Resource
-private SessionFactory sessionFactory;  
+	@Resource
+	private SessionFactory sessionFactory;
 
-//public void setSessionFactory(SessionFactory sessionFactory) {  
-//    this.sessionFactory = sessionFactory;  
-//}  
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 
-/**
- * 根据用户id查询用户
- */
-public User getUser(String id) {  
+	/**
+	 * 根据用户id查询用户
+	 */
+	public User getUser(String id) {
 
-    String hql = "from User u where u.id=?";  
-    Query query = sessionFactory.getCurrentSession().createQuery(hql);  
-    query.setString(0, id);  
+		String hql = "from User u where u.userID=?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, id);
 
-    return (User)query.uniqueResult();  
-}  
+		return (User) query.uniqueResult();
+	}
 
-/**
- * 查询所有用户
- */
-public List<User> getAllUser() {  
+	/**
+	 * 查询所有用户
+	 */
+	public List<User> getAllUser() {
 
-    String hql = "from User";  
-    Query query = sessionFactory.getCurrentSession().createQuery(hql);  
+		String hql = "from User";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 
-    return query.list();  
-}  
+		return query.list();
+	}
 
-/**
- * 添加用户
- */
-public void addUser(User user) {  
-    sessionFactory.getCurrentSession().save(user);  
-}  
+	/**
+	 * 添加用户
+	 */
+	public void addUser(User user) {
+		sessionFactory.getCurrentSession().save(user);
+	}
 
-/**
- * 根据用户id删除用户
- */
-public boolean delUser(String id) {  
+	/**
+	 * 根据用户id删除用户
+	 */
+	public boolean delUser(String id) {
 
-    String hql = "delete User u where u.id = ?";  
-    Query query = sessionFactory.getCurrentSession().createQuery(hql);  
-    query.setString(0, id);  
+		String hql = "delete User u where u.userID = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, id);
 
-    return (query.executeUpdate() > 0);  
-}  
+		return (query.executeUpdate() > 0);
+	}
 
-/**
- * 编辑用户
- */
-public boolean updateUser(User user) {  
+	/**
+	 * 编辑用户
+	 */
+	public boolean updateUser(User user) {
 
-    String hql = "update User u set u.userName = ?,u.age=? where u.id = ?";  
-    Query query = sessionFactory.getCurrentSession().createQuery(hql);  
-//    query.setString(0, user.getUserName());  
-//    query.setString(1, user.getAge());  
-//    query.setString(2, user.getId());  
+		String hql = "update User u set u.gender = ?,u.nickName = ?,u.userIcon = ?,u.cellphone = ?,u.password = ? "
+				+ "where u.userID = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setInteger(0, user.getGender());
+		query.setString(1, user.getNickName());
+		query.setString(2, user.getUserIcon());
+		query.setString(3, user.getCellphone());
+		query.setString(4, user.getPassword());
+		query.setString(5, user.getUserID());
 
-    return (query.executeUpdate() > 0);  
-}  
+		return (query.executeUpdate() > 0);
+	}
+
+	/**
+	 * 根据用户的openId得到用户信息
+	 */
+	public User getUserByOpenId(String tag, String openId) {
+		String hql = "from User u where u." + tag + "=?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, openId);
+
+		return (User) query.uniqueResult();
+	}
+
+	/**
+	 * 根据用户的cellphone得到用户信息
+	 */
+	public User getUserByCellphone(String cellphone) {
+		String hql = "from User u where u.cellphone=?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, cellphone);
+
+		return (User) query.uniqueResult();
+	}
+
+	public boolean changePassword(User user) {
+		String hql = "update User u set u.password = ? "
+				+ "where u.cellphone = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, user.getPassword());
+		query.setString(1, user.getCellphone());
+
+		return (query.executeUpdate() > 0);
+	}
 
 }
