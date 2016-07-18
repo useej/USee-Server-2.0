@@ -2,15 +2,15 @@
 <application generated-by="eclipse" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://update.zeroturnaround.com/jrebel/rebel-2_1.xsd">
 
 	<classpath>
-		<dir name="D:/Github/USee-Server-2.0/src/main/webapp/WEB-INF/classes">
+		<dir name="D:/编程测试/JAVA/USeeServer/src/main/webapp/WEB-INF/classes">
 		</dir>
-		<dir name="D:/Github/USee-Server-2.0/target/classes">
+		<dir name="D:/编程测试/JAVA/USeeServer/target/classes">
 		</dir>
 	</classpath>
 
 	<web>
 		<link target="/">
-			<dir name="D:/Github/USee-Server-2.0/src/main/webapp">
+			<dir name="D:/编程测试/JAVA/USeeServer/src/main/webapp">
 			</dir>
 		</link>
 	</web>

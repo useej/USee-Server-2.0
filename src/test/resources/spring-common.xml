@@ -46,5 +46,16 @@
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
+	
+	<!-- 响应输出 json 格式配置，不以 json 格式返回的情况下把这段代码注掉即可 -->  
+	<!--
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">    
+        <property name="messageConverters">    
+            <list>    
+            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />    
+            </list>    
+        </property>    
+    </bean>   
+      -->
 
 </beans>  
