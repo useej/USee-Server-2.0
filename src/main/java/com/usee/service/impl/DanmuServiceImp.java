@@ -26,7 +26,7 @@ public class DanmuServiceImp implements DanmuService{
 	@Override
 	public void sendDammu(Danmu danmu) {
 		// TODO Auto-generated method stub
-		Danmu d1=new Danmu ();
+		Danmu d1=new Danmu (); 
 		Danmu d2=new Danmu ();
 		Danmu d3=new Danmu ();
 		Danmu d4=new Danmu ();
