@@ -1,6 +1,8 @@
 package com.usee.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,8 +11,11 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.usee.dao.impl.DanmuDaoImp;
+import com.usee.dao.impl.UserTopicDaoImp;
 import com.usee.model.Danmu;
+import com.usee.model.UserTopic;
 import com.usee.service.DanmuService;
+import com.usee.utils.RandomNumber;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -19,48 +24,37 @@ import net.sf.json.JSONObject;
 public class DanmuServiceImp implements DanmuService{
 	@Resource
 	private DanmuDaoImp danmudao;
+	@Resource
+	private UserTopicDaoImp userTopicDao;
+	
+	public static int MaxRandomNameNumber = 100;
+	public static int MaxRandomIconNumber = 10;
 	
 	public void sendDammu(Danmu danmu) {
 		// TODO Auto-generated method stub
-		Danmu d1=new Danmu ();
-		Danmu d2=new Danmu ();
-		Danmu d3=new Danmu ();
-		Danmu d4=new Danmu ();
-//		d1.setId(1);
-		d1.setDevId("123");
-		d1.setUserId("111");
-		d1.setTopicId("1");
-		d1.setStatus("true");
-		d1.setMessages("第一条弹幕");
-//		d2.setId(2);
-		d2.setDevId("123");
-		d2.setUserId("111");
-		d2.setTopicId("1");
-		d2.setStatus("true");
-		d2.setMessages("第二条弹幕");
-//		d3.setId(3);
-		d3.setDevId("123");
-		d3.setUserId("111");
-		d3.setTopicId("1");
-		d3.setStatus("true");
-		d3.setMessages("第三条弹幕");
-//		d4.setId(4);
-		d4.setDevId("123");
-		d4.setUserId("111");
-		d4.setTopicId("1");
-		d4.setStatus("true");
-		d4.setMessages("第四条弹幕");
-		for(int i=0;i<250;i++){
-			Danmu dd1=d1;
-			danmudao.saveDanmu(dd1);
-			Danmu dd2=d2;
-			danmudao.saveDanmu(dd2);
-			Danmu dd3=d3;
-			danmudao.saveDanmu(dd3);
-			Danmu dd4=d4;
-			danmudao.saveDanmu(dd4);
-		}
+		String userId = danmu.getUserId();
 		
+		RandomNumber rn = new RandomNumber();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String currentTime = df.format(new Date());
+		
+		if(!danmudao.userIdCheck(userId)){
+			UserTopic userTopic = new UserTopic();
+			
+			userTopic.setUserId(userId);
+			userTopic.setTopicId(danmu.getTopicId());
+			userTopic.setFirstvisit_time(currentTime);
+			userTopic.setRandomNameID(rn.getRandom(1, MaxRandomNameNumber));
+			userTopic.setRandomIconID(rn.getRandom(1, MaxRandomIconNumber));
+			userTopic.setLastVisit_time(currentTime);
+			userTopic.setFrequency(userTopicDao.getLatestFrequency() + 1);
+			
+			userTopicDao.saveUserTopic(userTopic);
+		}
+		else{
+			userTopicDao.updateUserTopic(userId, currentTime, userTopicDao.getLatestFrequency() + 1);
+		}
+		danmudao.saveDanmu(danmu);
 	}
 
 	
@@ -101,5 +95,10 @@ public class DanmuServiceImp implements DanmuService{
 	public void postMessage() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public String getLatestDanmiId(){
+		// TODO Auto-generated method stub
+		return danmudao.getLatestDanmiId();
 	}
 }

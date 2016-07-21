@@ -19,6 +19,11 @@
         	<input type="text" name="danmuId" />
         	<input type="submit" value="提交">
         </form>
+        
+        <form action="senddanmu" method="post">
+        	<input type="text" name="danmuId" />
+        	<input type="submit" value="提交">
+        </form>
         <c:out value="${danmuDetails}"></c:out> 
     </body>  
 </html>  

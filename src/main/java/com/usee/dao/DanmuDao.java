@@ -6,7 +6,7 @@ import com.usee.model.Danmu;
 
 public interface DanmuDao {
 
-	public void saveDanmu(Danmu message);
+	public void saveDanmu(Danmu danmu);
 
 	public List<Danmu> getDanmuList(String topicId);
 
@@ -16,4 +16,8 @@ public interface DanmuDao {
 			int pageSize);
 	
 	public List<Object[]> getDanmuDetails(String danmuId);
+	
+	public String getLatestDanmiId();
+	
+	public boolean userIdCheck(String userId);
 }
