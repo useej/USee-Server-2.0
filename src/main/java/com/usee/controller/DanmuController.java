@@ -3,10 +3,12 @@ package com.usee.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.usee.model.Danmu;
 import com.usee.service.impl.DanmuServiceImp;
 
 
@@ -18,6 +20,14 @@ public class DanmuController {
 	@RequestMapping(value = "test")
 	public String test(Model model){
 		return "getdm";
+	}
+	
+	@RequestMapping(value = "senddanmu", method = RequestMethod.POST, headers="Accept=application/json")
+	@ResponseBody
+	public String sendDanmu(@RequestBody Danmu danmu){
+		danmuService.sendDammu(danmu);
+		String danmuDetails = danmuService.getDanmuDetails(danmuService.getLatestDanmiId());
+		return danmuDetails;
 	}
 	
 	@RequestMapping(value = "getdmbytopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
