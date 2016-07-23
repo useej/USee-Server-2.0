@@ -1,11 +1,12 @@
 package com.usee.model;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * 此类为User实体类
@@ -15,6 +16,8 @@ import javax.persistence.Table;
 public class User {
 
 	@Id
+	@GeneratedValue(generator="sid")
+	@GenericGenerator(name="sid",strategy="assigned")
 	@Column(length = 32)
 	private String userID;
 
@@ -24,7 +27,7 @@ public class User {
 
 	// 用户昵称
 	@Column(length = 32)
-	private String nickName;
+	private String nickname;
 
 	// 用户头像
 	@Column(length = 100)
@@ -38,16 +41,17 @@ public class User {
 	@Column(length = 32)
 	private String password;
 	
-	private Date createTime;
+	@Column(length = 20)
+	private String createTime;
 	
 	@Column(length = 32)
-	private String qqOpenId;
+	private String openID_qq;
 	
 	@Column(length = 32)
-	private String weixinOpenId;
+	private String openID_wx;
 	
 	@Column(length = 32)
-	private String weiboOpenId;
+	private String openID_wb;
 
 	public String getUserID() {
 		return userID;
@@ -61,12 +65,12 @@ public class User {
 		this.gender = gender;
 	}
 
-	public String getNickName() {
-		return nickName;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 	public String getUserIcon() {
@@ -97,36 +101,45 @@ public class User {
 		this.userID = userID;
 	}
 
-	public String getQqOpenId() {
-		return qqOpenId;
+	public String getOpenID_qq() {
+		return openID_qq;
 	}
 
-	public void setQqOpenId(String qqOpenId) {
-		this.qqOpenId = qqOpenId;
+	public void setOpenID_qq(String openID_qq) {
+		this.openID_qq = openID_qq;
 	}
 
-	public String getWeixinOpenID() {
-		return weixinOpenId;
+	public String getOpenID_wx() {
+		return openID_wx;
 	}
 
-	public void setWeixinOpenID(String weixinOpenID) {
-		this.weixinOpenId = weixinOpenID;
+	public void setOpenID_wx(String openID_wx) {
+		this.openID_wx = openID_wx;
 	}
 
-	public String getWeiboOpenId() {
-		return weiboOpenId;
+	public String getOpenID_wb() {
+		return openID_wb;
 	}
 
-	public void setWeiboOpenId(String weiboOpenId) {
-		this.weiboOpenId = weiboOpenId;
+	public void setOpenID_wb(String openID_wb) {
+		this.openID_wb = openID_wb;
 	}
 
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
+
+	@Override
+	public String toString() {
+		return "User [userID=" + userID + ", gender=" + gender + ", nickname=" + nickname + ", userIcon=" + userIcon
+				+ ", cellphone=" + cellphone + ", password=" + password + ", createTime=" + createTime + ", openID_qq="
+				+ openID_qq + ", openID_wx=" + openID_wx + ", openID_wb=" + openID_wb + "]";
+	}
+	
+	
 
 }

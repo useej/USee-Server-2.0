@@ -1,10 +1,9 @@
 package com.usee.dao.impl;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
@@ -32,50 +31,29 @@ public class UserDaoImpl implements UserDao {
 		return (User) query.uniqueResult();
 	}
 
-	/**
-	 * 查询所有用户
-	 */
-	public List<User> getAllUser() {
-
-		String hql = "from User";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-
-		return query.list();
-	}
 
 	/**
 	 * 添加用户
 	 */
 	public void addUser(User user) {
-		sessionFactory.getCurrentSession().save(user);
+		Session session = sessionFactory.getCurrentSession();
+		session.save(user);
+		session.flush();
+		System.out.println(user.toString());
 	}
 
 	/**
-	 * 根据用户id删除用户
-	 */
-	public boolean delUser(String id) {
-
-		String hql = "delete User u where u.userID = ?";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setString(0, id);
-
-		return (query.executeUpdate() > 0);
-	}
-
-	/**
-	 * 编辑用户
+	 * 更新用户信息
 	 */
 	public boolean updateUser(User user) {
 
-		String hql = "update User u set u.gender = ?,u.nickName = ?,u.userIcon = ?,u.cellphone = ?,u.password = ? "
+		String hql = "update User u set u.gender = ?,u.nickname = ?,u.userIcon = ? "
 				+ "where u.userID = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setInteger(0, user.getGender());
-		query.setString(1, user.getNickName());
+		query.setString(1, user.getNickname());
 		query.setString(2, user.getUserIcon());
-		query.setString(3, user.getCellphone());
-		query.setString(4, user.getPassword());
-		query.setString(5, user.getUserID());
+		query.setString(3, user.getUserID());
 
 		return (query.executeUpdate() > 0);
 	}
@@ -102,12 +80,56 @@ public class UserDaoImpl implements UserDao {
 		return (User) query.uniqueResult();
 	}
 
+	/**
+	 * 修改用户密码
+	 */
 	public boolean changePassword(User user) {
 		String hql = "update User u set u.password = ? "
 				+ "where u.cellphone = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, user.getPassword());
 		query.setString(1, user.getCellphone());
+
+		return (query.executeUpdate() > 0);
+	}
+	
+	/**
+	 * 绑定第三方用户账号
+	 */
+	public boolean updateUser_OAuth(User user) {
+		
+		String hql = "update User u set u.openID_qq = ?,u.openID_wx = ?,u.openID_wb = ? "
+				+ "where u.userID = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, user.getOpenID_qq());
+		query.setString(1, user.getOpenID_wx());
+		query.setString(2, user.getOpenID_wb());
+		query.setString(3, user.getUserID());
+
+		return (query.executeUpdate() > 0);
+	}
+
+	public boolean updateUser_Cellphone(User user) {
+		
+		String hql = "update User u set u.cellphone = ?,u.password = ? "
+				+ "where u.userID = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, user.getCellphone());
+		query.setString(1, user.getPassword());
+		query.setString(2, user.getUserID());
+
+		return (query.executeUpdate() > 0);
+	}
+
+	/**
+	 * 修改用户密码
+	 */
+	public boolean modifyPassword(User user) {
+		String hql = "update User u set u.password = ? "
+				+ "where u.userID = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, user.getPassword());
+		query.setString(1, user.getUserID());
 
 		return (query.executeUpdate() > 0);
 	}
