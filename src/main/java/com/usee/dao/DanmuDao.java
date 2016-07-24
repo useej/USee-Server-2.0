@@ -17,7 +17,7 @@ public interface DanmuDao {
 	
 	public List<Object[]> getDanmuDetails(String danmuId);
 	
-	public String getLatestDanmiId();
+	public String getLatestDanmuId();
 	
 	public boolean userIdCheck(String userId);
 }

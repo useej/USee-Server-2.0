@@ -18,10 +18,10 @@ public class UserTopicDaoImp {
 		sessionFactory.getCurrentSession().save(userTopic);
 	}
 	
-	public void updateUserTopic(String userId, String lastVisit_time, int frequency){
-		String sql = "UPDATE user_topic SET lastVisit_time = '" + lastVisit_time + "', frequency = " + frequency + " WHERE userID = '" + userId + "'";
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
-	}
+//	public void updateUserTopic(String userId, String lastVisit_time, int frequency, String userIcon){
+//		String sql = "UPDATE user_topic SET lastVisit_time = '" + lastVisit_time + "', frequency = " + frequency + ", userIcon = '" + userIcon + " WHERE userID = '" + userId + "'";
+//		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+//	}
 	
 	public int getLatestFrequency(){
 		String sql = "SELECT MAX(frequency) FROM user_topic";

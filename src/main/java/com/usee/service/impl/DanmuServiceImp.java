@@ -3,9 +3,7 @@ package com.usee.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -30,30 +28,33 @@ public class DanmuServiceImp implements DanmuService{
 	public static int MaxRandomNameNumber = 100;
 	public static int MaxRandomIconNumber = 10;
 	
-	public void sendDammu(Danmu danmu) {
+	public void sendDammu(Danmu danmu, boolean isAnnonymous) {
 		// TODO Auto-generated method stub
 		String userId = danmu.getUserId();
 		
-		RandomNumber rn = new RandomNumber();
+		RandomNumber randomNumber = new RandomNumber();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String currentTime = df.format(new Date());
 		
-		if(!danmudao.userIdCheck(userId)){
-			UserTopic userTopic = new UserTopic();
-			
-			userTopic.setUserId(userId);
-			userTopic.setTopicId(danmu.getTopicId());
-			userTopic.setFirstvisit_time(currentTime);
-			userTopic.setRandomNameID(rn.getRandom(1, MaxRandomNameNumber));
-			userTopic.setRandomIconID(rn.getRandom(1, MaxRandomIconNumber));
-			userTopic.setLastVisit_time(currentTime);
-			userTopic.setFrequency(userTopicDao.getLatestFrequency() + 1);
-			
-			userTopicDao.saveUserTopic(userTopic);
+		UserTopic userTopic = new UserTopic();
+		userTopic.setUserId(userId);
+		userTopic.setTopicId(danmu.getTopicId());
+		userTopic.setFirstvisit_time(currentTime);
+		userTopic.setLastVisit_time(currentTime);
+		userTopic.setFrequency(userTopicDao.getLatestFrequency() + 1);
+		
+		if(isAnnonymous){
+			userTopic.setRandomNameID(randomNumber.getRandom(1, MaxRandomNameNumber));
+			userTopic.setRandomIconID(randomNumber.getRandom(1, MaxRandomIconNumber));
+			userTopic.setUserIcon(randomNumber.getRandom(1, MaxRandomIconNumber) + ".png");
 		}
 		else{
-			userTopicDao.updateUserTopic(userId, currentTime, userTopicDao.getLatestFrequency() + 1);
+			userTopic.setRandomNameID(0);
+			userTopic.setRandomIconID(0);
+			userTopic.setUserIcon(userId + ".png");
 		}
+		userTopicDao.saveUserTopic(userTopic);
+		
 		danmudao.saveDanmu(danmu);
 	}
 
@@ -81,12 +82,21 @@ public class DanmuServiceImp implements DanmuService{
 
 	
 	public String getDanmuDetails(String danmuId) {
-		// TODO Auto-generated method stub
+		
 		List<Object[]> list = new ArrayList<Object[]>();
 		list = danmudao.getDanmuDetails(danmuId);
 		JSONArray array = JSONArray.fromObject(list);
 		JSONObject object = new JSONObject();
 		object.put("danmudetails", array.toString());
+		
+		String userid = array.getJSONObject(0).get("userid").toString();
+		if(!danmudao.userIdCheck(userid)){
+			/*****************  TO BE DONE !!!
+			 悄悄话需要后端过滤，获得当前用户的userID 
+				1.	如果没有userID，即匿名使用，type=3的评论都不加载
+				2.	如果有userID，返回type=3的、sender或者receiver = currentUserID的评论。 
+			*/
+		}
 		
 		return object.toString();
 	}
@@ -97,8 +107,12 @@ public class DanmuServiceImp implements DanmuService{
 		
 	}
 	
-	public String getLatestDanmiId(){
+	public String getLatestDanmuId(){
 		// TODO Auto-generated method stub
-		return danmudao.getLatestDanmiId();
+		return danmudao.getLatestDanmuId();
+	}
+	
+	public Danmu getDanmu(String danmuId){
+		return danmudao.getDanmu(danmuId);
 	}
 }

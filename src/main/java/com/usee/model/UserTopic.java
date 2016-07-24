@@ -33,6 +33,8 @@ public class UserTopic {
 	private int frequency;
 	@Column
 	private int dislike;
+	@Column
+	private String userIcon;
 	
 	public int getId() {
 		return id;
@@ -87,5 +89,11 @@ public class UserTopic {
 	}
 	public void setDislike(int dislike) {
 		this.dislike = dislike;
+	}
+	public String getUserIcon() {
+		return userIcon;
+	}
+	public void setUserIcon(String userIcon) {
+		this.userIcon = userIcon;
 	}
 }

@@ -3,11 +3,8 @@ package com.usee.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -49,6 +46,8 @@ public class Danmu {
 	private int head;
 	@Column
 	private String messages;
+	@Column
+	private String userIcon;
 
 	public int getId() {
 		return id;
@@ -178,8 +177,12 @@ public class Danmu {
 		this.messages = messages;
 	}
 
+	public String getUserIcon() {
+		return userIcon;
+	}
 
-
-	
+	public void setUserIcon(String userIcon) {
+		this.userIcon = userIcon;
+	}
 
 }
