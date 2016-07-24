@@ -4,7 +4,7 @@ import com.usee.model.Danmu;
 
 public interface DanmuService {
 
-	public void sendDammu(Danmu message);
+	public void sendDammu(Danmu danmu, boolean isAnnonymous);
 
 	public String getDanmuDetails(String danmuId);
 	
@@ -12,5 +12,7 @@ public interface DanmuService {
 
 	public String getDanmubyTopic(String topicId, String pageNum, String pageSize);
 	
-	public String getLatestDanmiId();
+	public String getLatestDanmuId();
+	
+	public Danmu getDanmu(String danmuId);
 }

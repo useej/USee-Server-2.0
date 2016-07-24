@@ -20,6 +20,9 @@ import com.usee.utils.UUIDGeneratorUtil;
 
 @Service
 public class OAuthLoginServiceImpl implements OAuthLoginService {
+	private static final String DEFAULT_CELLPHONE = "<dbnull>";
+	private static final String DEFAULT_PASSWORD = "<dbnull>";
+//	private String default_password;
 	
 	@Resource
 	private UserDao userDao;
@@ -47,12 +50,11 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
      *   access_token=*************&
      *   oauth_consumer_key=12345&
      *   openid
-     *   
-     * }
+
      * 
      */
 	
-	public User handleQQUserInfo(String access_token, String openid) {
+	public User handleQQUserInfo(String access_token, String openid, String fileRootDir) {
 	
         if (access_token.isEmpty() || openid.isEmpty()) {
             return null;
@@ -71,18 +73,18 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
 			Map<String,Object> map = new HashMap<String, Object>();
 			map = mapper.readValue(json, new TypeReference<Map<String, Object>>(){});
 			// 筛选出需要的信息
-			user.setNickName((String) map.get("nickname"));
+			user.setNickname((String) map.get("nickname"));
 			user.setUserIcon((String) map.get("figureurl_qq_1"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}  
  
-        user.setQqOpenId(openid);
-        user.setCreateTime(new Date());
+        user.setOpenID_qq(openid);
+        user.setCreateTime(new Date().getTime() + "");
         user.setUserID(UUIDGeneratorUtil.getUUID());
         
         //将QQ头像保存到图片服务器
-        URL2PictureUtil.download(user.getUserIcon(), user.getUserID());
+        URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
 		
         //将用户信息储存到数据库中
         userDao.addUser(user);
@@ -102,7 +104,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
      * 
      */
 	
-	public User handleWeiboUserInfo(String access_token, String uid) {
+	public User handleWeiboUserInfo(String access_token, String uid, String fileRootDir) {
 	
         if (access_token.isEmpty() || uid.isEmpty()) {
             return null;
@@ -121,18 +123,18 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
 			Map<String,Object> map = new HashMap<String, Object>();
 			map = mapper.readValue(json, new TypeReference<Map<String, Object>>(){});
 			// 筛选出需要的信息
-			user.setNickName((String) map.get("screen_name"));
+			user.setNickname((String) map.get("screen_name"));
 			user.setUserIcon((String) map.get("avatar_hd"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}  
  
-		user.setWeiboOpenId(uid);
-        user.setCreateTime(new Date());
+		user.setOpenID_wb(uid);
+        user.setCreateTime(new Date().getTime() + "");
         user.setUserID(UUIDGeneratorUtil.getUUID());
         
         //将微博头像保存到图片服务器
-        URL2PictureUtil.download(user.getUserIcon(), user.getUserID());
+        URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
 		
         //将用户信息储存到数据库中
         userDao.addUser(user);
@@ -150,7 +152,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
      *   
      */
 	
-	public User handleWeinxinUserInfo(String access_token, String openid) {
+	public User handleWeinxinUserInfo(String access_token, String openid, String fileRootDir) {
 	
         if (access_token.isEmpty() || openid.isEmpty()) {
             return null;
@@ -169,23 +171,41 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
 			Map<String,Object> map = new HashMap<String, Object>();
 			map = mapper.readValue(json, new TypeReference<Map<String, Object>>(){});
 			// 筛选出需要的信息
-			user.setNickName((String) map.get("nickname"));
+			user.setNickname((String) map.get("nickname"));
 			user.setUserIcon((String) map.get("headimgurl"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}  
  
-        user.setWeixinOpenID(openid);
-        user.setCreateTime(new Date());
+        user.setOpenID_wx(openid);
+        user.setCreateTime(new Date().getTime() + "");
         user.setUserID(UUIDGeneratorUtil.getUUID());
         
         //将微信头像保存到图片服务器
-        URL2PictureUtil.download(user.getUserIcon(), user.getUserID());
+        URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
 		
         //将用户信息储存到数据库中
         userDao.addUser(user);
        
         return user;
+	}
+
+	public void addUser(User user, String fileRootDir) {
+		user.setUserID(UUIDGeneratorUtil.getUUID());
+		user.setCreateTime(new Date().getTime() + "");
+		
+		// 将用户头像保存到本地图片服务器
+		URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
+		user.setUserIcon("userIcons\\" + user.getUserID() + ".jpg");
+		// 设置默认的手机号
+		user.setCellphone(DEFAULT_CELLPHONE);
+		// 设置默认的密码
+//		default_password = UUIDGeneratorUtil.getUUID();
+//		user.setPassword(default_password);
+		user.setPassword(DEFAULT_PASSWORD);
+		
+		userDao.addUser_OAuth(user);
+		
 	}
 	
 
