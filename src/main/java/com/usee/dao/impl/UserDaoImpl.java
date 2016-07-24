@@ -35,11 +35,17 @@ public class UserDaoImpl implements UserDao {
 	/**
 	 * 添加用户
 	 */
-	public void addUser(User user) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(user);
-		session.flush();
-		System.out.println(user.toString());
+	public Boolean addUser(User user) {
+		String hql = "update User u set u.password = ?,u.nickname = ?,u.userIcon = ?,u.createTime = ? "
+				+ "where u.userID = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, user.getPassword());
+		query.setString(1, user.getNickname());
+		query.setString(2, user.getUserIcon());
+		query.setString(3, user.getCreateTime());
+		query.setString(4, user.getUserID());
+
+		return (query.executeUpdate() > 0);
 	}
 
 	/**
@@ -132,6 +138,12 @@ public class UserDaoImpl implements UserDao {
 		query.setString(1, user.getUserID());
 
 		return (query.executeUpdate() > 0);
+	}
+
+	public void addUser_OAuth(User user) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(user);
+		session.flush();
 	}
 
 }

@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +24,12 @@ import com.usee.service.UserService;
 @Controller
 @RequestMapping("/oauthlogin")
 public class OAuthLoginController {
-	private static final String DEFAULT_CELLPHONE = "usee";
+	private static final String DEFAULT_CELLPHONE = "<dbnull>";
 	
-	@Resource
+	@Autowired
 	private OAuthLoginService oauthLoginService;
 	
-	@Resource
+	@Autowired
 	private UserService userService;
 	
 	/**
@@ -59,6 +59,13 @@ public class OAuthLoginController {
 		if(validateUser == null) {
 			oauthLoginService.addUser(user, request.getSession().getServletContext().getRealPath("/"));
 			map.put("firstLogin", 1);	
+			// 加入数据库中的user信息为默认的手机号(用户是用第三方登录的，没有设置手机号和密码)
+			// 则将手机号和密码置为空再返回给前端
+			if(user.getCellphone().equals(DEFAULT_CELLPHONE)) {
+				user.setCellphone(null);
+				user.setPassword(null);
+			}
+			map.put("user", user);
 		} else {
 			map.put("firstLogin", 0);
 			if(validateUser.getCellphone().equals(DEFAULT_CELLPHONE)) {
@@ -67,15 +74,6 @@ public class OAuthLoginController {
 			validateUser.setPassword(null);
 			map.put("user", validateUser);
 		}
-		
-		// 加入数据库中的user信息为默认的手机号(用户是用第三方登录的，没有设置手机号和密码)
-		// 则将手机号和密码置为空再返回给前端
-		if(user.getCellphone().equals(DEFAULT_CELLPHONE)) {
-			user.setCellphone(null);
-			user.setPassword(null);
-		}
-		
-		map.put("user", user);
 		return map;
 	}
 

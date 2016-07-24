@@ -6,7 +6,9 @@ public interface UserDao {
 
 	public User getUser(String id);
 
-	public void addUser(User user);
+	public Boolean addUser(User user);
+	
+	public void addUser_OAuth(User user);
 
 	public boolean updateUser(User user);
 	

@@ -27,13 +27,20 @@ import com.usee.utils.MD5Util;
 public class UserController {
 
 	private static final String RETURN_INFO = "returnInfo";
-	private static final String DEFAULT_CELLPHONE = "usee";
+	private static final String DEFAULT_CELLPHONE = "<dbnull>";
+	private static final String DEFAULT_PASSWORD = "<dbnull>";
+	private static final long VALIDITY_TIME = 60000000;
 
 	@Resource
 	private UserService userService;
 
 	/**
 	 * 手机注册
+	 * 需要传入：
+	 * 		cellphone手机号
+	 * 		password密码
+	 * 		validateCode验证码(32个16进制数)
+	 * 
 	 */
 	@ResponseBody
 	@RequestMapping("/signin")
@@ -41,28 +48,46 @@ public class UserController {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 
 		String cellphone = user.getCellphone();
+		// 数据库中对应的手机号的user信息(发送验证码时保存的)
+		User signinUser = userService.getUserByCellphone(cellphone);
 		// 如果手机号不准确直接返回错误
-		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE)) {
-			returnMap.put(RETURN_INFO, "error");
+		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE) ||
+				signinUser == null) {
+			returnMap.put(RETURN_INFO, "cellphoneErr");
 			return returnMap;
 		}
-		if (userService.getUserByCellphone(cellphone) != null) {
-			// 如果该用户已经存在直接返回存在
+		
+		if (!(signinUser.getPassword()).equals(DEFAULT_PASSWORD)) {
+			// 如果该手机号用户已经存在并且密码不等于默认的密码，则证明用户已经注册
 			returnMap.put(RETURN_INFO, "exist");
 			return returnMap;
-		} else {
-			// 未加密的原始密码
-			String originPassword = user.getPassword();
-			// 处理用户信息
-			userService.addUser(user);
-			// 还原密码
-			user.setPassword(originPassword);
-
-			System.out.println(user.toString());
-
-			returnMap.put(RETURN_INFO, "success");
-			returnMap.put("user", user);
+		} else if(!user.getVerificationCode().equals(signinUser.getVerificationCode())){
+			// 验证码不正确
+			returnMap.put(RETURN_INFO, "verificationCodeErr");
 			return returnMap;
+		} else {
+			// 得到系统当前的时间
+			long currentTime = System.currentTimeMillis();
+			long verificationCode_creatTime = Long.parseLong(signinUser.getVcSendTime());
+			user.setVcSendTime(verificationCode_creatTime + "");
+			if((currentTime - verificationCode_creatTime) < VALIDITY_TIME) {
+				// 如果验证码没有超过10分钟,则验证码有效
+				// 未加密的原始密码
+				String originPassword = user.getPassword();
+				// 处理用户信息
+				userService.addUser(user);
+				// 还原密码
+				user.setPassword(originPassword);
+
+				System.out.println(user.toString());
+
+				returnMap.put(RETURN_INFO, "success");
+				returnMap.put("user", user);
+				return returnMap;
+			} else {
+				returnMap.put(RETURN_INFO, "verificationCodeInvalid");
+				return returnMap;
+			}
 		}
 	}
 
@@ -76,8 +101,9 @@ public class UserController {
 
 		String cellphone = user.getCellphone();
 		// 如果手机号不准确直接返回错误
-		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE)) {
-			map.put(RETURN_INFO, "error");
+		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE) ||
+				userService.getUserByCellphone(cellphone) == null) {
+			map.put(RETURN_INFO, "cellphoneErr");
 			return map;
 		}
 
@@ -100,57 +126,57 @@ public class UserController {
 
 	/**
 	 * 忘记密码
+	 * 需要传入：
+	 * 		cellphone手机号
+	 * 		password密码
+	 * 		validateCode验证码(32个16进制数)
 	 */
 	@ResponseBody
 	@RequestMapping("/forgetpassword")
 	public Map<String, Object> forgetPassword(@RequestBody User user) {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 
+		String cellphone = user.getCellphone();
+		// 数据库中对应的手机号的user信息
+		User validateUser = userService.getUserByCellphone(cellphone);
 		// 如果手机号不准确直接返回错误
-		if (user.getCellphone().length() != 11 || user.getCellphone().equals(DEFAULT_CELLPHONE)) {
-			returnMap.put(RETURN_INFO, "error");
+		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE) ||
+				validateUser == null) {
+			returnMap.put(RETURN_INFO, "cellphoneErr");
 			return returnMap;
 		}
-		// 数据库中对应的手机号的user信息
-		User validateUser = userService.getUserByCellphone(user.getCellphone());
-		// 未加密的原始密码
-		String originPassword = user.getPassword();
-		validateUser.setPassword(originPassword);
-
-		String result = "error";
-		// 修改密码
-		if (userService.changePassword(validateUser)) {
-			result = "success";
+		
+		if(!user.getVerificationCode().equals(validateUser.getVerificationCode())){
+			// 验证码不正确
+			returnMap.put(RETURN_INFO, "validateCodeErr");
+			return returnMap;
+		} else {
+			// 得到系统当前的时间
+			long currentTime = System.currentTimeMillis();
+			long validateCode_creatTime = Long.parseLong(validateUser.getVcSendTime());
+			if((currentTime - validateCode_creatTime) < VALIDITY_TIME) {
+				// 如果验证码没有超过10分钟,则验证码有效
+				// 未加密的原始密码
+				String originPassword = user.getPassword();
+				validateUser.setPassword(originPassword);
+				String result = "error";
+				// 修改密码
+				if (userService.changePassword(validateUser)) {
+					result = "success";
+				}
+				// 还原密码
+				validateUser.setPassword(originPassword);
+				returnMap.put(RETURN_INFO, result);
+				returnMap.put("cellphone", validateUser.getCellphone());
+				returnMap.put("password", validateUser.getPassword());
+				System.out.println(validateUser);
+				return returnMap;
+			} else {
+				returnMap.put(RETURN_INFO, "validateCodeInvalid");
+				return returnMap;
+			}
 		}
-		// 还原密码
-		validateUser.setPassword(originPassword);
-		returnMap.put(RETURN_INFO, result);
-		returnMap.put("user", validateUser);
-		System.out.println(validateUser);
-		return returnMap;
 	}
-
-//	/**
-//	 * 修改密码,原始密码前台验证
-//	 */
-//	@ResponseBody
-//	@RequestMapping("/modifypassword")
-//	public Map<String, Object> modifyPassword2(@RequestBody User user) {
-//		Map<String, Object> returnMap = new HashMap<String, Object>();
-//		// 数据库中对应的手机号的user信息
-//		User modifyUser = userService.getUser(user.getUserID());
-//		// 未加密的原始密码
-//		String originPassword = user.getPassword();
-//		modifyUser.setPassword(originPassword);
-//
-//		// 修改密码
-//		if (userService.modifyPassword(modifyUser)) {
-//			// 还原密码
-//			modifyUser.setPassword(originPassword);
-//			returnMap.put("user", modifyUser);
-//		}
-//		return returnMap;
-//	}
 
 	/**
 	 * 修改密码，原始密码后台验证
@@ -184,7 +210,8 @@ public class UserController {
 			userService.modifyPassword(modifyUser);
 			modifyUser.setPassword(newPassword);
 			returnMap.put("returnInfo", "success");
-			returnMap.put("user", modifyUser);
+			returnMap.put("userID", modifyUser.getUserID());
+			returnMap.put("password", modifyUser.getPassword());
 			System.out.println(modifyUser);
 		}
 		return returnMap;
@@ -211,14 +238,15 @@ public class UserController {
 		}
 
 		userService.updateUser(updateUser);
-		// 加入数据库中的user信息为默认的手机号(用户是用第三方登录的，没有设置手机号和密码)
-		// 则将手机号和密码置为空再返回给前端
-		if (user.getCellphone().equals(DEFAULT_CELLPHONE)) {
-			user.setCellphone(null);
-		}
-		// 密码置为空
-		user.setPassword(null);
-		returnMap.put("user", user);
+//		// 加入数据库中的user信息为默认的手机号(用户是用第三方登录的，没有设置手机号和密码)
+//		// 则将手机号和密码置为空再返回给前端
+//		if (user.getCellphone().equals(DEFAULT_CELLPHONE)) {
+//			user.setCellphone(null);
+//		}
+		returnMap.put("userID", user.getUserID());
+		returnMap.put("gender", user.getGender());
+		returnMap.put("nickname", user.getNickname());
+		returnMap.put("userIcon", user.getUserIcon());
 		System.out.println(user.toString());
 		return returnMap;
 	}
@@ -230,23 +258,52 @@ public class UserController {
 	@RequestMapping("/bindcellphone")
 	public Map<String, Object> bindCellphone(@RequestBody User user) {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
-
+		
+		String cellphone = user.getCellphone();
+		
 		// 如果手机号不准确直接返回错误
-		if (user.getCellphone().length() != 11 || user.getCellphone().equals(DEFAULT_CELLPHONE)) {
-			returnMap.put(RETURN_INFO, "error");
+		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE)) {
+			returnMap.put(RETURN_INFO, "cellphoneErr");
 			return returnMap;
 		}
+		
+		// 如果此手机号之前已经绑定过其他用户
+		User bindUser = userService.getUserByCellphone(cellphone);
+		if(!(bindUser.getUserID()).equals(user.getUserID())){
+			returnMap.put(RETURN_INFO, "cellphoneBinding");
+			return returnMap;
+		}
+		
+		if(!user.getVerificationCode().equals(bindUser.getVerificationCode())){
+			// 验证码不正确
+			returnMap.put(RETURN_INFO, "verificationCodeErr");
+			return returnMap;
+		} else {
+			// 得到系统当前的时间
+			long currentTime = System.currentTimeMillis();
+			long validateCode_creatTime = Long.parseLong(bindUser.getVcSendTime());
+			if((currentTime - validateCode_creatTime) < VALIDITY_TIME) {
+				// 如果验证码没有超过10分钟,则验证码有效
+				
+				// 得到要更新的user
+				User updateUser = userService.getUser(user.getUserID());
+				updateUser.setCellphone(user.getCellphone());
+				updateUser.setPassword(user.getPassword());
+				userService.updateUser_Cellphone(updateUser);
+				
+				// 还原密码
+				updateUser.setPassword(user.getPassword());
 
-		User updateUser = userService.getUser(user.getUserID());
-		updateUser.setCellphone(user.getCellphone());
-
-		userService.updateUser_Cellphone(updateUser);
-		// 还原密码
-		updateUser.setPassword(user.getPassword());
-
-		returnMap.put(RETURN_INFO, "success");
-		returnMap.put("user", updateUser);
-		return returnMap;
+				returnMap.put(RETURN_INFO, "success");
+				returnMap.put("userID", updateUser.getUserID());
+				returnMap.put("cellphone", updateUser.getCellphone());
+				returnMap.put("password", updateUser.getPassword());
+				return returnMap;
+			} else {
+				returnMap.put(RETURN_INFO, "validateCodeInvalid");
+				return returnMap;
+			}
+		}
 	}
 
 	/**
@@ -269,15 +326,11 @@ public class UserController {
 		}
 
 		userService.updateUser_OAuth(updateUser);
-
-		// 加入数据库中的user信息为默认的手机号(用户是用第三方登录的，没有设置手机号和密码)
-		// 则将手机号和密码置为空再返回给前端
-		if (user.getCellphone().equals(DEFAULT_CELLPHONE)) {
-			user.setCellphone(null);
-		} 
-		// 密码置为空
-		user.setPassword(null);
-		returnMap.put("user", updateUser);
+		
+		returnMap.put("userID", updateUser.getUserID());
+		returnMap.put("openID_qq", updateUser.getOpenID_qq());
+		returnMap.put("openID_wx", updateUser.getOpenID_wx());
+		returnMap.put("openID_wb", updateUser.getOpenID_wb());
 		return returnMap;
 	}
 
@@ -307,11 +360,10 @@ public class UserController {
 		User user = userService.getUser(userID);
 		user.setUserIcon("userIcons\\" + newFileName);
 		userService.updateUser(user);
-		// 密码置为空
-		user.setPassword(null);
 		
 		returnMap.put(RETURN_INFO, returnInfo);
-		returnMap.put("user", user);
+		returnMap.put("userID", userID);
+		returnMap.put("userIcon", user.getUserIcon());
 		return returnMap;
 	}
 }

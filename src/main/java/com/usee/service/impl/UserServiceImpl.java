@@ -16,8 +16,8 @@ import com.usee.utils.UUIDGeneratorUtil;
 public class UserServiceImpl implements UserService {
 	private String default_nickname;
 	private static final String DEFAULT_USERICON = "randomIcons\\default_usericon.png";
-	private static final String DEFAULT_CELLPHONE = "usee";
-	private String default_password;
+//	private static final String DEFAULT_CELLPHONE = "<dbnull>";
+//	private String default_password;
 	
 	@Resource
 	private UserDao userDao;
@@ -42,7 +42,10 @@ public class UserServiceImpl implements UserService {
 
 
 	public void addUser(User user) {
-		user.setUserID(UUIDGeneratorUtil.getUUID());
+		// 得到之前保存的user
+		User addUser = userDao.getUserByCellphone(user.getCellphone());
+		
+		user.setUserID(addUser.getUserID());
 		user.setCreateTime(new Date().getTime() + "");
 		
 		// 设置默认的昵称
@@ -54,22 +57,12 @@ public class UserServiceImpl implements UserService {
 		if(user.getUserIcon() == null) {
 			user.setUserIcon(DEFAULT_USERICON);
 		}
-		// 设置默认的手机号
-		if(user.getCellphone() == null) {
-			user.setCellphone(DEFAULT_CELLPHONE);
-		}
-		// 设置默认的密码
-		if(user.getPassword() == null) {
-			default_password = UUIDGeneratorUtil.getUUID();
-			user.setPassword(default_password);
-		} else {
-			// 密码使用MD5加密
-			String md5Password = MD5Util.getMD5(user.getPassword());
-			user.setPassword(md5Password);
-		}
+
+		// 密码使用MD5加密
+		String md5Password = MD5Util.getMD5(user.getPassword());
+		user.setPassword(md5Password);
 		
 		userDao.addUser(user);
-	
 	}
 
 	/*

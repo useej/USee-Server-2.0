@@ -20,8 +20,9 @@ import com.usee.utils.UUIDGeneratorUtil;
 
 @Service
 public class OAuthLoginServiceImpl implements OAuthLoginService {
-	private static final String DEFAULT_CELLPHONE = "usee";
-	private String default_password;
+	private static final String DEFAULT_CELLPHONE = "<dbnull>";
+	private static final String DEFAULT_PASSWORD = "<dbnull>";
+//	private String default_password;
 	
 	@Resource
 	private UserDao userDao;
@@ -49,8 +50,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
      *   access_token=*************&
      *   oauth_consumer_key=12345&
      *   openid
-     *   
-     * }
+
      * 
      */
 	
@@ -200,10 +200,11 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
 		// 设置默认的手机号
 		user.setCellphone(DEFAULT_CELLPHONE);
 		// 设置默认的密码
-		default_password = UUIDGeneratorUtil.getUUID();
-		user.setPassword(default_password);
+//		default_password = UUIDGeneratorUtil.getUUID();
+//		user.setPassword(default_password);
+		user.setPassword(DEFAULT_PASSWORD);
 		
-		userDao.addUser(user);
+		userDao.addUser_OAuth(user);
 		
 	}
 	

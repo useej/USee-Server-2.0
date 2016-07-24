@@ -29,15 +29,18 @@ public class UserTest {
     private WebApplicationContext wac;
 	private MockMvc mockMvc;     
 	
-	private String signinJson = "{\"cellphone\":\"15150689612\",\"password\":\"123456s\"}";  
+	private String signinJson = "{\"cellphone\":\"15150689612\",\"password\":\"123456s\","
+			+ "\"verificationCode\":\"25BCFCEB637CEC440E22AA7CCFE5FB11\"}";  
 	private String loginJson = "{\"cellphone\":\"15150689613\",\"password\":\"123456s\"}";  
-	private String forgetPasswordJson = "{\"cellphone\":\"15150689613\",\"password\":\"123456\"}"; 
+	private String forgetPasswordJson = "{\"cellphone\":\"15150689612\",\"password\":\"123456\","
+			+ "\"verificationCode\":\"25BCFCEB637CEC440E22AA7CCFE5FB11\"}";  
 	private String modifyPasswordJson = "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC5\","
 			+ "\"oldPassword\":\"123456s\",\"newPassword\":\"1234560\"}";
-	private String updateUserJson = "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC5\",\"password\":\"123456s\","
+	private String updateUserJson = "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC5\","
 			+ "\"gender\":1,\"nickname\":\"liuhuaxin\",\"userIcon\":\"liuhuaxin.jpg\"}"; 
-	private String bindCellphoneJson = "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC5\","
-			+ "\"cellphone\":\"15150689612\",\"password\":\"123456a\"}"; 
+	private String bindCellphoneJson = "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC4\","
+			+ "\"cellphone\":\"15150689614\",\"password\":\"123456a\","
+			+ "\"verificationCode\":\"25BCFCEB637CEC440E22AA7CCFE5FB11\"}";   
 	private String bindOAuthJson =  "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC5\","
 			+ "\"openID_qq\":\"das135da1sf23as\"}"; 
 	
@@ -95,7 +98,7 @@ public class UserTest {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType("application/json;charset=UTF-8"))
 		.andExpect(jsonPath("$.returnInfo").value("success"))
-		.andExpect(jsonPath("$.user.password").value("123456"))
+		.andExpect(jsonPath("$.password").value("123456"))
 		;
 	}
 	
@@ -112,7 +115,7 @@ public class UserTest {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType("application/json;charset=UTF-8"))
 		.andExpect(jsonPath("$.returnInfo").value("success"))
-		.andExpect(jsonPath("$.user.password").value("1234560"))
+		.andExpect(jsonPath("$.password").value("1234560"))
 		;
 	}
 
@@ -128,9 +131,10 @@ public class UserTest {
 			)
 		.andExpect(status().isOk())
 		.andExpect(content().contentType("application/json;charset=UTF-8"))
-		.andExpect(jsonPath("$.user.gender").value(1))
-		.andExpect(jsonPath("$.user.nickname").value("liuhuaxin"))
-		.andExpect(jsonPath("$.user.userIcon").value("liuhuaxin.jpg"))
+		.andExpect(jsonPath("$.userID").value("E53537D4C4294FB88CF8C49C9820ECC5"))
+		.andExpect(jsonPath("$.gender").value(1))
+		.andExpect(jsonPath("$.nickname").value("liuhuaxin"))
+		.andExpect(jsonPath("$.userIcon").value("liuhuaxin.jpg"))
 		;
 	}
 	
@@ -146,8 +150,9 @@ public class UserTest {
 			)
 		.andExpect(status().isOk())
 		.andExpect(content().contentType("application/json;charset=UTF-8"))
-		.andExpect(jsonPath("$.user.cellphone").value("15150689612"))
-		.andExpect(jsonPath("$.user.password").value("123456a"))
+		.andExpect(jsonPath("$.returnInfo").value("success"))
+		.andExpect(jsonPath("$.cellphone").value("15150689614"))
+		.andExpect(jsonPath("$.password").value("123456a"))
 		;
 	}
 	
@@ -163,7 +168,7 @@ public class UserTest {
 			)
 		.andExpect(status().isOk())
 		.andExpect(content().contentType("application/json;charset=UTF-8"))
-		.andExpect(jsonPath("$.user.openID_qq").value("das135da1sf23as"))
+		.andExpect(jsonPath("$.openID_qq").value("das135da1sf23as"))
 		;
 	}
 }

@@ -21,7 +21,7 @@ public class User {
 	@Column(length = 32)
 	private String userID;
 
-	// 用户性别. 1为男性,0为女性
+	// 用户性别. 
 	@Column(length = 2)
 	private int gender;
 
@@ -52,7 +52,13 @@ public class User {
 	
 	@Column(length = 32)
 	private String openID_wb;
+	
+	@Column(length = 32)
+	private String verificationCode;
 
+	@Column(length = 20)
+	private String vcSendTime;
+	
 	public String getUserID() {
 		return userID;
 	}
@@ -133,13 +139,28 @@ public class User {
 		this.createTime = createTime;
 	}
 
+	public String getVerificationCode() {
+		return verificationCode;
+	}
+
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
+
+	public String getVcSendTime() {
+		return vcSendTime;
+	}
+
+	public void setVcSendTime(String vcSendTime) {
+		this.vcSendTime = vcSendTime;
+	}
+
 	@Override
 	public String toString() {
 		return "User [userID=" + userID + ", gender=" + gender + ", nickname=" + nickname + ", userIcon=" + userIcon
 				+ ", cellphone=" + cellphone + ", password=" + password + ", createTime=" + createTime + ", openID_qq="
-				+ openID_qq + ", openID_wx=" + openID_wx + ", openID_wb=" + openID_wb + "]";
+				+ openID_qq + ", openID_wx=" + openID_wx + ", openID_wb=" + openID_wb + ", getVerificationCode=" + verificationCode
+				+ ", vcSendTime=" + vcSendTime + "]";
 	}
-	
-	
 
 }
