@@ -1,56 +1,52 @@
 package com.usee.controller;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import net.sf.json.JSONObject;
+import org.junit.Before;  
+import org.junit.Test;  
+import org.junit.runner.RunWith;  
+import org.springframework.beans.factory.annotation.Autowired;   
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;  
 import org.springframework.test.context.ContextHierarchy;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;  
+import org.springframework.test.context.web.WebAppConfiguration;  
+import org.springframework.test.web.servlet.MockMvc;   
 import org.springframework.transaction.annotation.Transactional;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;  
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*; 
 
-import com.usee.dao.impl.DanmuDaoImp;
-import com.usee.model.Danmu;
+import org.springframework.web.context.WebApplicationContext;  
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-@RunWith(SpringJUnit4ClassRunner.class)    
+@RunWith(SpringJUnit4ClassRunner.class)   
+@WebAppConfiguration(value = "src/main/webapp")  
 @ContextHierarchy({
     @ContextConfiguration(name = "parent", locations = "classpath:spring-common.xml"),
     @ContextConfiguration(name = "child", locations = "classpath:spring-mvc.xml")
 })   
-//开启Rollback，测试完毕后测试数据不会存到数据库
-@TransactionConfiguration(defaultRollback = true)
 @Transactional
 public class SendDanmuTestCase {
+
+	@Autowired  
+    private WebApplicationContext wac;
+	private MockMvc mockMvc;     
 	
-	@Autowired
-	private DanmuDaoImp danmudao;
-
-	@Test
-	public void testSave() {
-		Danmu danmu = new Danmu();
-		
-		danmu.setDevId("testdevice");
-		danmu.setUserId("3");
-		danmu.setStatus("3");
-		danmu.setTopicId("3");
-		danmu.setLon("33.333");
-		danmu.setLat("33.333");
-		danmu.setPraisenum(3);
-		danmu.setDownnum(3);
-		danmu.setCommentnum(0);
-		danmu.setHitnum(3);
-		danmu.setCreate_time("2016-07-12 10:49:53");
-		danmu.setAddress("testaddress");
-		danmu.setDelete_time("");
-		danmu.setHead(1);
-		danmu.setMessages("这是一条测试弹幕");
-		
-		try {
-			danmudao.saveDanmu(danmu);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+	@Before
+	public void setUp() throws Exception {
+		 mockMvc = webAppContextSetup(wac).build();         
 	}
-
+	
+	@Test
+	public void test() throws Exception{
+		String temp = "{\"danmu\":[{\"address\":\"33\",\"commentnum\":0,\"create_time\":\"1\",\"delete_time\":\"1\",\"devId\":\"33\",\"downnum\":3,\"head\":1,\"hitnum\":3,\"id\":1,\"lat\":\"1\",\"lon\":\"1\",\"messages\":\"3333333 \",\"praisenum\":1,\"status\":\"1\",\"topicId\":\"1\",\"userId\":\"866328023315987\"}]}";
+		//JSONObject danmu = new JSONObject(temp);
+		mockMvc.perform((post("/senddanmu").param("danmu", temp))
+			.contentType(MediaType.TEXT_PLAIN)
+			.accept(MediaType.parseMediaType("application/json;charset=UTF-8"))
+			)
+		.andExpect(status().isOk())
+		.andExpect(content().contentType("application/json;charset=UTF-8"))
+		//.andExpect(jsonPath("$.danmudetails.*.receiver").value("866328023315987"))
+		;
+	}
 }

@@ -22,19 +22,18 @@ public class DanmuController {
 		return "getdm";
 	}
 	
-	@RequestMapping(value = "senddanmu", method = RequestMethod.POST, headers="Accept=application/json")
+	@RequestMapping(value = "senddanmu", method = RequestMethod.POST, headers="Accept=text/plain;charset=utf-8", produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public String sendDanmu(@RequestBody Danmu danmu){
-		danmuService.sendDammu(danmu);
-		String danmuDetails = danmuService.getDanmuDetails(danmuService.getLatestDanmiId());
-		return danmuDetails;
+	public Danmu sendDanmu(@RequestBody Danmu newDanmu, @RequestBody boolean isAnnonymous){
+		danmuService.sendDammu(newDanmu, isAnnonymous);
+		Danmu danmu = danmuService.getDanmu(danmuService.getLatestDanmuId());
+		return danmu;
 	}
 	
 	@RequestMapping(value = "getdmbytopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getDanmubyTopic(Model model,String topicId,String pageNum,String pageSize){
 		String danmu = danmuService.getDanmubyTopic(topicId, pageNum, pageSize);
-		//model.addAttribute("danmu", danmu);
 		System.out.println(danmu);
 		return danmu;
 	}
@@ -43,7 +42,6 @@ public class DanmuController {
 	@ResponseBody
 	public String getDanmuDetails(Model model, String danmuId){
 		String danmuDetails = danmuService.getDanmuDetails(danmuId);
-		//model.addAttribute("danmuDetails", danmuDetails);
 		System.out.println(danmuDetails);
 		return danmuDetails;
 	}
