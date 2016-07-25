@@ -1,5 +1,7 @@
 package com.usee.controller;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,26 +24,38 @@ public class DanmuController {
 		return "getdm";
 	}
 	
-	@RequestMapping(value = "senddanmu", method = RequestMethod.POST, headers="Accept=text/plain;charset=utf-8", produces = "application/json;charset=utf-8")
+	@RequestMapping(value = "senddanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public Danmu sendDanmu(@RequestBody Danmu newDanmu, @RequestBody boolean isAnnonymous){
-		danmuService.sendDammu(newDanmu, isAnnonymous);
+	public String sendDanmu(@RequestBody String newDanmu){
+		JSONObject newDanmuJson = new JSONObject().fromObject(newDanmu);
+		danmuService.sendDammu(newDanmuJson);
 		Danmu danmu = danmuService.getDanmu(danmuService.getLatestDanmuId());
-		return danmu;
+		System.out.println(danmu);
+		return danmu.toString();
 	}
 	
 	@RequestMapping(value = "getdmbytopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public String getDanmubyTopic(Model model,String topicId,String pageNum,String pageSize){
-		String danmu = danmuService.getDanmubyTopic(topicId, pageNum, pageSize);
+	public String getDanmubyTopic(@RequestBody String topicInfo){
+		JSONObject topicJsonObject = new JSONObject().fromObject(topicInfo);
+		String pageNum = null;
+		String pageSize = null;
+		if(topicJsonObject.containsKey("pagenum")){
+			pageNum = topicJsonObject.getString("pagenum");
+		}
+		if(topicJsonObject.containsKey("pagesize")){
+			pageSize = topicJsonObject.getString("pagesize");
+		}
+		String danmu = danmuService.getDanmubyTopic(topicJsonObject.getString("topicid"), pageNum, pageSize);
 		System.out.println(danmu);
 		return danmu;
 	}
 	
 	@RequestMapping(value = "getdmdetails", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public String getDanmuDetails(Model model, String danmuId){
-		String danmuDetails = danmuService.getDanmuDetails(danmuId);
+	public String getDanmuDetails(@RequestBody String danmuId){
+		JSONObject danmuJson = new JSONObject().fromObject(danmuId);
+		String danmuDetails = danmuService.getDanmuDetails(danmuJson.getString("danmuid"));
 		System.out.println(danmuDetails);
 		return danmuDetails;
 	}

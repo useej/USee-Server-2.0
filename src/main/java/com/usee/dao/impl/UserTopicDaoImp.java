@@ -26,6 +26,11 @@ public class UserTopicDaoImp {
 	public int getLatestFrequency(){
 		String sql = "SELECT MAX(frequency) FROM user_topic";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
-		return (Integer) query.uniqueResult();
+		if(query.uniqueResult() == null){
+			return 0;
+		}
+		else{
+			return (Integer) query.uniqueResult();
+		}
 	}
 }

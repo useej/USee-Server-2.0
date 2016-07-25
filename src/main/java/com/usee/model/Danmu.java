@@ -185,4 +185,18 @@ public class Danmu {
 		this.userIcon = userIcon;
 	}
 
+	@Override
+	public String toString() {
+		return " {\"id\":" + id + ", \"userId\":\"" + userId
+				+ "\", \"devId\":\"" + devId + "\", \"status\":\"" + status
+				+ "\", \"topicId\":\"" + topicId + "\", \"lon\":\"" + lon
+				+ "\", \"lat\":\"" + lat + "\", \"praisenum\":" + praisenum
+				+ ", \"downnum\":" + downnum + ", \"commentnum\":"
+				+ commentnum + ", \"hitnum\":" + hitnum
+				+ ", \"create_time\":\"" + create_time + "\", \"delete_time\":\""
+				+ delete_time + "\", \"address\":\"" + address + "\", \"head\":"
+				+ head + ", \"messages\":\"" + messages + "\", \"userIcon\":\""
+				+ userIcon + "\"}";
+	}
+
 }
