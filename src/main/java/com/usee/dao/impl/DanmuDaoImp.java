@@ -38,16 +38,6 @@ public class DanmuDaoImp implements DanmuDao {
 	}
 	
 	/**
-	 * 根据UserId获取弹幕TopicID
-	 */
-	public List getDanmubyUserId(String userId){
-		String hql = "select topicId from Danmu where userId =?";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setString(0, userId);
-		return query.list();
-	}
-	
-	/**
 	 * 根据topicId获取弹幕列表
 	 */
 	public List<Danmu> getDanmuList(String topicId) {
@@ -100,5 +90,15 @@ public class DanmuDaoImp implements DanmuDao {
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setInteger(0, danmuId);
 		return query.uniqueResult().toString();
+	}
+		
+	/**
+	 * 根据UserId获取弹幕
+	 */
+	public List getDanmubyUserId(String userId){
+		String hql = "select d.topicId AS topicid from Danmu d where d.userId =?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, userId);
+		return query.list();
 	}
 }

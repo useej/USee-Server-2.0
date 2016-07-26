@@ -188,7 +188,7 @@ public class DanmuServiceImp implements DanmuService{
 		comment.setSender(userId);
 		comment.setReceiver(danmuComment.getString("receiver"));
 		comment.setContent(danmuComment.getString("content"));
-		if(danmuComment.containsKey("reply_commentid")){
+		if(danmuComment.get("reply_commentid") != null){
 			comment.setReplay_commentId(danmuComment.getInt("reply_commentid"));
 		}
 		comment.setType(danmuComment.getInt("type"));
