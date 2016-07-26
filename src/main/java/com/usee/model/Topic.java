@@ -2,8 +2,11 @@ package com.usee.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name="topic")
@@ -12,7 +15,7 @@ public class Topic {
 	@Id
 	@Column(length=32)
 	private String  id;
-	
+
 	@Column(length=10)
 	private String title;
 
@@ -26,7 +29,7 @@ public class Topic {
 	private double lat;
 	
 	@Column(length=3)
-	private int radiu;
+	private int radius;
 
 	@Column(length=20)
 	private String create_time;
@@ -36,7 +39,22 @@ public class Topic {
 	
 	@Column(length=32)
 	private String userID;
+	
+	@Column(length=70)
+	private String poi;
+	
+	@Column(length=10)
+	private int danmuNum;
+	
+	@Column(length=1)
+	private int expired ;
+	
+	@Column(length=5)
+	private String type;
 
+	@Column(length=20)
+	private String delete_time;
+	
 	public String getId() {
 		return id;
 	}
@@ -77,12 +95,12 @@ public class Topic {
 		this.lat = lat;
 	}
 
-	public int getRadiu() {
-		return radiu;
+	public int getRadius() {
+		return radius;
 	}
 
-	public void setRadiu(int radiu) {
-		this.radiu = radiu;
+	public void setRadius(int radius) {
+		this.radius = radius;
 	}
 
 	public String getCreate_time() {
@@ -107,6 +125,46 @@ public class Topic {
 
 	public void setUserID(String userID) {
 		this.userID = userID;
+	}
+
+	public String getPoi() {
+		return poi;
+	}
+
+	public void setPoi(String poi) {
+		this.poi = poi;
+	}
+
+	public int getDanmuNum() {
+		return danmuNum;
+	}
+
+	public void setDanmuNum(int danmuNum) {
+		this.danmuNum = danmuNum;
+	}
+
+	public int getExpired() {
+		return expired;
+	}
+
+	public void setExpired(int expired) {
+		this.expired = expired;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getDelete_time() {
+		return delete_time;
+	}
+
+	public void setDelete_time(String delete_time) {
+		this.delete_time = delete_time;
 	}
 	
 }

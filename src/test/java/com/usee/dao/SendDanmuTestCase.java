@@ -44,7 +44,6 @@ public class SendDanmuTestCase {
 		danmu.setDelete_time("");
 		danmu.setHead(1);
 		danmu.setMessages("这是一条测试弹幕");
-		danmu.setUserIcon("0");
 		
 		try {
 			danmudao.saveDanmu(danmu);
