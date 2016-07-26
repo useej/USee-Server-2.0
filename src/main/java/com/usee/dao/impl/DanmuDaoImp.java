@@ -59,4 +59,13 @@ public class DanmuDaoImp implements DanmuDao {
 		List<Object[]> lobj = query.list();
 		return lobj;
 	}
+	/**
+	 * 根据UserId获取弹幕
+	 */
+	public List getDanmubyUserId(String userId){
+		String hql = "select d.topicID AS topicid from Danmu d where d.userID =?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, userId);
+		return query.list();
+	}
 }

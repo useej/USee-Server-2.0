@@ -16,7 +16,7 @@
 		<property name="url"
 			value="jdbc:mysql://localhost:3306/usee?useUnicode=true&amp;characterEncoding=UTF-8" />
 		<property name="username" value="root" />
-		<property name="password" value="iverson" />
+		<property name="password" value="root" />
 	</bean>
 	
 
@@ -38,6 +38,7 @@
 			<list>
 				<value>com.usee.model.User</value>
 				<value>com.usee.model.Danmu</value>
+				<value>com.usee.model.Topic</value>
 			</list>
 		</property>
 	</bean>

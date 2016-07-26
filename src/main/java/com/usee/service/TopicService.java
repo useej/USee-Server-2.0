@@ -2,6 +2,8 @@ package com.usee.service;
 
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
 import com.usee.model.Topic;
 
 public interface TopicService {
@@ -13,4 +15,8 @@ public interface TopicService {
 	public void addTopic(Topic topic);
 
 	public boolean delTopic(String id);
+	
+	public String getUserTopics(String userID);
+	
+	public String getNearbyTopics (double ux, double uy, int userRadius);
 }

@@ -16,4 +16,6 @@ public interface DanmuDao {
 			int pageSize);
 	
 	public List<Object[]> getDanmuDetails(String danmuId);
+	
+	public List getDanmubyUserId(String userId);
 }

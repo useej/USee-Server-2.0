@@ -7,13 +7,12 @@
         <title>GetDanmu</title>  
     </head>  
     <body>  
-        <form action="getdmbytopic" method="post">
-        	<input type="text" name="topicId" />
-        	<input type="text" name="pageNum" />
-        	<input type="text" name="pageSize" />
+        <form action="getUserTopics" method="post">
+        	<input type="text" name="userId" />
+      
         	<input type="submit" value="提交">
         </form>
-        <c:out value="${danmu}"></c:out> 
+        <c:out value="${topic}"></c:out> 
         
         <form action="getdmdetails" method="post">
         	<input type="text" name="danmuId" />

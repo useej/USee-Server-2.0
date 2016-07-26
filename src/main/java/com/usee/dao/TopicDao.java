@@ -13,5 +13,10 @@ public interface TopicDao {
 	public void addTopic(Topic topic);
 
 	public boolean delTopic(String id);
+	
+	public List getUserTopicsID(String userID);
+	
+	public List getUserTopics(String topicID);
+	
 
 }
