@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.usee.model.Comment;
 import com.usee.model.Danmu;
 import com.usee.service.impl.DanmuServiceImp;
 
@@ -29,9 +30,9 @@ public class DanmuController {
 	public String sendDanmu(@RequestBody String newDanmu){
 		JSONObject newDanmuJson = new JSONObject().fromObject(newDanmu);
 		danmuService.sendDammu(newDanmuJson);
-		Danmu danmu = danmuService.getDanmu(danmuService.getLatestDanmuId());
+		String danmu = danmuService.getDanmu(danmuService.getLatestDanmuId()).toString();
 		System.out.println(danmu);
-		return danmu.toString();
+		return danmu;
 	}
 	
 	@RequestMapping(value = "getdmbytopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
@@ -58,5 +59,14 @@ public class DanmuController {
 		String danmuDetails = danmuService.getDanmuDetails(danmuJson.getString("danmuid"));
 		System.out.println(danmuDetails);
 		return danmuDetails;
+	}
+	
+	@RequestMapping(value = "commentdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String commentDanmu(@RequestBody String danmuComment){
+		JSONObject commentJson = new JSONObject().fromObject(danmuComment);
+		String comment = danmuService.commentDanmu(commentJson).toString();
+		System.out.println(comment);
+		return comment;
 	}
 }

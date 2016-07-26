@@ -36,10 +36,9 @@ public class GetDanmubyUserIdTestCase {
 
 	@Test
 	public void testGetDanmubyUserTest(){
-		String hql = "select topicID from Danmu where userId =?";
+		String hql = "select topicId from Danmu where userId =?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, "3");
-		JSONArray jsonArray = query.list();
-		Assert.assertEquals(list[0], "4");
+		Assert.assertEquals(query.uniqueResult().toString(), "4");
 	}
 }

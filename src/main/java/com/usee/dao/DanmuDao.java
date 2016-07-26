@@ -19,5 +19,7 @@ public interface DanmuDao {
 	
 	public String getLatestDanmuId();
 	
-	public List<Danmu> getDanmubyUserId(String userId);
+	public List getDanmubyUserId(String userId);
+	
+	public String getTopicIdbyDanmuId(int danmuId);
 }

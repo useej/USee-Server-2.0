@@ -9,9 +9,12 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.usee.dao.CommentDao;
+import com.usee.dao.impl.CommentDaoImpl;
 import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.dao.impl.UserDaoImpl;
 import com.usee.dao.impl.UserTopicDaoImp;
+import com.usee.model.Comment;
 import com.usee.model.Danmu;
 import com.usee.model.UserTopic;
 import com.usee.service.DanmuService;
@@ -28,18 +31,21 @@ public class DanmuServiceImp implements DanmuService{
 	private UserTopicDaoImp userTopicDao;
 	@Resource
 	private UserDaoImpl userDao;
+	@Resource
+	private CommentDaoImpl commentDao;
 	
 	public static int MaxRandomNameNumber = 100;
 	public static int MaxRandomIconNumber = 10;
 	
+	public SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public String currentTime = df.format(new Date());
+	
+	public RandomNumber randomNumber = new RandomNumber();
+	public int randomUserIconId = randomNumber.getRandom(1, MaxRandomIconNumber);
+	public int randomUserNameId = randomNumber.getRandom(1, MaxRandomNameNumber);
+	
 	public void sendDammu(JSONObject danmu) {
-		// TODO Auto-generated method stub
 		String userId = danmu.getString("userid");
-		
-		RandomNumber randomNumber = new RandomNumber();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String currentTime = df.format(new Date());
-		int randomUserIconId = randomNumber.getRandom(1, MaxRandomIconNumber);
 		
 		UserTopic userTopic = new UserTopic();
 		userTopic.setUserId(userId);
@@ -49,7 +55,7 @@ public class DanmuServiceImp implements DanmuService{
 		userTopic.setFrequency(userTopicDao.getLatestFrequency() + 1);
 		
 		if(danmu.getBoolean("isannoymous")){
-			userTopic.setRandomNameID(randomNumber.getRandom(1, MaxRandomNameNumber));
+			userTopic.setRandomNameID(randomUserNameId);
 			userTopic.setRandomIconID(randomUserIconId);
 			//userTopic.setUserIcon(randomNumber.getRandom(1, MaxRandomIconNumber) + ".png");
 		}
@@ -152,5 +158,44 @@ public class DanmuServiceImp implements DanmuService{
 	
 	public Danmu getDanmu(String danmuId){
 		return danmudao.getDanmu(danmuId);
+	}
+	
+	public Comment commentDanmu(JSONObject danmuComment){
+		String userId = danmuComment.getString("userid");
+		int danmuId = danmuComment.getInt("danmuid");
+		
+		UserTopic userTopic = new UserTopic();
+		userTopic.setUserId(userId);
+		userTopic.setTopicId(danmudao.getTopicIdbyDanmuId(danmuId));
+		userTopic.setFirstvisit_time(currentTime);
+		userTopic.setLastVisit_time(currentTime);
+		userTopic.setFrequency(userTopicDao.getLatestFrequency() + 1);
+		
+		if(danmuComment.getBoolean("isannoymous")){
+			userTopic.setRandomNameID(randomUserNameId);
+			userTopic.setRandomIconID(randomUserIconId);
+			//userTopic.setUserIcon(randomNumber.getRandom(1, MaxRandomIconNumber) + ".png");
+		}
+		else{
+			userTopic.setRandomNameID(0);
+			userTopic.setRandomIconID(0);
+			userTopic.setUserIcon(userId + ".png");
+		}
+		userTopicDao.saveUserTopic(userTopic);
+		
+		Comment comment = new Comment();
+		comment.setDanmuId(danmuId);
+		comment.setSender(userId);
+		comment.setReceiver(danmuComment.getString("receiver"));
+		comment.setContent(danmuComment.getString("content"));
+		if(danmuComment.containsKey("reply_commentid")){
+			comment.setReplay_commentId(danmuComment.getInt("reply_commentid"));
+		}
+		comment.setType(danmuComment.getInt("type"));
+		comment.setCreate_time(currentTime);
+		
+		commentDao.saveComment(comment);
+		
+		return comment;
 	}
 }

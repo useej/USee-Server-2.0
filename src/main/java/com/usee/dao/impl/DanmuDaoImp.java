@@ -38,10 +38,10 @@ public class DanmuDaoImp implements DanmuDao {
 	}
 	
 	/**
-	 * 根据UserId获取弹幕列表
+	 * 根据UserId获取弹幕TopicID
 	 */
 	public List getDanmubyUserId(String userId){
-		String hql = "from Danmu d where d.userId =?";
+		String hql = "select topicId from Danmu where userId =?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, userId);
 		return query.list();
@@ -89,6 +89,16 @@ public class DanmuDaoImp implements DanmuDao {
 	public String getLatestDanmuId(){
 		String sql = "SELECT MAX(id) FROM danmu";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		return query.uniqueResult().toString();
+	}
+	
+	/**
+	 * 根据danmuId获取topicId
+	 */
+	public String getTopicIdbyDanmuId(int danmuId){
+		String hql = "select topicId from Danmu d where d.id = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setInteger(0, danmuId);
 		return query.uniqueResult().toString();
 	}
 }

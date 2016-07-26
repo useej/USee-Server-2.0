@@ -1,5 +1,7 @@
 package com.usee.dao;
 
+import java.util.List;
+
 import com.usee.model.UserTopic;
 
 public interface UserTopicDao {
@@ -9,4 +11,5 @@ public interface UserTopicDao {
 	
 	public int getLatestFrequency();
 	
+	public List<UserTopic> getUserTopicbyUserId(String userId);
 }

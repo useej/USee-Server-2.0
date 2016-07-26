@@ -1,5 +1,7 @@
 package com.usee.dao.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.hibernate.Query;
@@ -18,10 +20,12 @@ public class UserTopicDaoImp {
 		sessionFactory.getCurrentSession().save(userTopic);
 	}
 	
-//	public void updateUserTopic(String userId, String lastVisit_time, int frequency, String userIcon){
-//		String sql = "UPDATE user_topic SET lastVisit_time = '" + lastVisit_time + "', frequency = " + frequency + ", userIcon = '" + userIcon + " WHERE userID = '" + userId + "'";
-//		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
-//	}
+	public List<UserTopic> getUserTopicbyUserId(String userId){
+		String hql = "from UserTopic ut where ut.userId = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, userId);
+		return query.list();
+	}
 	
 	public int getLatestFrequency(){
 		String sql = "SELECT MAX(frequency) FROM user_topic";
