@@ -2,7 +2,9 @@ package com.usee.service.impl;
 
 import org.springframework.stereotype.Service;
 
-@Service
-public class UserTopicServiceImpl {
+import com.usee.service.UserTopicService;
 
+@Service
+public class UserTopicServiceImpl implements UserTopicService{
+	
 }

@@ -8,16 +8,16 @@ public interface DanmuDao {
 
 	public void saveDanmu(Danmu danmu);
 	
-	public Danmu getDanmu(String danmuId);
+	public Danmu getDanmu(int id);
 
 	public List<Danmu> getDanmuList(String topicId);
 	
 	public List<Danmu> getDanmuList(String topicId, int pageNum,
 			int pageSize);
 	
-	public List<Object[]> getDanmuDetails(String danmuId);
+	//public List<Object[]> getDanmuDetails(int danmuId);
 	
-	public String getLatestDanmuId();
+	public int getLatestDanmuId();
 	
 	public List getDanmubyUserId(String userId);
 	

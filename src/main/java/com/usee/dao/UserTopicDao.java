@@ -7,9 +7,13 @@ import com.usee.model.UserTopic;
 public interface UserTopicDao {
 	public void saveUserTopic(UserTopic userTopic);
 	
-	public void updateUserTopic(String lastVisit_time, String frequency);
+	public UserTopic getUserTopic(int id);
 	
 	public int getLatestFrequency();
 	
+	public void updateUserTopic(String userId, String topicId ,int randomIconId, int randomNameId, String lastVisitTime, int frequency, String userIcon);
+	
 	public List<UserTopic> getUserTopicbyUserId(String userId);
+	
+	public UserTopic checkUserTopic(String userId, String topicId);
 }
