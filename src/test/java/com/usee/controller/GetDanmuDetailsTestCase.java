@@ -37,13 +37,13 @@ public class GetDanmuDetailsTestCase {
 	
 	@Test
 	public void test() throws Exception{
-		mockMvc.perform((post("/getdmdetails").param("danmuId", "11"))
+		mockMvc.perform((post("/getdmdetails").param("danmuId", "{\"danmuid\":2}"))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.parseMediaType("application/json;charset=UTF-8"))
 			)
 		.andExpect(status().isOk())
 		.andExpect(content().contentType("application/json;charset=UTF-8"))
-		.andExpect(jsonPath("$.danmudetails.*.receiver").value("866328023315987"))
+		//.andExpect(jsonPath("$.danmudetails.*.receiver").value("866328023315987"))
         //.andExpect(jsonPath("$.danmudetails.*.receiver").doesNotExist())
 		;
 	}

@@ -24,8 +24,8 @@ public class Comment {
 	private String receiver;
 	@Column
 	private String content;
-	@Column
-	private int reply_commentId;
+	@Column(nullable = true)
+	private Integer reply_commentId;
 	@Column
 	private int type;
 	@Column
@@ -61,12 +61,22 @@ public class Comment {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public int getReplay_commentId() {
-		return reply_commentId;
-	}
-	public void setReplay_commentId(int replay_commentId) {
-		this.reply_commentId = replay_commentId;
-	}
+//	public int getReply_commentId() {
+//		if((Integer)reply_commentId == null){
+//			return 0;
+//		}
+//		else {
+//			return reply_commentId;
+//		}
+//	}
+//	public void setReply_commentId(Integer reply_commentId) {
+//		if(reply_commentId != null){
+//			this.reply_commentId = reply_commentId;
+//		}
+//		else {
+//			this.reply_commentId = 0;
+//		}
+//	}
 	public int getType() {
 		return type;
 	}
@@ -79,6 +89,12 @@ public class Comment {
 	public void setCreate_time(String create_time) {
 		this.create_time = create_time;
 	}
+	public Integer getReply_commentId() {
+		return reply_commentId;
+	}
+	public void setReply_commentId(Integer reply_commentId) {
+		this.reply_commentId = reply_commentId;
+	}
 	
 	@Override
 	public String toString() {
@@ -86,7 +102,7 @@ public class Comment {
 				+ ", \"sender\":\"" + sender + "\", \"receiver\":\"" + receiver
 				+ "\", \"content\":\"" + content + "\", \"replay_commentId\":"
 				+ reply_commentId + ", \"type\":" + type
-				+ ", \"create_time\":\"" + create_time + "}";
+				+ ", \"create_time\":\"" + create_time + "\"}";
 	}
 	
 }

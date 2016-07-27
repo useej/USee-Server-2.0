@@ -9,13 +9,13 @@ public interface DanmuService {
 
 	public void sendDammu(JSONObject danmu);
 
-	public String getDanmuDetails(String danmuId);
+	public String getDanmuDetails(int danmuId);
 
 	public String getDanmubyTopic(String topicId, String pageNum, String pageSize);
 	
-	public String getLatestDanmuId();
+	public int getLatestDanmuId();
 	
-	public Danmu getDanmu(String danmuId);
+	public Danmu getDanmu(int danmuId);
 	
 	public Comment commentDanmu(JSONObject danmuComment);
 }

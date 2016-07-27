@@ -38,7 +38,7 @@ public class DanmuServiceTestCase {
 	
 	@Test
 	public void getDanmuDetailsTest(){
-		String danmuId = "1";
+		int danmuId = 1;
 		String result = danmuServiceImp.getDanmuDetails(danmuId);
 		Assert.assertEquals(expectedDanmuDetails, result);
 	}

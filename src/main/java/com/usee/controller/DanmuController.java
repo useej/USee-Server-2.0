@@ -56,7 +56,7 @@ public class DanmuController {
 	@ResponseBody
 	public String getDanmuDetails(@RequestBody String danmuId){
 		JSONObject danmuJson = new JSONObject().fromObject(danmuId);
-		String danmuDetails = danmuService.getDanmuDetails(danmuJson.getString("danmuid"));
+		String danmuDetails = danmuService.getDanmuDetails(danmuJson.getInt("danmuid"));
 		System.out.println(danmuDetails);
 		return danmuDetails;
 	}
