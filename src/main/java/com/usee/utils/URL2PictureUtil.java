@@ -19,7 +19,7 @@ public class URL2PictureUtil {
 	private static final String SUFFIX = ".jpg";
 	
 
-	public static void download(String urlString, String fileName, String fileRootDir) {
+	public static String download(String urlString, String fileName, String fileRootDir) {
 
 		File file = new File(fileRootDir + FILEDIR);
 		if (!file.exists() && !file.isDirectory())
@@ -54,6 +54,7 @@ public class URL2PictureUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return "userIcons/" + fileName + "SUFFIX";
 	}
 
 }

@@ -25,6 +25,7 @@ import com.usee.service.UserService;
 @RequestMapping("/oauthlogin")
 public class OAuthLoginController {
 	private static final String DEFAULT_CELLPHONE = "<dbnull>";
+	private static final String USERICON_PREFIX = "http://114.215.209.102/USee/";
 	
 	@Autowired
 	private OAuthLoginService oauthLoginService;
@@ -65,6 +66,7 @@ public class OAuthLoginController {
 				user.setCellphone(null);
 				user.setPassword(null);
 			}
+			user.setUserIcon(USERICON_PREFIX + user.getUserIcon());
 			map.put("user", user);
 		} else {
 			map.put("firstLogin", 0);
@@ -72,8 +74,11 @@ public class OAuthLoginController {
 				validateUser.setCellphone(null);
 			}
 			validateUser.setPassword(null);
+			validateUser.setUserIcon(USERICON_PREFIX + validateUser.getUserIcon());
 			map.put("user", validateUser);
 		}
+		
+		System.out.println(user);
 		return map;
 	}
 
@@ -101,6 +106,7 @@ public class OAuthLoginController {
 		User user = oauthLoginService.handleQQUserInfo(access_token, openid, 
 				request.getSession().getServletContext().getRealPath("/"));
 		
+		user.setUserIcon(USERICON_PREFIX + user.getUserIcon());
 		return user;
 	}
 	
@@ -128,6 +134,7 @@ public class OAuthLoginController {
 		User user = oauthLoginService.handleWeiboUserInfo(access_token, uid, 
 				request.getSession().getServletContext().getRealPath("/"));
 		
+		user.setUserIcon(USERICON_PREFIX + user.getUserIcon());
         return user;
 	}
 	
@@ -156,6 +163,7 @@ public class OAuthLoginController {
 		User user = oauthLoginService.handleWeinxinUserInfo(access_token, openid, 
 				request.getSession().getServletContext().getRealPath("/"));
 		
+		user.setUserIcon(USERICON_PREFIX + user.getUserIcon());
 	    return user;
 	}
 

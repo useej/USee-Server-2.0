@@ -85,7 +85,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
         
         //将QQ头像保存到图片服务器
         URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
-		
+		user.setUserIcon("userIcons/" + user.getUserID() + ".jpg");
         //将用户信息储存到数据库中
         userDao.addUser(user);
         
@@ -135,6 +135,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
         
         //将微博头像保存到图片服务器
         URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
+		user.setUserIcon("userIcons/" + user.getUserID() + ".jpg");
 		
         //将用户信息储存到数据库中
         userDao.addUser(user);
@@ -183,6 +184,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
         
         //将微信头像保存到图片服务器
         URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
+		user.setUserIcon("userIcons/" + user.getUserID() + ".jpg");
 		
         //将用户信息储存到数据库中
         userDao.addUser(user);
@@ -196,7 +198,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
 		
 		// 将用户头像保存到本地图片服务器
 		URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
-		user.setUserIcon("userIcons\\" + user.getUserID() + ".jpg");
+		user.setUserIcon("userIcons/" + user.getUserID() + ".jpg");
 		// 设置默认的手机号
 		user.setCellphone(DEFAULT_CELLPHONE);
 		// 设置默认的密码

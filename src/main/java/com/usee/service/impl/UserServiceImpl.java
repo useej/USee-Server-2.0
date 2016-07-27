@@ -15,7 +15,7 @@ import com.usee.utils.UUIDGeneratorUtil;
 @Service
 public class UserServiceImpl implements UserService {
 	private String default_nickname;
-	private static final String DEFAULT_USERICON = "randomIcons\\default_usericon.png";
+	private static final String DEFAULT_USERICON = "randomIcons/1.png";
 //	private static final String DEFAULT_CELLPHONE = "<dbnull>";
 //	private String default_password;
 	
