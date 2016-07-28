@@ -3,15 +3,17 @@ package com.usee.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "danmu")
 public class Danmu {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(generator = "danmuGenerator")    
+	@GenericGenerator(name = "danmuGenerator", strategy = "identity")
 	@Column
 	private int id;
 	@Column
@@ -44,6 +46,8 @@ public class Danmu {
 	private int head;
 	@Column
 	private String messages;
+	@Column
+	private String userIcon;
 
 	public int getId() {
 		return id;
@@ -173,8 +177,26 @@ public class Danmu {
 		this.messages = messages;
 	}
 
+	public String getUserIcon() {
+		return userIcon;
+	}
 
+	public void setUserIcon(String userIcon) {
+		this.userIcon = userIcon;
+	}
 
-	
+	@Override
+	public String toString() {
+		return " {\"id\":" + id + ", \"userId\":\"" + userId
+				+ "\", \"devId\":\"" + devId + "\", \"status\":\"" + status
+				+ "\", \"topicId\":\"" + topicId + "\", \"lon\":\"" + lon
+				+ "\", \"lat\":\"" + lat + "\", \"praisenum\":" + praisenum
+				+ ", \"downnum\":" + downnum + ", \"commentnum\":"
+				+ commentnum + ", \"hitnum\":" + hitnum
+				+ ", \"create_time\":\"" + create_time + "\", \"delete_time\":\""
+				+ delete_time + "\", \"address\":\"" + address + "\", \"head\":"
+				+ head + ", \"messages\":\"" + messages + "\", \"userIcon\":\""
+				+ userIcon + "\"}";
+	}
 
 }

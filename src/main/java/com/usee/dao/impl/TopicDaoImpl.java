@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
 import com.usee.dao.TopicDao;
+import com.usee.model.Danmu;
 import com.usee.model.Topic;
 
 @Service
@@ -43,5 +44,21 @@ public class TopicDaoImpl implements TopicDao {
 
 		return (query.executeUpdate() > 0);
 	}
+
+	public List getUserTopicsID(String userID) {
+		// TODO Auto-generated method stub
+		String hql ="select id from Topic where userID=?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, userID);
+  		return query.list();
+	}
+
+	public List getUserTopics(String topicID) {
+		String hql ="from Topic where id=?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, topicID);
+		return query.list();  
+	}
+
 
 }

@@ -6,14 +6,20 @@ import com.usee.model.Danmu;
 
 public interface DanmuDao {
 
-	public void saveDanmu(Danmu message);
+	public void saveDanmu(Danmu danmu);
+	
+	public Danmu getDanmu(int id);
 
 	public List<Danmu> getDanmuList(String topicId);
-
-	public Danmu getDanmu(String messageId);
 	
 	public List<Danmu> getDanmuList(String topicId, int pageNum,
 			int pageSize);
 	
-	public List<Object[]> getDanmuDetails(String danmuId);
+	//public List<Object[]> getDanmuDetails(int danmuId);
+	
+	public int getLatestDanmuId();
+	
+	public List getDanmubyUserId(String userId);
+	
+	public String getTopicIdbyDanmuId(int danmuId);
 }
