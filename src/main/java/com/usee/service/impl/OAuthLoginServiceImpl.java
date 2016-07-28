@@ -22,7 +22,7 @@ import com.usee.utils.UUIDGeneratorUtil;
 public class OAuthLoginServiceImpl implements OAuthLoginService {
 	private static final String DEFAULT_CELLPHONE = "<dbnull>";
 	private static final String DEFAULT_PASSWORD = "<dbnull>";
-//	private String default_password;
+	private static final int DEFAULT_GENDER = 2;	
 	
 	@Resource
 	private UserDao userDao;
@@ -198,9 +198,11 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
 		
 		// 将用户头像保存到本地图片服务器
 		URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
-		user.setUserIcon("userIcons/" + user.getUserID() + ".jpg");
+		user.setUserIcon(user.getUserID() + ".png");
 		// 设置默认的手机号
 		user.setCellphone(DEFAULT_CELLPHONE);
+		// 设置默认的性别
+		user.setGender(DEFAULT_GENDER);
 		// 设置默认的密码
 //		default_password = UUIDGeneratorUtil.getUUID();
 //		user.setPassword(default_password);

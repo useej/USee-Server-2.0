@@ -25,7 +25,7 @@ import com.usee.service.UserService;
 @RequestMapping("/oauthlogin")
 public class OAuthLoginController {
 	private static final String DEFAULT_CELLPHONE = "<dbnull>";
-	private static final String USERICON_PREFIX = "http://114.215.209.102/USee/";
+	//private static final String USERICON_PREFIX = "http://114.215.209.102/USee/";
 	
 	@Autowired
 	private OAuthLoginService oauthLoginService;
@@ -59,22 +59,18 @@ public class OAuthLoginController {
 		// 假如数据库中没有对应的用户信息,则证明用户第一次登录
 		if(validateUser == null) {
 			oauthLoginService.addUser(user, request.getSession().getServletContext().getRealPath("/"));
-			map.put("firstLogin", 1);	
 			// 加入数据库中的user信息为默认的手机号(用户是用第三方登录的，没有设置手机号和密码)
 			// 则将手机号和密码置为空再返回给前端
 			if(user.getCellphone().equals(DEFAULT_CELLPHONE)) {
 				user.setCellphone(null);
 				user.setPassword(null);
 			}
-			user.setUserIcon(USERICON_PREFIX + user.getUserIcon());
 			map.put("user", user);
 		} else {
-			map.put("firstLogin", 0);
 			if(validateUser.getCellphone().equals(DEFAULT_CELLPHONE)) {
 				validateUser.setCellphone(null);
 			}
 			validateUser.setPassword(null);
-			validateUser.setUserIcon(USERICON_PREFIX + validateUser.getUserIcon());
 			map.put("user", validateUser);
 		}
 		
@@ -106,7 +102,6 @@ public class OAuthLoginController {
 		User user = oauthLoginService.handleQQUserInfo(access_token, openid, 
 				request.getSession().getServletContext().getRealPath("/"));
 		
-		user.setUserIcon(USERICON_PREFIX + user.getUserIcon());
 		return user;
 	}
 	
@@ -134,7 +129,6 @@ public class OAuthLoginController {
 		User user = oauthLoginService.handleWeiboUserInfo(access_token, uid, 
 				request.getSession().getServletContext().getRealPath("/"));
 		
-		user.setUserIcon(USERICON_PREFIX + user.getUserIcon());
         return user;
 	}
 	
@@ -163,7 +157,6 @@ public class OAuthLoginController {
 		User user = oauthLoginService.handleWeinxinUserInfo(access_token, openid, 
 				request.getSession().getServletContext().getRealPath("/"));
 		
-		user.setUserIcon(USERICON_PREFIX + user.getUserIcon());
 	    return user;
 	}
 

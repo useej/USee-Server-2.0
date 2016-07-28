@@ -29,7 +29,7 @@ public class UserController {
 	private static final String RETURN_INFO = "returnInfo";
 	private static final String DEFAULT_CELLPHONE = "<dbnull>";
 	private static final String DEFAULT_PASSWORD = "<dbnull>";
-	private static final String USERICON_PREFIX = "http://114.215.209.102/USee/";
+	//private static final String USERICON_PREFIX = "http://114.215.209.102/USee/";
 	private static final long VALIDITY_TIME = 60000;
 
 	@Resource
@@ -83,7 +83,6 @@ public class UserController {
 				System.out.println(user.toString());
 
 				returnMap.put(RETURN_INFO, "success");
-				user.setUserIcon(USERICON_PREFIX + user.getUserIcon());
 				returnMap.put("user", user);
 				return returnMap;
 			} else {
@@ -120,7 +119,6 @@ public class UserController {
 			// 还原密码
 			validateUser.setPassword(user.getPassword());
 			map.put(RETURN_INFO, "success");
-			validateUser.setUserIcon(USERICON_PREFIX + validateUser.getUserIcon());
 			map.put("user", validateUser);
 			System.out.println(validateUser);
 		}
@@ -249,7 +247,6 @@ public class UserController {
 		returnMap.put("userID", user.getUserID());
 		returnMap.put("gender", user.getGender());
 		returnMap.put("nickname", user.getNickname());
-		user.setUserIcon(USERICON_PREFIX + user.getUserIcon());
 		returnMap.put("userIcon", user.getUserIcon());
 		System.out.println(user.toString());
 		return returnMap;
@@ -362,8 +359,7 @@ public class UserController {
 			returnInfo = "success";
 		}
 		User user = userService.getUser(userID);
-		user.setUserIcon("userIcons/" + newFileName);
-		user.setUserIcon(USERICON_PREFIX + user.getUserIcon());
+		user.setUserIcon(newFileName);
 		userService.updateUser(user);
 		
 		returnMap.put(RETURN_INFO, returnInfo);
@@ -371,4 +367,12 @@ public class UserController {
 		returnMap.put("userIcon", user.getUserIcon());
 		return returnMap;
 	}
+	
+//	public static String getUserIcon(String userIcon) {
+//		if(userIcon.length() < 10) {
+//			return USERICON_PREFIX + "randomIcons/" + userIcon;
+//		} else {
+//			return USERICON_PREFIX + "userIcons/" + userIcon;
+//		}
+//	}
 }

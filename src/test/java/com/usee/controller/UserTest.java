@@ -37,7 +37,7 @@ public class UserTest {
 	private String modifyPasswordJson = "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC5\","
 			+ "\"oldPassword\":\"123456s\",\"newPassword\":\"1234560\"}";
 	private String updateUserJson = "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC5\","
-			+ "\"gender\":1,\"nickname\":\"liuhuaxin\",\"userIcon\":\"liuhuaxin.jpg\"}"; 
+			+ "\"gender\":1,\"nickname\":\"liuhuaxin\",\"userIcon\":\"liuhuaxin.png\"}"; 
 	private String bindCellphoneJson = "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC4\","
 			+ "\"cellphone\":\"15150689614\",\"password\":\"123456a\","
 			+ "\"verificationCode\":\"25BCFCEB637CEC440E22AA7CCFE5FB11\"}";   
@@ -64,7 +64,7 @@ public class UserTest {
 		.andExpect(jsonPath("$.returnInfo").value("success"))
 		.andExpect(jsonPath("$.user").exists())
 		.andExpect(jsonPath("$.user.password").value("123456s"))
-		.andExpect(jsonPath("$.user.userIcon").value("randomIcons\\default_usericon.png"))
+		.andExpect(jsonPath("$.user.userIcon").value("1.png"))
 		;
 	}
 	
@@ -134,7 +134,7 @@ public class UserTest {
 		.andExpect(jsonPath("$.userID").value("E53537D4C4294FB88CF8C49C9820ECC5"))
 		.andExpect(jsonPath("$.gender").value(1))
 		.andExpect(jsonPath("$.nickname").value("liuhuaxin"))
-		.andExpect(jsonPath("$.userIcon").value("liuhuaxin.jpg"))
+		.andExpect(jsonPath("$.userIcon").value("liuhuaxin.png"))
 		;
 	}
 	
