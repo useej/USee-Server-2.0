@@ -130,41 +130,50 @@ public class DanmuServiceImp implements DanmuService{
 		
 		Danmu danmu = danmuDao.getDanmu(danmuId);
 		List<Comment> comments = commentDao.getCommentbyDanmuId(danmuId);
+		User danmuSender = userDao.getUser(danmu.getUserId());
 		
 		JSONArray jsonArray_danmu = JSONArray.fromObject(danmu);
-		JSONObject commentsJsonObject = new JSONObject();
+		JSONArray jsonArray_usercomment = new JSONArray();
+//		JSONObject commentsJsonObject = new JSONObject();
 		JSONObject danmuDetails = jsonArray_danmu.getJSONObject(0);
+		danmuDetails.put("nickname", danmuSender.getNickname());
+		danmuDetails.put("gender", danmuSender.getGender());
 
 		for (Comment comment : comments) {
-			User user = userDao.getUser(comment.getSender());
+			User sender = userDao.getUser(comment.getSender());
+			User receiver = userDao.getUser(comment.getReceiver());
 			
 			/*
 			 悄悄话需要后端过滤，获得当前用户的userID 
 				1.	如果没有userID，即匿名使用，type=3的评论都不加载
 				2.	如果有userID，返回sender或者receiver = currentUserID的评论。 
 			*/
-			if(user.getUserID() == null && comment.getType() == 3){
+			if(sender.getUserID() == null && comment.getType() == 3){
 				continue;
 			}
 			
-			if(user.getUserID() != null){
-				if((!comment.getSender().equals(user.getUserID())) && (!comment.getReceiver().equals(user.getUserID()))){
+			if(sender.getUserID() != null){
+				if((!comment.getSender().equals(sender.getUserID())) && (!comment.getReceiver().equals(sender.getUserID()))){
 					continue;
 				}
 			}
 			
 			JSONObject jsonObject_usercomment = new JSONObject();
 			
-			JSONArray jsonArray_user = new JSONArray();
-			JSONArray jsonArray_comment = new JSONArray();
-			
-			jsonArray_user.add(user);
-			jsonArray_comment.add(comment);
-			jsonObject_usercomment.put("user", jsonArray_user);
-			jsonObject_usercomment.put("comment", jsonArray_comment);
+//			JSONObject jsonObject_user = new JSONObject();
+//			JSONObject jsonObject_comment = new JSONObject();
+//			
+//			jsonObject_user.put("user", user);
+//			jsonObject_comment.put("comment", comment);
+			jsonObject_usercomment.put("user", sender);
+			jsonObject_usercomment.put("comment", comment);
+			jsonObject_usercomment.put("replycomment_name", receiver.getNickname());
+			jsonObject_usercomment.put("replycomment_gender", receiver.getGender());
 
-			commentsJsonObject.put("usercomment"+i, jsonObject_usercomment);
-			danmuDetails.put("usercomments", commentsJsonObject);
+			jsonArray_usercomment.add(jsonObject_usercomment);
+			//commentsJsonObject.put("usercomment"+i, jsonObject_usercomment);
+			//danmuDetails.put("usercomments", commentsJsonObject);
+			danmuDetails.put("usercomments", jsonArray_usercomment);
 			
 			i ++;
 		}		
