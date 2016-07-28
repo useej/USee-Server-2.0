@@ -45,7 +45,6 @@ public class TopicDaoImpl implements TopicDao {
 		return (query.executeUpdate() > 0);
 	}
 
-	@Override
 	public List getUserTopicsID(String userID) {
 		// TODO Auto-generated method stub
 		String hql ="select id from Topic where userID=?";
@@ -54,7 +53,6 @@ public class TopicDaoImpl implements TopicDao {
   		return query.list();
 	}
 
-	@Override
 	public List getUserTopics(String topicID) {
 		String hql ="from Topic where id=?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);

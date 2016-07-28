@@ -23,7 +23,6 @@ public class CommentDaoImpl implements CommentDao{
 		session.flush();
 	}
 
-	@Override
 	public Comment getComment(int id) {
 		String hql = "from Comment c where c.id = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
@@ -31,7 +30,6 @@ public class CommentDaoImpl implements CommentDao{
 		return (Comment)query.uniqueResult();
 	}
 
-	@Override
 	public List<Comment> getCommentbyDanmuId(int danmuId) {
 		String hql = "from Comment c where c.danmuId = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
@@ -39,7 +37,6 @@ public class CommentDaoImpl implements CommentDao{
 		return query.list();
 	}
 
-	@Override
 	public List<String> getCommentSenderbyDanmuId(int danmuId) {
 		String hql = "select c.sender from Comment c where c.danmuId = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);

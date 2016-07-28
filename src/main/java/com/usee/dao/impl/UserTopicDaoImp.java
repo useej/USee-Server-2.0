@@ -53,7 +53,6 @@ public class UserTopicDaoImp implements UserTopicDao{
 		}
 	}
 
-	@Override
 	public void updateUserTopic(String userId, String topicId, int randomIconId, int randomNameId,	String lastVisitTime, int frequency, String userIcon) {
 		String hql = "update UserTopic ut set ut.randomIconID = :randomIconId, ut.randomNameID = :randomNameId, " +
 				"ut.lastVisit_time = :lastVisitTime, ut.frequency = :frequency, ut.userIcon = :userIcon where ut.userId = :userId and ut.topicId = :topicId";

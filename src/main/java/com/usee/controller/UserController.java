@@ -29,7 +29,8 @@ public class UserController {
 	private static final String RETURN_INFO = "returnInfo";
 	private static final String DEFAULT_CELLPHONE = "<dbnull>";
 	private static final String DEFAULT_PASSWORD = "<dbnull>";
-	private static final long VALIDITY_TIME = 60000000;
+	//private static final String USERICON_PREFIX = "http://114.215.209.102/USee/";
+	private static final long VALIDITY_TIME = 60000;
 
 	@Resource
 	private UserService userService;
@@ -315,18 +316,36 @@ public class UserController {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 
 		User updateUser = userService.getUser(user.getUserID());
+		
+		User validateUser = null;
 		if (user.getOpenID_qq() != null && !user.getOpenID_qq().equals(updateUser.getOpenID_qq())) {
 			updateUser.setOpenID_qq(user.getOpenID_qq());
+			validateUser = userService.getUserByOpenId("openID_qq", user.getOpenID_qq());
+			if(validateUser != null) {
+				returnMap.put(RETURN_INFO, "exit");
+				return returnMap;
+			}
 		}
 		if (user.getOpenID_wx() != null && !user.getOpenID_wx().equals(updateUser.getOpenID_wx())) {
 			updateUser.setOpenID_wx(user.getOpenID_wx());
+			validateUser = userService.getUserByOpenId("openID_qq", user.getOpenID_qq());
+			if(validateUser != null) {
+				returnMap.put(RETURN_INFO, "exit");
+				return returnMap;
+			}
 		}
 		if (user.getOpenID_wb() != null && !user.getOpenID_wb().equals(updateUser.getOpenID_wb())) {
 			updateUser.setOpenID_wb(user.getOpenID_wb());
+			validateUser = userService.getUserByOpenId("openID_qq", user.getOpenID_qq());
+			if(validateUser != null) {
+				returnMap.put(RETURN_INFO, "exit");
+				return returnMap;
+			}
 		}
 
 		userService.updateUser_OAuth(updateUser);
 		
+		returnMap.put(RETURN_INFO, "success");
 		returnMap.put("userID", updateUser.getUserID());
 		returnMap.put("openID_qq", updateUser.getOpenID_qq());
 		returnMap.put("openID_wx", updateUser.getOpenID_wx());
@@ -358,7 +377,7 @@ public class UserController {
 			returnInfo = "success";
 		}
 		User user = userService.getUser(userID);
-		user.setUserIcon("userIcons\\" + newFileName);
+		user.setUserIcon(newFileName);
 		userService.updateUser(user);
 		
 		returnMap.put(RETURN_INFO, returnInfo);
@@ -366,4 +385,12 @@ public class UserController {
 		returnMap.put("userIcon", user.getUserIcon());
 		return returnMap;
 	}
+	
+//	public static String getUserIcon(String userIcon) {
+//		if(userIcon.length() < 10) {
+//			return USERICON_PREFIX + "randomIcons/" + userIcon;
+//		} else {
+//			return USERICON_PREFIX + "userIcons/" + userIcon;
+//		}
+//	}
 }

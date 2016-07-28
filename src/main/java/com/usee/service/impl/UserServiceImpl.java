@@ -14,10 +14,9 @@ import com.usee.utils.UUIDGeneratorUtil;
 
 @Service
 public class UserServiceImpl implements UserService {
-	private String default_nickname;
-	private static final String DEFAULT_USERICON = "randomIcons\\default_usericon.png";
-//	private static final String DEFAULT_CELLPHONE = "<dbnull>";
-//	private String default_password;
+	private String random_nickname;
+	private static final String DEFAULT_USERICON = "1.png";
+	private static final int DEFAULT_GENDER = 2;
 	
 	@Resource
 	private UserDao userDao;
@@ -50,13 +49,16 @@ public class UserServiceImpl implements UserService {
 		
 		// 设置默认的昵称
 		if(user.getNickname() == null) {
-			default_nickname = UUIDGeneratorUtil.getUUID().substring(0, 10).toLowerCase();
-			user.setNickname(default_nickname);
+			random_nickname = UUIDGeneratorUtil.getUUID().substring(0, 10).toLowerCase();
+			user.setNickname(random_nickname);
 		}
 		// 设置默认的头像
 		if(user.getUserIcon() == null) {
 			user.setUserIcon(DEFAULT_USERICON);
 		}
+		
+		// 设置默认的性别
+		user.setGender(DEFAULT_GENDER);
 
 		// 密码使用MD5加密
 		String md5Password = MD5Util.getMD5(user.getPassword());

@@ -16,10 +16,10 @@ public class URL2PictureUtil {
 	// 定义保存图片的路径
 	private static final String FILEDIR = "\\userIcons\\";
 	// 定义保存图片的后缀
-	private static final String SUFFIX = ".jpg";
+	private static final String SUFFIX = ".png";
 	
 
-	public static void download(String urlString, String fileName, String fileRootDir) {
+	public static String download(String urlString, String fileName, String fileRootDir) {
 
 		File file = new File(fileRootDir + FILEDIR);
 		if (!file.exists() && !file.isDirectory())
@@ -54,6 +54,7 @@ public class URL2PictureUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return fileName + "SUFFIX";
 	}
 
 }
