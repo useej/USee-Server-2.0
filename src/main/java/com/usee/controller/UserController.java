@@ -316,18 +316,36 @@ public class UserController {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 
 		User updateUser = userService.getUser(user.getUserID());
+		
+		User validateUser = null;
 		if (user.getOpenID_qq() != null && !user.getOpenID_qq().equals(updateUser.getOpenID_qq())) {
 			updateUser.setOpenID_qq(user.getOpenID_qq());
+			validateUser = userService.getUserByOpenId("openID_qq", user.getOpenID_qq());
+			if(validateUser != null) {
+				returnMap.put(RETURN_INFO, "exit");
+				return returnMap;
+			}
 		}
 		if (user.getOpenID_wx() != null && !user.getOpenID_wx().equals(updateUser.getOpenID_wx())) {
 			updateUser.setOpenID_wx(user.getOpenID_wx());
+			validateUser = userService.getUserByOpenId("openID_qq", user.getOpenID_qq());
+			if(validateUser != null) {
+				returnMap.put(RETURN_INFO, "exit");
+				return returnMap;
+			}
 		}
 		if (user.getOpenID_wb() != null && !user.getOpenID_wb().equals(updateUser.getOpenID_wb())) {
 			updateUser.setOpenID_wb(user.getOpenID_wb());
+			validateUser = userService.getUserByOpenId("openID_qq", user.getOpenID_qq());
+			if(validateUser != null) {
+				returnMap.put(RETURN_INFO, "exit");
+				return returnMap;
+			}
 		}
 
 		userService.updateUser_OAuth(updateUser);
 		
+		returnMap.put(RETURN_INFO, "success");
 		returnMap.put("userID", updateUser.getUserID());
 		returnMap.put("openID_qq", updateUser.getOpenID_qq());
 		returnMap.put("openID_wx", updateUser.getOpenID_wx());
