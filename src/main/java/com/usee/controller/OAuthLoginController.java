@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usee.model.User;
 import com.usee.service.OAuthLoginService;
 import com.usee.service.UserService;
+import com.usee.utils.Json2ObjectUtil;
 
 /*
  * 第三方登录servlet
@@ -37,9 +39,11 @@ public class OAuthLoginController {
 	 * 安卓用户第三方登录方法 将客户端传输过来的信息存储到数据库中
 	 */
 	@ResponseBody
-	@RequestMapping("/android")
-	public Map<String, Object> androidLoginOAuth(@RequestBody User user, HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<String, Object>();
+	@RequestMapping(value = "android", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public Map<String, Object> androidLoginOAuth(@RequestBody String json, HttpServletRequest request) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		
+		User user = Json2ObjectUtil.getUser(json);
 		
 		String openID_qq = user.getOpenID_qq();
 		String openID_wx = user.getOpenID_wx();
@@ -65,17 +69,17 @@ public class OAuthLoginController {
 				user.setCellphone(null);
 				user.setPassword(null);
 			}
-			map.put("user", user);
+			returnMap.put("user", user);
 		} else {
 			if(validateUser.getCellphone().equals(DEFAULT_CELLPHONE)) {
 				validateUser.setCellphone(null);
 			}
 			validateUser.setPassword(null);
-			map.put("user", validateUser);
+			returnMap.put("user", validateUser);
 		}
 		
 		System.out.println(user);
-		return map;
+		return returnMap;
 	}
 
 

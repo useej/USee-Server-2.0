@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usee.model.User;
 import com.usee.service.UserService;
+import com.usee.utils.Json2ObjectUtil;
 import com.usee.utils.MD5Util;
 
 @Controller
@@ -30,7 +31,7 @@ public class UserController {
 	private static final String DEFAULT_CELLPHONE = "<dbnull>";
 	private static final String DEFAULT_PASSWORD = "<dbnull>";
 	//private static final String USERICON_PREFIX = "http://114.215.209.102/USee/";
-	private static final long VALIDITY_TIME = 60000;
+	private static final long VALIDITY_TIME = 600000;
 
 	@Resource
 	private UserService userService;
@@ -45,9 +46,11 @@ public class UserController {
 	 */
 	@ResponseBody
 	@RequestMapping("/signin")
-	public Map<String, Object> signin(@RequestBody User user) {
+	public Map<String, Object> signin(@RequestBody String json) {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 
+		User user = Json2ObjectUtil.getUser(json);
+		
 		String cellphone = user.getCellphone();
 		// 数据库中对应的手机号的user信息(发送验证码时保存的)
 		User signinUser = userService.getUserByCellphone(cellphone);
@@ -97,9 +100,11 @@ public class UserController {
 	 */
 	@ResponseBody
 	@RequestMapping("/login")
-	public Map<String, Object> login(@RequestBody User user) {
+	public Map<String, Object> login(@RequestBody String json) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
+		User user = Json2ObjectUtil.getUser(json);
+		
 		String cellphone = user.getCellphone();
 		// 如果手机号不准确直接返回错误
 		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE) ||
@@ -134,9 +139,11 @@ public class UserController {
 	 */
 	@ResponseBody
 	@RequestMapping("/forgetpassword")
-	public Map<String, Object> forgetPassword(@RequestBody User user) {
+	public Map<String, Object> forgetPassword(@RequestBody String json) {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 
+		User user = Json2ObjectUtil.getUser(json);
+		
 		String cellphone = user.getCellphone();
 		// 数据库中对应的手机号的user信息
 		User validateUser = userService.getUserByCellphone(cellphone);
@@ -224,8 +231,10 @@ public class UserController {
 	 */
 	@ResponseBody
 	@RequestMapping("/updateuser")
-	public Map<String, Object> updateUser(@RequestBody User updateUser) {
+	public Map<String, Object> updateUser(@RequestBody String json) {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
+		
+		User updateUser = Json2ObjectUtil.getUser(json);
 
 		User user = userService.getUser(updateUser.getUserID());
 		if (updateUser.getGender() != user.getGender()) {
@@ -257,8 +266,10 @@ public class UserController {
 	 */
 	@ResponseBody
 	@RequestMapping("/bindcellphone")
-	public Map<String, Object> bindCellphone(@RequestBody User user) {
+	public Map<String, Object> bindCellphone(@RequestBody String json) {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
+		
+		User user = Json2ObjectUtil.getUser(json);
 		
 		String cellphone = user.getCellphone();
 		
@@ -312,9 +323,11 @@ public class UserController {
 	 */
 	@ResponseBody
 	@RequestMapping("/bindoauth")
-	public Map<String, Object> bindOAuth(@RequestBody User user) {
+	public Map<String, Object> bindOAuth(@RequestBody String json) {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 
+		User user = Json2ObjectUtil.getUser(json);
+		
 		User updateUser = userService.getUser(user.getUserID());
 		
 		User validateUser = null;

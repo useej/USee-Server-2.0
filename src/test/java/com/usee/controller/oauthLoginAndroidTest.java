@@ -29,7 +29,7 @@ public class oauthLoginAndroidTest {
     private WebApplicationContext wac;
 	private MockMvc mockMvc;     
 	
-	private String qq_AndroidJson ="{\"openID_qq\":\"usee_test_openid_qq1\",\"nickname\":\"usee_test\","
+	private String qq_AndroidJson ="{\"openID_qq\":\"usee_test_openid_qq2\",\"nickname\":\"usee_test\","
 			+ "\"userIcon\":\"http://cdnq.duitang.com/uploads/item/201412/27/20141227140012_BV2Bu.jpeg\"}";  
 	
 	@Before
