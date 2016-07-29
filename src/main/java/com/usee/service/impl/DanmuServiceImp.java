@@ -38,15 +38,15 @@ public class DanmuServiceImp implements DanmuService{
 	@Resource
 	private CommentDaoImpl commentDao;
 	
-	public static int MaxRandomNameNumber = 100;
-	public static int MaxRandomIconNumber = 10;
+	public static final int MAX_RANDOM_NAME_NUMBER = 100;
+	public static final int MAX_RANDOM_ICON_NUMBER = 10;
 	
 	public SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	public String currentTime = df.format(new Date());
 	
 	public RandomNumber randomNumber = new RandomNumber();
-	public int randomUserIconId = randomNumber.getRandom(1, MaxRandomIconNumber);
-	public int randomUserNameId = randomNumber.getRandom(1, MaxRandomNameNumber);
+	public int randomUserIconId = randomNumber.getRandom(1, MAX_RANDOM_ICON_NUMBER);
+	public int randomUserNameId = randomNumber.getRandom(1, MAX_RANDOM_NAME_NUMBER);
 	
 	public void sendDammu(JSONObject danmu) {
 		String userId = danmu.getString("userid");
