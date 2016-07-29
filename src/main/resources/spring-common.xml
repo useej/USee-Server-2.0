@@ -16,10 +16,8 @@
 		<property name="url"
 			value="jdbc:mysql://localhost:3306/usee?useUnicode=true&amp;characterEncoding=UTF-8" />
 		<property name="username" value="root" />
-		<property name="password" value="root" />
+		<property name="password" value="iverson" />
 	</bean>
-	
-
      
 	<!-- 配置SessionFactory -->
 	<bean id="sessionFactory"
@@ -33,7 +31,7 @@
 				<prop key="hibernate.format_sql">true</prop>
 			</props>
 		</property>
-		<!-- 注解扫描的包 -->
+		<!-- 注解扫描的包
 		<property name="annotatedClasses">
 			<list>
 				<value>com.usee.model.User</value>
@@ -41,7 +39,10 @@
 				<value>com.usee.model.Topic</value>
 			</list>
 		</property>
+		 -->
+		 <property name="packagesToScan" value="com.usee.model"/>
 	</bean>
+	
 	<!-- 事务管理器 -->
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">

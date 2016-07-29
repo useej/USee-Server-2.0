@@ -14,16 +14,17 @@ import java.net.URLConnection;
 public class URL2PictureUtil {
 	
 	// 定义保存图片的路径
-	private static final String FILEDIR = "F:\\test\\userIcons\\";
+	private static final String FILEDIR = "\\userIcons\\";
 	// 定义保存图片的后缀
-	private static final String SUFFIX = ".jpg";
+	private static final String SUFFIX = ".png";
 	
 
-	public static void download(String urlString, String fileName) {
+	public static String download(String urlString, String fileName, String fileRootDir) {
 
-		File file = new File(FILEDIR);
+		File file = new File(fileRootDir + FILEDIR);
 		if (!file.exists() && !file.isDirectory())
 			file.mkdir();
+		System.out.println(fileRootDir + FILEDIR);
 
 		URL url = null;
 		URLConnection con = null;
@@ -42,7 +43,7 @@ public class URL2PictureUtil {
 			// 读取到的数据长度
 			int len = 0;
 			// 输出的文件流
-			os = new FileOutputStream(FILEDIR + fileName + SUFFIX);
+			os = new FileOutputStream(fileRootDir + FILEDIR + fileName + SUFFIX);
 			// 开始读取
 			while ((len = is.read(bs)) != -1) {
 				os.write(bs, 0, len);
@@ -53,6 +54,7 @@ public class URL2PictureUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return fileName + "SUFFIX";
 	}
 
 }

@@ -21,28 +21,23 @@ import com.usee.service.impl.TopicServiceImpl;
 public class TopicController {
 	@Autowired
 	private TopicServiceImpl topicService;
-	
-	@RequestMapping(value = "topic")
-	public String test(Model model){
-		return "getdm";
-	}
-	
-	@RequestMapping(value = "getUserTopics", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+
+	@RequestMapping(value = "getusertopics", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getUserTopics(@RequestBody String userID){
 		JSONObject userIDJson =  new JSONObject().fromObject(userID);
-		String userTopics = topicService.getUserTopics(userIDJson.getString("userId"));
+		String userTopics = topicService.getUserTopics(userIDJson.getString("userid"));
 		System.out.println(userTopics);
 		return userTopics ;
 	}
 	
-	@RequestMapping(value = "getNearbyTopics", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@RequestMapping(value = "getnearbytopics", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getNearbyTopics(@RequestBody String location ){
 		JSONObject locationJson = new JSONObject().fromObject(location);
-		double ux = (Double) locationJson.get("lon");
-		double uy = (Double) locationJson.get("lon");
-		int userRadius =  (Integer) locationJson.get("radius");
+		double ux = locationJson.getDouble("lon");
+		double uy = locationJson.getDouble("lat");
+		int userRadius = locationJson.getInt("radius");
 		String NearbyTopics = topicService.getNearbyTopics(ux,uy,userRadius);
 		System.out.println(NearbyTopics);
 		return NearbyTopics;

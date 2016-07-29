@@ -53,8 +53,8 @@ public class TopicServiceImpl implements TopicService {
 		List list2 = new ArrayList();
 		List list3 = new ArrayList();
 		List<String> userTopics = new ArrayList();
-		list1 = topicdao.getUserTopicsID("userID");
-		list2 = danmudao.getDanmubyUserId("userID");
+		list1 = topicdao.getUserTopicsID(userID);
+		list2 = danmudao.getDanmubyUserId(userID);
 		/*
 		检查重复
 		 */	
