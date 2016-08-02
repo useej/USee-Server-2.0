@@ -154,7 +154,7 @@ public class DanmuDaoImp implements DanmuDao {
 	@Override
 	public boolean updateUserFavDanmu(Boolean isFav, String userId,
 			int danmuId, String favTime) {
-		String sql = "insert into userfavdanmu values(NULL, :userId, :danmuId, :favTime)";
+		String sql = "insert into userfavdanmu values(NULL, :userId, :danmuId, :favTime, NULL)";
 		String sql2 = "delete from userfavdanmu where userID = :userId and danmuID = :danmuId";
 		Query query = null;
 		if(isFav){
