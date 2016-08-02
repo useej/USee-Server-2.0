@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -365,6 +366,37 @@ public class UserController {
 		returnMap.put("openID_wb", updateUser.getOpenID_wb());
 		return returnMap;
 	}
+	
+	/**
+	 * 解除绑定第三方社交账号
+	 */
+	@ResponseBody
+	@RequestMapping("/unbindoauth")
+	public Map<String, Object> unbindOAuth(@RequestBody String json) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+
+		User user = Json2ObjectUtil.getUser(json);
+		
+		User updateUser = userService.getUser(user.getUserID());
+		
+		if (user.getOpenID_qq() != null && user.getOpenID_qq().equals(updateUser.getOpenID_qq())) {
+			updateUser.setOpenID_qq("");
+		}
+		if (user.getOpenID_wx() != null && user.getOpenID_wx().equals(updateUser.getOpenID_wx())) {
+			updateUser.setOpenID_wx("");
+		}
+		if (user.getOpenID_wb() != null && user.getOpenID_wb().equals(updateUser.getOpenID_wb())) {
+			updateUser.setOpenID_wb("");
+		}
+
+		userService.updateUser_OAuth(updateUser);
+		
+		returnMap.put("userID", updateUser.getUserID());
+		returnMap.put("openID_qq", updateUser.getOpenID_qq());
+		returnMap.put("openID_wx", updateUser.getOpenID_wx());
+		returnMap.put("openID_wb", updateUser.getOpenID_wb());
+		return returnMap;
+	}
 
 	/**
 	 * 上传用户头像
@@ -396,6 +428,21 @@ public class UserController {
 		returnMap.put(RETURN_INFO, returnInfo);
 		returnMap.put("userID", userID);
 		returnMap.put("userIcon", user.getUserIcon());
+		return returnMap;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "getUserInfo", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public Map<String, Object> getUserInfo(@RequestBody String json) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		
+		User user = Json2ObjectUtil.getUser(json);
+		User getUser = userService.getUser(user.getUserID());
+		returnMap.put("userID", getUser.getUserID());
+		returnMap.put("gender", getUser.getGender());
+		returnMap.put("nickname", getUser.getNickname());
+		returnMap.put("userIcon", getUser.getUserIcon());
+		
 		return returnMap;
 	}
 	

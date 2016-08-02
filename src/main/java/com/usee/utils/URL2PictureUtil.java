@@ -59,3 +59,4 @@ public class URL2PictureUtil {
 	}
 
 }
+
