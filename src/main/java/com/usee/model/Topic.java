@@ -11,10 +11,10 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name="topic")
 public class Topic {
-
 	@Id
-	@Column(length=32)
-	private String  id;
+
+	@Column
+	private String id;
 
 	@Column(length=10)
 	private String title;
