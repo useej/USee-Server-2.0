@@ -14,7 +14,7 @@ import java.net.URLConnection;
 public class URL2PictureUtil {
 	
 	// 定义保存图片的路径
-	private static final String FILEDIR = "\\userIcons\\";
+	private static final String FILEDIR = "userIcons";
 	// 定义保存图片的后缀
 	private static final String SUFFIX = ".png";
 	
@@ -43,7 +43,8 @@ public class URL2PictureUtil {
 			// 读取到的数据长度
 			int len = 0;
 			// 输出的文件流
-			os = new FileOutputStream(fileRootDir + FILEDIR + fileName + SUFFIX);
+			File f = new File(file, fileName + SUFFIX);
+			os = new FileOutputStream(f);
 			// 开始读取
 			while ((len = is.read(bs)) != -1) {
 				os.write(bs, 0, len);

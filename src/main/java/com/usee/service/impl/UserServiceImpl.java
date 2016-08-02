@@ -10,11 +10,10 @@ import com.usee.dao.UserDao;
 import com.usee.model.User;
 import com.usee.service.UserService;
 import com.usee.utils.MD5Util;
-import com.usee.utils.UUIDGeneratorUtil;
 
 @Service
 public class UserServiceImpl implements UserService {
-	private String random_nickname;
+	private static final String DEFAULT_NICKNAME = "无名氏";
 	private static final String DEFAULT_USERICON = "1.png";
 	private static final int DEFAULT_GENDER = 2;
 	
@@ -49,8 +48,8 @@ public class UserServiceImpl implements UserService {
 		
 		// 设置默认的昵称
 		if(user.getNickname() == null) {
-			random_nickname = UUIDGeneratorUtil.getUUID().substring(0, 10).toLowerCase();
-			user.setNickname(random_nickname);
+			//random_nickname = UUIDGeneratorUtil.getUUID().substring(0, 10).toLowerCase();
+			user.setNickname(DEFAULT_NICKNAME);
 		}
 		// 设置默认的头像
 		if(user.getUserIcon() == null) {
