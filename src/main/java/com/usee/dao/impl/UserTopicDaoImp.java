@@ -66,4 +66,15 @@ public class UserTopicDaoImp implements UserTopicDao{
 		query.setParameter("userIcon", userIcon);
 		query.executeUpdate();
 	}
+	
+	public void updateUserTopicLVTandFrequency(String userId, String topicId,String lastVisitTime, int frequency) {
+		String hql = "update UserTopic ut set ut.lastVisit_time = :lastVisitTime, ut.frequency = :frequency where ut.userId = :userId and ut.topicId = :topicId";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setParameter("userId", userId);
+		query.setParameter("topicId", topicId);
+		query.setParameter("lastVisitTime", lastVisitTime);
+		query.setParameter("frequency", frequency);
+		query.executeUpdate();
+		
+	}
 }

@@ -16,4 +16,6 @@ public interface UserTopicDao {
 	public List<UserTopic> getUserTopicbyUserId(String userId);
 	
 	public UserTopic checkUserTopic(String userId, String topicId);
+	
+	public void updateUserTopicLVTandFrequency(String userId, String topicId, String lastVisitTime, int frequency);
 }

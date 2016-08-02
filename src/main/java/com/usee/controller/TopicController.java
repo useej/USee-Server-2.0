@@ -42,5 +42,21 @@ public class TopicController {
 		System.out.println(NearbyTopics);
 		return NearbyTopics;
 	}
-
+	
+	@RequestMapping(value = "updateusertopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public void updateUser_topic(@RequestBody String ID){
+		JSONObject IDJson =  new JSONObject().fromObject(ID);
+		topicService.updateUser_topic(IDJson.getString("userid"),IDJson.getString("topicid"));
+	}
+	
+	@RequestMapping(value = "createtopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String sendDanmu(@RequestBody String newTopic){
+		JSONObject newTopicJson = new JSONObject().fromObject(newTopic);
+		topicService.createTopic(newTopicJson);
+		String userTopics = topicService.getUserTopics(newTopicJson.getString("userid"));
+		System.out.println(userTopics);
+		return userTopics;
+	}
 }

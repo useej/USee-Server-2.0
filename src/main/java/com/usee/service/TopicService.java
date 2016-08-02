@@ -19,4 +19,9 @@ public interface TopicService {
 	public String getUserTopics(String userID);
 	
 	public String getNearbyTopics (double ux, double uy, int userRadius);
+	
+	public void updateUser_topic(String userID,String topicID);
+	
+	public void createTopic(JSONObject topic);
+			
 }
