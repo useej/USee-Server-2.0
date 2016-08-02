@@ -18,4 +18,10 @@ public interface DanmuService {
 	public Danmu getDanmu(int danmuId);
 	
 	public Comment commentDanmu(JSONObject danmuComment);
+	
+	public boolean upDanmu(JSONObject jsonObject);
+	
+	public boolean downDanmu(JSONObject jsonObject);
+	
+	public boolean favDanmu(JSONObject jsonObject);
 }

@@ -15,5 +15,5 @@ public interface UserTopicDao {
 	
 	public List<UserTopic> getUserTopicbyUserId(String userId);
 	
-	public UserTopic checkUserTopic(String userId, String topicId);
+	public UserTopic getUniqueUserTopicbyUserIdandTopicId(String userId, String topicId);
 }

@@ -27,7 +27,7 @@ public class UserTopicDaoImp implements UserTopicDao{
 		return (UserTopic) query.list();
 	}
 	
-	public UserTopic checkUserTopic(String userId, String topicId){
+	public UserTopic getUniqueUserTopicbyUserIdandTopicId(String userId, String topicId){
 		String hql = "from UserTopic ut where ut.userId = ? and ut.topicId = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, userId);

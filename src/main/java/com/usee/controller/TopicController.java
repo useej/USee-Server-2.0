@@ -1,6 +1,10 @@
 package com.usee.controller;
 
 
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletRequest;
+
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +47,26 @@ public class TopicController {
 		return NearbyTopics;
 	}
 
+	@RequestMapping(value = "getusericonbytopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String getUserIconbyTopic(@RequestBody String userAndTopicInfo, HttpServletRequest request){
+		JSONObject userAndTopicInfoJson = new JSONObject().fromObject(userAndTopicInfo);
+		String userId = userAndTopicInfoJson.getString("userid");
+		String topicId = userAndTopicInfoJson.getString("topicid");
+
+		JSONObject iconNameJsonObject = topicService.getUserIconbyTopic(userId, topicId);
+		
+		JSONObject userIconjJsonObject = new JSONObject();
+		String userIcon = null;
+		
+		if(iconNameJsonObject.getBoolean("israndom")){
+			userIcon = request.getSession().getServletContext().getRealPath("/") + "randomIcons/" + iconNameJsonObject.getString("iconname");
+		}
+		else {
+			userIcon = request.getSession().getServletContext().getRealPath("/") + "userIcons/" + iconNameJsonObject.getString("iconname");
+		}
+		System.out.println(userIcon);
+		userIconjJsonObject.put("usericon", userIcon);
+		return userIconjJsonObject.toString();
+	}
 }

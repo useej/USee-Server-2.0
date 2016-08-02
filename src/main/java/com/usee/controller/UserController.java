@@ -383,7 +383,7 @@ public class UserController {
 			returnInfo = "fileinexistence";
 		} else {
 			// 获取Web项目的全路径
-			realPath = request.getSession().getServletContext().getRealPath("/") + "userIcons\\";
+			realPath = request.getSession().getServletContext().getRealPath("/") + "userIcons";
 			System.out.println(realPath);
 			newFileName = userID + ".jpg";
 			FileUtils.copyInputStreamToFile(headPhotoFile.getInputStream(), new File(realPath, newFileName));

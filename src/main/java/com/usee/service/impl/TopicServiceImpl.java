@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.usee.dao.TopicDao;
 import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.dao.impl.TopicDaoImpl;
+import com.usee.dao.impl.UserTopicDaoImp;
 import com.usee.model.Topic;
 import com.usee.service.TopicService;
 import com.usee.utils.Distance;
@@ -26,7 +27,10 @@ public class TopicServiceImpl implements TopicService {
 	private TopicDaoImpl topicdao;
 	@Resource
 	private DanmuDaoImp danmudao;
+	@Resource
+	private UserTopicDaoImp userTopicDao;
 	
+	private static final String DEFAULT_USERICON = "1.png";
 	
 	public Topic getTopic(String id) {
 		return topicdao.getTopic(id);
@@ -114,4 +118,20 @@ public class TopicServiceImpl implements TopicService {
 		
 	
 	}
+
+	@Override
+	public JSONObject getUserIconbyTopic(String userId, String topicId) {
+		JSONObject jsonObject= new JSONObject();
+		if(userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId) != null){
+			jsonObject.put("israndom", false);
+			jsonObject.put("iconname", userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId).getUserIcon());
+			return jsonObject;
+		}
+		else {
+			jsonObject.put("israndom", true);
+			jsonObject.put("iconname", DEFAULT_USERICON);
+			return jsonObject;
+		}
+	}
+	
 }
