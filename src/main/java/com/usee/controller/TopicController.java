@@ -69,6 +69,7 @@ public class TopicController {
 		userIconjJsonObject.put("usericon", userIcon);
 		return userIconjJsonObject.toString();
 	}
+
 	
 	@RequestMapping(value = "updateusertopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
