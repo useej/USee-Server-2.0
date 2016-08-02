@@ -21,4 +21,9 @@ public interface TopicService {
 	public String getNearbyTopics (double ux, double uy, int userRadius);
 	
 	public JSONObject getUserIconbyTopic(String userId, String topicId);
+	
+	public void updateUser_topic(String userID,String topicID);
+	
+	public void createTopic(JSONObject topic);
+			
 }
