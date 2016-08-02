@@ -22,4 +22,10 @@ public interface DanmuDao {
 	public List getDanmubyUserId(String userId);
 	
 	public String getTopicIdbyDanmuId(int danmuId);
+	
+	public boolean updateUserUpDanmu(Boolean isUp, String userId, int danmuId, String upTime);
+	
+	public boolean updateUserDownDanmu(Boolean isDown, String userId, int danmuId, String downTime);
+	
+	public boolean updateUserFavDanmu(Boolean isFav, String userId, int danmuId, String favTime);
 }

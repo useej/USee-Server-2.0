@@ -20,11 +20,6 @@ public class DanmuController {
 	@Autowired
 	private DanmuServiceImp danmuService;
 	
-	@RequestMapping(value = "test")
-	public String test(Model model){
-		return "getdm";
-	}
-	
 	@RequestMapping(value = "senddanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String sendDanmu(@RequestBody String newDanmu){
@@ -68,5 +63,35 @@ public class DanmuController {
 		String comment = danmuService.commentDanmu(commentJson).toString();
 		System.out.println(comment);
 		return comment;
+	}
+	
+	@RequestMapping(value = "updanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String upDanmu(@RequestBody String info){
+		JSONObject danmuJson = new JSONObject().fromObject(info);
+		boolean status = danmuService.upDanmu(danmuJson);
+		JSONObject result = new JSONObject();
+		result.put("status", status);
+		return result.toString();
+	}
+	
+	@RequestMapping(value = "downdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String downDanmu(@RequestBody String info){
+		JSONObject danmuJson = new JSONObject().fromObject(info);
+		boolean status = danmuService.downDanmu(danmuJson);
+		JSONObject result = new JSONObject();
+		result.put("status", status);
+		return result.toString();
+	}
+	
+	@RequestMapping(value = "favdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String favDanmu(@RequestBody String info){
+		JSONObject danmuJson = new JSONObject().fromObject(info);
+		boolean status = danmuService.favDanmu(danmuJson);
+		JSONObject result = new JSONObject();
+		result.put("status", status);
+		return result.toString();
 	}
 }

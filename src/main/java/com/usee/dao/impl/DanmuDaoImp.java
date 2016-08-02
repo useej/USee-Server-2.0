@@ -41,7 +41,7 @@ public class DanmuDaoImp implements DanmuDao {
 	 */
 	public List<Danmu> getDanmuList(String topicId) {
 		// TODO Auto-generated method stub
-		String hql = "from Danmu d where d.topicId = ?";
+		String hql = "from Danmu d where d.topicId = ? order by d.create_time desc";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, topicId);
 		return query.list();
@@ -103,4 +103,77 @@ public class DanmuDaoImp implements DanmuDao {
 		query.setString(0, userId);
 		return query.list();
 	}
+
+	@Override
+	public boolean updateUserUpDanmu(Boolean isUp, String userId, int danmuId, String upTime) {
+		String sql = "insert into userupdanmu values(NULL, :userId, :danmuId, :upTime)";
+		String sql2 = "delete from userupdanmu where userID = :userId and danmuID = :danmuId";
+		Query query = null;
+		if(isUp){
+			query = sessionFactory.getCurrentSession().createSQLQuery(sql2);
+		}
+		else {
+			query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		}
+		query.setParameter("userId", userId);
+		query.setParameter("danmuId", danmuId);
+		query.setParameter("upTime", upTime);
+		if(query.executeUpdate() != 0)
+		{
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	@Override
+	public boolean updateUserDownDanmu(Boolean isDown, String userId, int danmuId,
+			String downTime) {
+		String sql = "insert into userdowndanmu values(NULL, :userId, :danmuId, :downTime)";
+		String sql2 = "delete from userdowndanmu where userID = :userId and danmuID = :danmuId";
+		Query query = null;
+		if(isDown){
+			query = sessionFactory.getCurrentSession().createSQLQuery(sql2);
+		}
+		else {
+			query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		}
+		query.setParameter("userId", userId);
+		query.setParameter("danmuId", danmuId);
+		query.setParameter("downTime", downTime);
+		if(query.executeUpdate() != 0)
+		{
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	@Override
+	public boolean updateUserFavDanmu(Boolean isFav, String userId,
+			int danmuId, String favTime) {
+		String sql = "insert into userfavdanmu values(NULL, :userId, :danmuId, :favTime)";
+		String sql2 = "delete from userfavdanmu where userID = :userId and danmuID = :danmuId";
+		Query query = null;
+		if(isFav){
+			query = sessionFactory.getCurrentSession().createSQLQuery(sql2);
+		}
+		else {
+			query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		}
+		query.setParameter("userId", userId);
+		query.setParameter("danmuId", danmuId);
+		query.setParameter("favTime", favTime);
+		if(query.executeUpdate() != 0)
+		{
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
+	
 }
