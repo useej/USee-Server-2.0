@@ -100,7 +100,7 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	/**
-	 * 绑定第三方用户账号
+	 * 解除绑定或者绑定第三方用户账号
 	 */
 	public boolean updateUser_OAuth(User user) {
 		
