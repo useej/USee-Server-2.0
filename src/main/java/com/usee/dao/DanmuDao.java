@@ -28,4 +28,6 @@ public interface DanmuDao {
 	public boolean updateUserDownDanmu(Boolean isDown, String userId, int danmuId, String downTime);
 	
 	public boolean updateUserFavDanmu(Boolean isFav, String userId, int danmuId, String favTime);
+	
+	public void updateUserDanmu(String userId, String danmuId);
 }

@@ -42,7 +42,8 @@ public class TopicController {
 		double ux = locationJson.getDouble("lon");
 		double uy = locationJson.getDouble("lat");
 		int userRadius = locationJson.getInt("radius");
-		String NearbyTopics = topicService.getNearbyTopics(ux,uy,userRadius);
+		String userid = locationJson.getString("userid");
+		String NearbyTopics = topicService.getNearbyTopics(ux,uy,userRadius,userid);
 		System.out.println(NearbyTopics);
 		return NearbyTopics;
 	}
@@ -68,5 +69,32 @@ public class TopicController {
 		System.out.println(userIcon);
 		userIconjJsonObject.put("usericon", userIcon);
 		return userIconjJsonObject.toString();
+	}
+
+	
+	@RequestMapping(value = "updateusertopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public void updateUser_topic(@RequestBody String ID){
+		JSONObject IDJson =  new JSONObject().fromObject(ID);
+		topicService.updateUser_topic(IDJson.getString("userid"),IDJson.getString("topicid"));
+	}
+	
+	@RequestMapping(value = "createtopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String createTopic(@RequestBody String newTopic){
+		JSONObject newTopicJson = new JSONObject().fromObject(newTopic);
+		topicService.createTopic(newTopicJson);
+		String userTopics = topicService.getUserTopics(newTopicJson.getString("userid"));
+		System.out.println(userTopics);
+		return userTopics;
+	}
+	
+	@RequestMapping(value = "searchtopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String searchtopic(@RequestBody String keyword){
+		JSONObject keywordJson =  new JSONObject().fromObject(keyword);
+		String userTopics = topicService.searchTopic(keywordJson.getString("keyword"));
+		System.out.println(userTopics);
+		return userTopics ;
 	}
 }

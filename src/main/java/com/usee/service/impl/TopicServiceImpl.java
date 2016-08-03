@@ -1,6 +1,9 @@
 package com.usee.service.impl;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javassist.bytecode.Descriptor.Iterator;
@@ -17,8 +20,10 @@ import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.dao.impl.TopicDaoImpl;
 import com.usee.dao.impl.UserTopicDaoImp;
 import com.usee.model.Topic;
+import com.usee.model.UserTopic;
 import com.usee.service.TopicService;
 import com.usee.utils.Distance;
+import com.usee.utils.TimeUtil;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -88,7 +93,7 @@ public class TopicServiceImpl implements TopicService {
 	}
 
 
-	public String getNearbyTopics(double ux,double uy,int userRadius) {
+	public String getNearbyTopics(double ux,double uy,int userRadius, String userID) {
 		Distance a= new Distance();
 		List list = new ArrayList();
 		List<Topic> list1 = new ArrayList();
@@ -101,14 +106,27 @@ public class TopicServiceImpl implements TopicService {
 		for(int i=0;i<list1.size();i++){
 		JSONObject tempJsonObject = array.getJSONObject(i);
 		double a1;
+		double a3;
 		double topiclon = (Double) tempJsonObject.get("lon");
 		double topiclat = (Double) tempJsonObject.get("lat");
-		a1=a.GetDistance(ux, uy,topiclon , topiclat);
-		System.out.println(a1);
-			if(a1>userRadius){
+		a1=topiclon-ux;
+		a3=topiclat-uy;
+			if((a1<-0.1||a1>0.1) && (a1<-0.1||a1>0.1)){
 				array1.discard(i-a2);
 				a2=a2+1;
 			}
+		}
+		
+		for(int i=0;i<array1.size();i++){
+			JSONObject tempJsonObject = array1.getJSONObject(i);
+			String topicId=tempJsonObject.getString("id");
+			UserTopic usertopic =  userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userID, topicId);
+			if(usertopic!= null){
+				tempJsonObject.put("isread", true);
+			}
+			else{
+				tempJsonObject.put("isread", false);
+				}
 		}
 		
 	
@@ -134,4 +152,59 @@ public class TopicServiceImpl implements TopicService {
 		}
 	}
 	
+	public void updateUser_topic(String userID, String topicID) {
+		TimeUtil timeutil = new TimeUtil();
+		String lastVisitTime = timeutil.currentTimeStamp;
+		int frequency = userTopicDao.getLatestFrequency() + 1;
+		userTopicDao.updateUserTopicLVTandFrequency(userID,topicID,lastVisitTime,frequency);
+		
+	}
+
+
+	public void createTopic(JSONObject topic){
+		TimeUtil timeutil = new TimeUtil();
+		String currentTime = timeutil.currentTimeStamp;
+		String title = topic.getString("title");
+		String description = topic.getString("description");
+		int radius = topic.getInt("radius");
+		Double lon = topic.getDouble("lon");
+		Double lat = topic.getDouble("lat");
+		String userid = topic.getString("userid");
+		
+		List list = new ArrayList();
+		list=topicdao.getAllTopicId();
+		int max=0;
+		for(int i=0;i<list.size();i++){
+		int	a = Integer.valueOf((String) list.get(i));
+		if(a>max){
+			max=a;		
+			}
+		}
+		max++;
+		String newid = String.valueOf(max);
+		Topic newtopic = new Topic();
+		newtopic.setId(newid);
+		newtopic.setTitle(title);
+		newtopic.setDescription(description);
+		newtopic.setRadius(radius);
+		newtopic.setLon(lon);
+		newtopic.setLat(lat);
+		newtopic.setUserID(userid);
+		newtopic.setPoi(null);
+		newtopic.setCreate_time(currentTime);
+		topicdao.addTopic(newtopic);
+	}
+
+
+	@Override
+	public String searchTopic(String keyword) {
+		List list1 = new ArrayList();
+		List<String> userTopics = new ArrayList();
+		list1 = topicdao.searchTopic(keyword);
+		
+		 JSONArray array = JSONArray.fromObject(list1);
+		 JSONObject object = new JSONObject();
+			object.put("topic", array.toString());
+			return object.toString();
+	}
 }

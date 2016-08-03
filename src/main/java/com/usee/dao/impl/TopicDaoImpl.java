@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,9 @@ public class TopicDaoImpl implements TopicDao {
 	}
 
 	public void addTopic(Topic topic) {
-		sessionFactory.getCurrentSession().save(topic);
+		Session session = sessionFactory.getCurrentSession();
+		session.save(topic);
+		session.flush();
 	}
 
 	public boolean delTopic(String id) {
@@ -53,6 +56,15 @@ public class TopicDaoImpl implements TopicDao {
   		return query.list();
 	}
 
+	/**
+	 * 获取所有弹幕的Id
+	 */
+	public List getAllTopicId(){
+		String hql ="select id from Topic order by lastDanmu_time desc";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(hql);
+		return query.list();
+	}
+	
 	public List getUserTopics(String topicID) {
 		String hql ="from Topic where id=?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
@@ -60,5 +72,17 @@ public class TopicDaoImpl implements TopicDao {
 		return query.list();  
 	}
 
+	
+	public void updateUser_topic(String userID, String topicID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List searchTopic(String keyword) {
+		String hql="from Topic  where title like '%"+keyword+"%'";  
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return query.list();  
+	}
 
 }

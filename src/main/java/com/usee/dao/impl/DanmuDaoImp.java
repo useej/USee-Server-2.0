@@ -174,6 +174,12 @@ public class DanmuDaoImp implements DanmuDao {
 			return false;
 		}
 	}
+
+	@Override
+	public void updateUserDanmu(String userId, String danmuId) {
+		
+		
+	}
 	
 	
 }
