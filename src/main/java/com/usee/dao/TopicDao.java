@@ -21,4 +21,6 @@ public interface TopicDao {
 	public List getAllTopicId();
 	
 	public void updateUser_topic(String userID,String topicID);
+	
+	public List searchTopic(String keyword);
 }

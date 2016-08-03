@@ -20,6 +20,7 @@ import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.dao.impl.TopicDaoImpl;
 import com.usee.dao.impl.UserTopicDaoImp;
 import com.usee.model.Topic;
+import com.usee.model.UserTopic;
 import com.usee.service.TopicService;
 import com.usee.utils.Distance;
 import com.usee.utils.TimeUtil;
@@ -91,9 +92,9 @@ public class TopicServiceImpl implements TopicService {
 	}
 
 
-	public String getNearbyTopics(double ux,double uy,int userRadius) {
+	public String getNearbyTopics(double ux,double uy,int userRadius, String userID) {
 		Distance a= new Distance();
-		List<Topic> list = new ArrayList();
+		List list = new ArrayList();
 		List<Topic> list1 = new ArrayList();
 		list1 = topicdao.getAllTopic();
 		JSONArray array = JSONArray.fromObject(list1);
@@ -114,20 +115,20 @@ public class TopicServiceImpl implements TopicService {
 				a2=a2+1;
 			}
 		}
-//		for(int i=0;i<array1.size();i++){
-//			JSONObject tempJsonObject = array1.getJSONObject(i);
-//			for(int j = i + 1; j < array1.size(); j++){
-//			int b;
-//			int c;
-//			JSONObject temp1JsonObject = array1.getJSONObject(j);
-//			b=Integer.parseInt((String) tempJsonObject.get("lastDanmu_time"));
-//			c=Integer.parseInt((String) temp1JsonObject.get("lastDanmu_time"));
-//			if(b>c){
-//				
-//			}
-//			}
-//		}
 		
+		for(int i=0;i<array1.size();i++){
+			JSONObject tempJsonObject = array1.getJSONObject(i);
+			String topicId=tempJsonObject.getString("id");
+			UserTopic usertopic =  userTopicDao.checkUserTopic(userID, topicId);
+			if(usertopic!= null){
+				tempJsonObject.put("isread", true);
+			}
+			else{
+				tempJsonObject.put("isread", false);
+				}
+		}
+		
+	
 			object.put("topic", array1.toString());
 			
 			return object.toString();
@@ -176,5 +177,18 @@ public class TopicServiceImpl implements TopicService {
 		newtopic.setPoi(null);
 		newtopic.setCreate_time(currentTime);
 		topicdao.addTopic(newtopic);
+	}
+
+
+	@Override
+	public String searchTopic(String keyword) {
+		List list1 = new ArrayList();
+		List<String> userTopics = new ArrayList();
+		list1 = topicdao.searchTopic(keyword);
+		
+		 JSONArray array = JSONArray.fromObject(list1);
+		 JSONObject object = new JSONObject();
+			object.put("topic", array.toString());
+			return object.toString();
 	}
 }
