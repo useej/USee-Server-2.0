@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usee.service.CellphoneValidateService;
+import com.usee.service.SqlInjectService;
 import com.usee.utils.MD5Util;
 
 @Controller
@@ -23,6 +24,9 @@ public class CellphoneValidateController {
 
 	@Autowired
 	CellphoneValidateService cellphoneValidateService;
+	
+	@Autowired
+	private SqlInjectService sqlInjectService;
 
 	private static final String RETURN_INFO = "returnInfo";
 	private static final String VERIFICATION_CODE = "verificationCode";
@@ -36,8 +40,12 @@ public class CellphoneValidateController {
 
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, String> map = new HashMap<String, String>();
+		
+		// 防注入
+		String handJson = sqlInjectService.SqlInjectHandle(cellphoneJson);
+		
 		try {
-			map = mapper.readValue(cellphoneJson, new TypeReference<Map<String, String>>() {
+			map = mapper.readValue(handJson, new TypeReference<Map<String, String>>() {
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -72,8 +80,12 @@ public class CellphoneValidateController {
 
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, String> map = new HashMap<String, String>();
+		
+		// 防注入
+		String handJson = sqlInjectService.SqlInjectHandle(cellphoneJson);
+		
 		try {
-			map = mapper.readValue(cellphoneJson, new TypeReference<Map<String, String>>() {
+			map = mapper.readValue(handJson, new TypeReference<Map<String, String>>() {
 			});
 		} catch (IOException e) {
 			e.printStackTrace();

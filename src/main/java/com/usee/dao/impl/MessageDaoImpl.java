@@ -29,10 +29,6 @@ public class MessageDaoImpl implements MessageDao {
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, userID);
 		query.setString(1, latestReadTime);
-		List<Comment> list = query.list();
-		for (Comment comment : list) {
-			System.out.println(comment);
-		}
 		return query.list();
 	}
 
