@@ -1,20 +1,23 @@
 package com.usee.controller; 
 
-import org.junit.Before;  
-import org.junit.Test;  
-import org.junit.runner.RunWith;  
-import org.springframework.beans.factory.annotation.Autowired;   
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;  
-import org.springframework.test.context.ContextHierarchy;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;  
-import org.springframework.test.context.web.WebAppConfiguration;  
-import org.springframework.test.web.servlet.MockMvc;   
-import org.springframework.transaction.annotation.Transactional;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;  
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*; 
-import org.springframework.web.context.WebApplicationContext;  
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)   
 @WebAppConfiguration(value = "src/main/webapp")  
@@ -29,15 +32,15 @@ public class UserTest {
     private WebApplicationContext wac;
 	private MockMvc mockMvc;     
 	
-	private String signinJson = "{\"cellphone\":\"15150689612\",\"password\":\"123456s\","
+	private String signinJson = "{\"cellphone\":\"15150689613select ;\",\"password\":\"123456sselect ;\","
 			+ "\"verificationCode\":\"25BCFCEB637CEC440E22AA7CCFE5FB11\"}";  
-	private String loginJson = "{\"cellphone\":\"15150689613\",\"password\":\"123456s\"}";  
-	private String forgetPasswordJson = "{\"cellphone\":\"15150689612\",\"password\":\"123456\","
+	private String loginJson = "{\"cellphone\":\"15150689613select ;\",\"password\":\"123456sselect ;\"}";  
+	private String forgetPasswordJson = "{\"cellphone\":\"15150689612select ;\",\"password\":\"123456select ;\","
 			+ "\"verificationCode\":\"25BCFCEB637CEC440E22AA7CCFE5FB11\"}";  
 	private String modifyPasswordJson = "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC5\","
-			+ "\"oldPassword\":\"123456s\",\"newPassword\":\"1234560\"}";
+			+ "\"oldPassword\":\"123456sselect ;\",\"newPassword\":\"1234560select ;\"}";
 	private String updateUserJson = "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC5\","
-			+ "\"gender\":1,\"nickname\":\"liuhuaxin\",\"userIcon\":\"liuhuaxin.png\"}"; 
+			+ "\"gender\":1,\"nickname\":\"liuhuaxinselect ;\",\"userIcon\":\"liuhuaxin.pngselect ;\"}"; 
 	private String bindCellphoneJson = "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC4\","
 			+ "\"cellphone\":\"15150689614\",\"password\":\"123456a\","
 			+ "\"verificationCode\":\"25BCFCEB637CEC440E22AA7CCFE5FB11\"}";   
@@ -171,4 +174,5 @@ public class UserTest {
 		.andExpect(jsonPath("$.openID_qq").value("das135da1sf23as"))
 		;
 	}
+	
 }

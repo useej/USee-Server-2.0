@@ -32,8 +32,8 @@ public class MessageTest {
 	private String getNewMsgsNumJson = "{\"userID\":\"866328023315987\","
 			+ "\"latestReadTime\":\"2016-07-27 17:49:10\"}"; 
 	
-	private String getNewMsgsJson = "{\"userID\":\"866328023315987\","
-			+ "\"latestReadTime\":\"1469612947\"}"; 
+	private String getNewMsgsJson = "{\"userID\":\"866328023315987select ;\","
+			+ "\"latestReadTime\":\"1469612947select ;\"}"; 
 	
 	private String getallMsgsJson = "{\"userID\":\"866328023315987\"}"; 
 	

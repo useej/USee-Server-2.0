@@ -15,6 +15,15 @@
 	<!-- 注解扫描的包 -->
 	<context:component-scan base-package="com.usee" />
 	
+	<!-- 拦截器 -->
+	<!-- 
+		<mvc:interceptors>
+		  <mvc:interceptor>
+		    <mvc:mapping path="/**"/>
+		    <bean class="com.usee.interceptor.SqlInjectInterceptor"/>
+		  </mvc:interceptor>
+		</mvc:interceptors>
+	 -->
      
 	<!-- 静态资源访问，方案1 -->
 	<!-- 
