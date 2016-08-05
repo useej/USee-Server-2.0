@@ -161,7 +161,7 @@ public class TopicServiceImpl implements TopicService {
 	}
 
 
-	public void createTopic(JSONObject topic){
+	public String createTopic(JSONObject topic){
 		TimeUtil timeutil = new TimeUtil();
 		String currentTime = timeutil.currentTimeStamp;
 		String title = topic.getString("title");
@@ -193,6 +193,8 @@ public class TopicServiceImpl implements TopicService {
 		newtopic.setPoi(null);
 		newtopic.setCreate_time(currentTime);
 		topicdao.addTopic(newtopic);
+		
+		return newid;
 	}
 
 

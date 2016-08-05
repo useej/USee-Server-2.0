@@ -9,7 +9,7 @@ public interface DanmuService {
 
 	public void sendDammu(JSONObject danmu);
 
-	public String getDanmuDetails(int danmuId);
+	public String getDanmuDetails(int danmuId, String currentUserId);
 
 	public String getDanmubyTopic(String topicId, String pageNum, String pageSize);
 	
@@ -24,4 +24,10 @@ public interface DanmuService {
 	public boolean downDanmu(JSONObject jsonObject);
 	
 	public boolean favDanmu(JSONObject jsonObject);
+	
+	public void updateUserDanmu(String userId, int danmuId);
+	
+	public String getFavDanmuList(JSONObject jsonObject);
+	
+	public int updateUserAction(JSONObject jsonObject);
 }

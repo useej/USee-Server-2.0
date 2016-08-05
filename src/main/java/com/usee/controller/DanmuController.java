@@ -51,7 +51,7 @@ public class DanmuController {
 	@ResponseBody
 	public String getDanmuDetails(@RequestBody String danmuId){
 		JSONObject danmuJson = new JSONObject().fromObject(danmuId);
-		String danmuDetails = danmuService.getDanmuDetails(danmuJson.getInt("danmuid"));
+		String danmuDetails = danmuService.getDanmuDetails(danmuJson.getInt("danmuid"), danmuJson.getString("userid"));
 		System.out.println(danmuDetails);
 		return danmuDetails;
 	}
@@ -92,6 +92,30 @@ public class DanmuController {
 		boolean status = danmuService.favDanmu(danmuJson);
 		JSONObject result = new JSONObject();
 		result.put("status", status);
+		return result.toString();
+	}
+	
+//	@RequestMapping(value = "clickdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+//	@ResponseBody
+//	public void clickDanmu(@RequestBody String info){
+//		JSONObject danmuJson = new JSONObject().fromObject(info);
+//		danmuService.updateUserDanmu(danmuJson);
+//	}
+	
+	@RequestMapping(value = "getfavdanmulist", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String getFavDanmuList(@RequestBody String info){
+		JSONObject danmuJson = new JSONObject().fromObject(info);
+		return danmuService.getFavDanmuList(danmuJson);
+	}
+	
+	@RequestMapping(value = "updateuseraction", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String updateUserAction(@RequestBody String info){
+		JSONObject danmuJson = new JSONObject().fromObject(info);
+		int status = danmuService.updateUserAction(danmuJson);
+		JSONObject result = new JSONObject();
+		result.put("result", status);
 		return result.toString();
 	}
 }

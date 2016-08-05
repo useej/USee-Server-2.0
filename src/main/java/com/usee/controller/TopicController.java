@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import antlr.collections.List;
 
+import com.usee.model.Topic;
 import com.usee.service.impl.DanmuServiceImp;
 import com.usee.service.impl.TopicServiceImpl;
 
@@ -81,13 +82,14 @@ public class TopicController {
 	
 	@RequestMapping(value = "createtopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public String createTopic(@RequestBody String newTopic){
+	public Topic createtopic(@RequestBody String newTopic){
 		JSONObject newTopicJson = new JSONObject().fromObject(newTopic);
-		topicService.createTopic(newTopicJson);
-		String userTopics = topicService.getUserTopics(newTopicJson.getString("userid"));
+		String newId = topicService.createTopic(newTopicJson);
+		Topic userTopics = topicService.getTopic(newId);
 		System.out.println(userTopics);
 		return userTopics;
 	}
+
 	
 	@RequestMapping(value = "searchtopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
@@ -97,4 +99,5 @@ public class TopicController {
 		System.out.println(userTopics);
 		return userTopics ;
 	}
+	
 }

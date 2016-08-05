@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.usee.dao.DanmuDao;
 import com.usee.model.Danmu;
+import com.usee.model.UserTopic;
 @Service
 public class DanmuDaoImp implements DanmuDao {
 	@Resource
@@ -162,10 +163,10 @@ public class DanmuDaoImp implements DanmuDao {
 		}
 		else {
 			query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+			query.setParameter("favTime", favTime);
 		}
 		query.setParameter("userId", userId);
 		query.setParameter("danmuId", danmuId);
-		query.setParameter("favTime", favTime);
 		if(query.executeUpdate() != 0)
 		{
 			return true;
@@ -176,10 +177,132 @@ public class DanmuDaoImp implements DanmuDao {
 	}
 
 	@Override
-	public void updateUserDanmu(String userId, String danmuId) {
-		
+	public void saveUserDanmu(String userId, int danmuId, String firstVisitTime, String lastVisitTime, int frequency) {
+		String sql = "insert into user_danmu values(NULL, :userId, :danmuId, :firstVisitTime, NULL, NULL, :lastVisitTime, :frequency)";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("userId", userId);
+		query.setParameter("danmuId", danmuId);
+		query.setParameter("firstVisitTime", firstVisitTime);
+		query.setParameter("lastVisitTime", lastVisitTime);
+		query.setParameter("frequency", frequency);
+		query.executeUpdate();
 		
 	}
+
+	@Override
+	public int getUniqueUserDanmubyUserIdandDanmuId(String userId,
+			int danmuId) {
+		String sql = "select count(*) from user_danmu where userID = ? and danmuID = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setString(0, userId);
+		query.setInteger(1, danmuId);
+		if(query.uniqueResult() != null){
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+
+	@Override
+	public void updateUserDanmu(String userId, int danmuId,
+			String lastVisitTime, int frequency) {
+		String sql = "update user_danmu set lastVisit_time = :lastVisitTime, frequency = :frequency where userID = :userId and danmuID = :danmuId";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("userId", userId);
+		query.setParameter("danmuId", danmuId);
+		query.setParameter("lastVisitTime", lastVisitTime);
+		query.setParameter("frequency", frequency);
+		query.executeUpdate();
+	}
+
+	@Override
+	public int getLatestFrequency() {
+		String sql = "SELECT MAX(frequency) FROM user_danmu";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		if(query.uniqueResult() == null){
+			return 0;
+		}
+		else{
+			return (Integer) query.uniqueResult();
+		}
+	}
+
+	@Override
+	public List<Object[]> listFavDanmu(String userId) {
+		String sql = "select * from userfavdanmu where userID = ?";
+		Query query= sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setResultTransformer(org.hibernate.transform.Transformers.ALIAS_TO_ENTITY_MAP); 
+		query.setParameter(0, userId);
+		List<Object[]> lobj = query.list();
+		return lobj;
+	}
 	
+	@Override
+	public int saveUserDanmuAction(String userId, int danmuId, int action,
+			String actionTime) {
+		String sql = "insert into updowndanmu values(NULL, :userId, :danmuId, :action, :actionTime)";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("userId", userId);
+		query.setParameter("danmuId", danmuId);
+		query.setParameter("action", action);
+		query.setParameter("actionTime", actionTime);
+		return query.executeUpdate();
+	}
+
+	@Override
+	public int updateUserDanmuAction(String userId, int danmuId, int action,
+			String actionTime) {
+		String sql = "update updowndanmu set action = :action, action_time = :actionTime where userID = :userId and danmuID = :danmuId";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("userId", userId);
+		query.setParameter("danmuId", danmuId);
+		query.setParameter("action", action);
+		query.setParameter("actionTime", actionTime);
+		return query.executeUpdate();
+	}
+
+	@Override
+	public int getUniqueUpDownDanmubyUserIdandDanmuId(String userId,
+			int danmuId) {
+		String sql = "select * from updowndanmu where userID = ? and danmuID = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setString(0, userId);
+		query.setInteger(1, danmuId);
+		if(query.uniqueResult() != null){
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+
+	@Override
+	public int getActionbyUserIdandDanmuId(String userId, int danmuId) {
+		String sql = "select action from updowndanmu where userID = ? and danmuID = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setString(0, userId);
+		query.setInteger(1, danmuId);
+		if(query.uniqueResult() != null){
+			return Integer.parseInt(query.uniqueResult().toString());
+		}
+		else {
+			return 0;
+		}
+	}
+
+	@Override
+	public boolean checkUserFavDanmu(String userId, int danmuId) {
+		String sql = "select * from userfavdanmu where userID = ? and danmuID = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setString(0, userId);
+		query.setInteger(1, danmuId);
+		if(query.uniqueResult() != null){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 	
 }

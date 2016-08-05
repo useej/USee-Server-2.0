@@ -24,7 +24,7 @@ public interface TopicService {
 	
 	public void updateUser_topic(String userID,String topicID);
 	
-	public void createTopic(JSONObject topic);
+	public String createTopic(JSONObject topic);
 	
 	public String searchTopic(String keyword);
 			

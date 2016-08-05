@@ -60,7 +60,7 @@ public class TopicDaoImpl implements TopicDao {
 	 * 获取所有弹幕的Id
 	 */
 	public List getAllTopicId(){
-		String hql ="select id from Topic order by lastDanmu_time desc";
+		String hql ="select id from topic order by lastDanmu_time desc";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(hql);
 		return query.list();
 	}
