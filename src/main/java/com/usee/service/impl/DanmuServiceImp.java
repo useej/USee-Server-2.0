@@ -119,17 +119,21 @@ public class DanmuServiceImp implements DanmuService{
 		return object.toString();
 	} 
 
-	public String getDanmuDetails(int danmuId) {
+	public String getDanmuDetails(int danmuId, String currentUserId) {
 		
 		Danmu danmu = danmuDao.getDanmu(danmuId);
 		List<Comment> comments = commentDao.getCommentbyDanmuId(danmuId);
 		User danmuSender = userDao.getUser(danmu.getUserId());
+		
+		updateUserDanmu(currentUserId, danmuId);
 		
 		JSONArray jsonArray_danmu = JSONArray.fromObject(danmu);
 		JSONArray jsonArray_usercomment = new JSONArray();
 		JSONObject danmuDetails = jsonArray_danmu.getJSONObject(0);
 		danmuDetails.put("nickname", danmuSender.getNickname());
 		danmuDetails.put("gender", danmuSender.getGender());
+		danmuDetails.put("action", danmuDao.getActionbyUserIdandDanmuId(currentUserId, danmuId));
+		danmuDetails.put("isfav", danmuDao.checkUserFavDanmu(currentUserId, danmuId));
 
 		for (Comment comment : comments) {
 			User sender = userDao.getUser(comment.getSender());
@@ -249,7 +253,59 @@ public class DanmuServiceImp implements DanmuService{
 	public boolean favDanmu(JSONObject jsonObject) {
 		TimeUtil timeUtil = new TimeUtil();
 		String favTime = timeUtil.currentTimeStamp;
+		String userId = jsonObject.getString("userid");
+		int danmuId = jsonObject.getInt("danmuid");
 		
-		return danmuDao.updateUserFavDanmu(jsonObject.getBoolean("isfav"), jsonObject.getString("userid"), jsonObject.getInt("danmuid"), favTime);
+		Boolean isFav = danmuDao.checkUserFavDanmu(userId, danmuId);
+		
+		return danmuDao.updateUserFavDanmu(isFav, userId, danmuId, favTime);
+	}
+
+
+	@Override
+	public void updateUserDanmu(String userId, int danmuId) {
+		TimeUtil timeUtil = new TimeUtil();
+		int frequency = danmuDao.getLatestFrequency();
+		
+		if(danmuDao.getUniqueUserDanmubyUserIdandDanmuId(userId, danmuId) == 1){
+			danmuDao.updateUserDanmu(userId, danmuId, timeUtil.currentTimeStamp, frequency+1);
+		}
+		else {
+			danmuDao.saveUserDanmu(userId, danmuId, timeUtil.currentTimeStamp, timeUtil.currentTimeStamp, 0);
+		}
+		
+	}
+
+	@Override
+	public String getFavDanmuList(JSONObject jsonObject) {
+		
+		List<Object[]> list = danmuDao.listFavDanmu(jsonObject.getString("userid"));
+		JSONArray jsonArray = JSONArray.fromObject(list);
+		//System.out.println(jsonArray.size());
+		for (int i = 0; i < jsonArray.size(); i ++) {
+			JSONObject tempJsonObject = jsonArray.getJSONObject(i);
+			int danmuId = tempJsonObject.getInt("danmuID");
+			String messages = danmuDao.getDanmu(danmuId).getMessages();
+			tempJsonObject.put("messages", messages);
+			//jsonArray.add(tempJsonObject);
+		}
+		JSONObject json = new JSONObject();
+		json.put("favdanmu", jsonArray);
+		System.out.println(json.toString());
+		return json.toString();
+	}
+
+	@Override
+	public int updateUserAction(JSONObject jsonObject) {
+		TimeUtil timeUtil = new TimeUtil();
+		
+		String userId = jsonObject.getString("userid");
+		int danmuId = jsonObject.getInt("danmuid");
+		int action = jsonObject.getInt("action");
+		if (danmuDao.getUniqueUpDownDanmubyUserIdandDanmuId(userId, danmuId) == 1) {
+			return danmuDao.updateUserDanmuAction(userId, danmuId, action, timeUtil.currentTimeStamp);
+		} else {
+			return danmuDao.saveUserDanmuAction(userId, danmuId, action, timeUtil.currentTimeStamp);
+		}
 	}
 }
