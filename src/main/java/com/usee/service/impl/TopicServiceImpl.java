@@ -137,7 +137,6 @@ public class TopicServiceImpl implements TopicService {
 	
 	}
 
-	@Override
 	public JSONObject getUserIconbyTopic(String userId, String topicId) {
 		JSONObject jsonObject= new JSONObject();
 		if(userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId) != null){
@@ -198,7 +197,6 @@ public class TopicServiceImpl implements TopicService {
 	}
 
 
-	@Override
 	public String searchTopic(String keyword) {
 		List list1 = new ArrayList();
 		List<String> userTopics = new ArrayList();

@@ -231,7 +231,6 @@ public class DanmuServiceImp implements DanmuService{
 		return comment;
 	}
 
-	@Override
 	public boolean upDanmu(JSONObject jsonObject) {
 		TimeUtil timeUtil = new TimeUtil();
 		String upTime = timeUtil.currentTimeStamp;
@@ -240,7 +239,6 @@ public class DanmuServiceImp implements DanmuService{
 	}
 
 
-	@Override
 	public boolean downDanmu(JSONObject jsonObject) {
 		TimeUtil timeUtil = new TimeUtil();
 		String downTime = timeUtil.currentTimeStamp;
@@ -249,7 +247,6 @@ public class DanmuServiceImp implements DanmuService{
 	}
 
 
-	@Override
 	public boolean favDanmu(JSONObject jsonObject) {
 		TimeUtil timeUtil = new TimeUtil();
 		String favTime = timeUtil.currentTimeStamp;
@@ -262,7 +259,6 @@ public class DanmuServiceImp implements DanmuService{
 	}
 
 
-	@Override
 	public void updateUserDanmu(String userId, int danmuId) {
 		TimeUtil timeUtil = new TimeUtil();
 		int frequency = danmuDao.getLatestFrequency();
@@ -276,7 +272,6 @@ public class DanmuServiceImp implements DanmuService{
 		
 	}
 
-	@Override
 	public String getFavDanmuList(JSONObject jsonObject) {
 		
 		List<Object[]> list = danmuDao.listFavDanmu(jsonObject.getString("userid"));
@@ -295,7 +290,6 @@ public class DanmuServiceImp implements DanmuService{
 		return json.toString();
 	}
 
-	@Override
 	public int updateUserAction(JSONObject jsonObject) {
 		TimeUtil timeUtil = new TimeUtil();
 		
