@@ -1,25 +1,19 @@
 package com.usee.controller;
 
 
-import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
-
-import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import antlr.collections.List;
-
 import com.usee.model.Topic;
-import com.usee.service.impl.DanmuServiceImp;
 import com.usee.service.impl.TopicServiceImpl;
+
+import net.sf.json.JSONObject;
 
 
 @Controller
@@ -59,16 +53,13 @@ public class TopicController {
 		JSONObject iconNameJsonObject = topicService.getUserIconbyTopic(userId, topicId);
 		
 		JSONObject userIconjJsonObject = new JSONObject();
-		String userIcon = null;
-		
-		if(iconNameJsonObject.getBoolean("israndom")){
-			userIcon = request.getSession().getServletContext().getRealPath("/") + "randomIcons/" + iconNameJsonObject.getString("iconname");
-		}
-		else {
-			userIcon = request.getSession().getServletContext().getRealPath("/") + "userIcons/" + iconNameJsonObject.getString("iconname");
-		}
+		String userIcon = iconNameJsonObject.getString("iconname");
+		String userName = iconNameJsonObject.getString("username");
+
 		System.out.println(userIcon);
+		System.out.println(userName);
 		userIconjJsonObject.put("usericon", userIcon);
+		userIconjJsonObject.put("username", userName);
 		return userIconjJsonObject.toString();
 	}
 

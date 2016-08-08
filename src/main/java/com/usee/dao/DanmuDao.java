@@ -24,6 +24,8 @@ public interface DanmuDao {
 	
 	public String getTopicIdbyDanmuId(int danmuId);
 	
+	public String getUserIDbyDanmuId(int danmuId);
+	
 	public boolean updateUserUpDanmu(Boolean isUp, String userId, int danmuId, String upTime);
 	
 	public boolean updateUserDownDanmu(Boolean isDown, String userId, int danmuId, String downTime);

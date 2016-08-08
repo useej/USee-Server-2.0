@@ -1,21 +1,15 @@
 package com.usee.service.impl;
 
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import javassist.bytecode.Descriptor.Iterator;
 
 import javax.annotation.Resource;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.usee.dao.TopicDao;
+import com.usee.dao.ColorDao;
+import com.usee.dao.RandomNameDao;
 import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.dao.impl.TopicDaoImpl;
 import com.usee.dao.impl.UserTopicDaoImp;
@@ -24,6 +18,9 @@ import com.usee.model.UserTopic;
 import com.usee.service.TopicService;
 import com.usee.utils.Distance;
 import com.usee.utils.TimeUtil;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -34,8 +31,12 @@ public class TopicServiceImpl implements TopicService {
 	private DanmuDaoImp danmudao;
 	@Resource
 	private UserTopicDaoImp userTopicDao;
+	@Autowired
+	private RandomNameDao randomNameDao;
+	@Autowired
+	private ColorDao colorDao;
 	
-	private static final String DEFAULT_USERICON = "1.png";
+	private static final String DEFAULT_USERICON = "0.png";
 	
 	public Topic getTopic(String id) {
 		return topicdao.getTopic(id);
@@ -139,14 +140,29 @@ public class TopicServiceImpl implements TopicService {
 
 	public JSONObject getUserIconbyTopic(String userId, String topicId) {
 		JSONObject jsonObject= new JSONObject();
-		if(userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId) != null){
-			jsonObject.put("israndom", false);
-			jsonObject.put("iconname", userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId).getUserIcon());
+		// 通过userId和topicId从数据库中获取存在的UserTopic信息
+		UserTopic existUserTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId);
+		if(existUserTopic != null && existUserTopic.getRandomIconID() != 0){
+			// 如果用户不是第一次在此话题底下进行操作,并且用户之前匿名操作过
+			int randomIconId = existUserTopic.getRandomIconID();
+			// 得到随机头像 id
+			int iconId = randomIconId / 100 + 1;
+			// 得到随机头像的色值
+			int iconColorId = randomIconId % 100 + 1;
+			String iconCode = colorDao.getColorById(iconColorId);
+			String userIcon = iconId + "_" + iconCode; // 63_E6A473
+			
+			jsonObject.put("iconname", userIcon);
+			int randomNameID = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId).getRandomNameID();
+			String username = randomNameDao.getRandomNameById(randomNameID);
+			jsonObject.put("username", username);
 			return jsonObject;
+			
 		}
 		else {
-			jsonObject.put("israndom", true);
 			jsonObject.put("iconname", DEFAULT_USERICON);
+			String username = randomNameDao.getRandomNameById(0);
+			jsonObject.put("username", username);
 			return jsonObject;
 		}
 	}

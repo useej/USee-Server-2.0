@@ -94,6 +94,16 @@ public class DanmuDaoImp implements DanmuDao {
 		query.setInteger(0, danmuId);
 		return query.uniqueResult().toString();
 	}
+	
+	/**
+	 * 根据danmuId获取userID
+	 */
+	public String getUserIDbyDanmuId(int danmuId){
+		String hql = "select d.userId from Danmu d where d.id = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setInteger(0, danmuId);
+		return query.uniqueResult().toString();
+	}
 		
 	/**
 	 * 根据UserId获取弹幕

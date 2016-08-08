@@ -18,4 +18,7 @@ public interface UserTopicDao {
 	public UserTopic getUniqueUserTopicbyUserIdandTopicId(String userId, String topicId);
 	
 	public void updateUserTopicLVTandFrequency(String userId, String topicId, String lastVisitTime, int frequency);
+	
+	public List<Integer> getuserRandomIconIdsbyTopic(String topicId);
+	
 }

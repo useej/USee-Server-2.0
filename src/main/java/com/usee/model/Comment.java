@@ -30,6 +30,8 @@ public class Comment {
 	private int type;
 	@Column
 	private String create_time;
+	@Column
+	private int isanonymous ;
 	
 	public int getId() {
 		return id;
@@ -96,13 +98,17 @@ public class Comment {
 		this.reply_commentId = reply_commentId;
 	}
 	
+	public int getIsanonymous() {
+		return isanonymous;
+	}
+	public void setIsanonymous(int isanonymous) {
+		this.isanonymous = isanonymous;
+	}
 	@Override
 	public String toString() {
-		return " {\"id\":" + id + ", \"danmuId\":" + danmuId
-				+ ", \"sender\":\"" + sender + "\", \"receiver\":\"" + receiver
-				+ "\", \"content\":\"" + content + "\", \"replay_commentId\":"
-				+ reply_commentId + ", \"type\":" + type
-				+ ", \"create_time\":\"" + create_time + "\"}";
+		return "Comment [id=" + id + ", danmuId=" + danmuId + ", sender=" + sender + ", receiver=" + receiver
+				+ ", content=" + content + ", reply_commentId=" + reply_commentId + ", type=" + type + ", create_time="
+				+ create_time + ", isanonymous=" + isanonymous + "]";
 	}
 	
 }

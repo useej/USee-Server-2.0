@@ -77,4 +77,12 @@ public class UserTopicDaoImp implements UserTopicDao{
 		query.executeUpdate();
 		
 	}
+	
+	public List<Integer> getuserRandomIconIdsbyTopic(String topicId){
+		String sql = "SELECT randomIconId from user_topic where id = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setString(0, topicId);
+		return query.list();
+	}
+	
 }
