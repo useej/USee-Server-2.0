@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.usee.dao.UserDao;
 import javassist.bytecode.Descriptor.Iterator;
 
 import javax.annotation.Resource;
@@ -34,8 +35,11 @@ public class TopicServiceImpl implements TopicService {
 	private DanmuDaoImp danmudao;
 	@Resource
 	private UserTopicDaoImp userTopicDao;
+    @Resource
+    private UserDao userDao;
 	
 	private static final String DEFAULT_USERICON = "1.png";
+    private static final String DEFAULT_NICKNAME = "USeer";
 	
 	public Topic getTopic(String id) {
 		return topicdao.getTopic(id);
@@ -139,17 +143,22 @@ public class TopicServiceImpl implements TopicService {
 
 	@Override
 	public JSONObject getUserIconbyTopic(String userId, String topicId) {
-		JSONObject jsonObject= new JSONObject();
-		if(userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId) != null){
+        UserTopic userTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId);
+
+		JSONObject jsonObject = new JSONObject();
+
+		if(userTopic != null){
+
 			jsonObject.put("israndom", false);
-			jsonObject.put("iconname", userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId).getUserIcon());
-			return jsonObject;
+			jsonObject.put("iconname", userTopic.getUserIcon());
+			jsonObject.put("nickname", userDao.getUser(userId).getNickname());
 		}
 		else {
 			jsonObject.put("israndom", true);
 			jsonObject.put("iconname", DEFAULT_USERICON);
-			return jsonObject;
+			jsonObject.put("nickname", DEFAULT_NICKNAME);
 		}
+		return jsonObject;
 	}
 	
 	public void updateUser_topic(String userID, String topicID) {
