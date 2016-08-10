@@ -13,6 +13,8 @@ public interface UserTopicDao {
 	
 	public void updateUserTopic(String userId, String topicId ,int randomIconId, int randomNameId, String lastVisitTime, int frequency, String userIcon);
 	
+	public void updateRandomIconId(String userId, String topicId, int randomIconId);
+	
 	public List<UserTopic> getUserTopicbyUserId(String userId);
 	
 	public UserTopic getUniqueUserTopicbyUserIdandTopicId(String userId, String topicId);

@@ -10,13 +10,17 @@ import org.springframework.stereotype.Service;
 
 import com.usee.dao.ColorDao;
 import com.usee.dao.RandomNameDao;
+import com.usee.dao.impl.CommentDaoImpl;
 import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.dao.impl.TopicDaoImpl;
 import com.usee.dao.impl.UserTopicDaoImp;
+import com.usee.model.Comment;
+import com.usee.model.Danmu;
 import com.usee.model.Topic;
 import com.usee.model.UserTopic;
 import com.usee.service.TopicService;
 import com.usee.utils.Distance;
+import com.usee.utils.RandomNumber;
 import com.usee.utils.TimeUtil;
 
 import net.sf.json.JSONArray;
@@ -35,8 +39,17 @@ public class TopicServiceImpl implements TopicService {
 	private RandomNameDao randomNameDao;
 	@Autowired
 	private ColorDao colorDao;
+	@Autowired
+	private CommentDaoImpl commentDao;
 	
-	private static final String DEFAULT_USERICON = "0.png";
+//	private static final String DEFAULT_USERICON = "0.png";
+	
+	public static final int MAX_RANDOM_NAME_NUMBER = 590;
+	public static final int MAX_RANDOM_ICON_NUMBER = 6400;
+	
+	public RandomNumber randomNumber = new RandomNumber();
+	public int randomUserIconId = 0;
+	public int randomUserNameId = randomNumber.getRandom(1, MAX_RANDOM_NAME_NUMBER);
 	
 	public Topic getTopic(String id) {
 		return topicdao.getTopic(id);
@@ -77,6 +90,7 @@ public class TopicServiceImpl implements TopicService {
                      list2.remove(j);
                      j--;
                  }
+                 
              }
          }
 		list1.addAll(list2);
@@ -142,7 +156,91 @@ public class TopicServiceImpl implements TopicService {
 		JSONObject jsonObject= new JSONObject();
 		// 通过userId和topicId从数据库中获取存在的UserTopic信息
 		UserTopic existUserTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId);
-		if(existUserTopic != null && existUserTopic.getRandomIconID() != 0){
+		// 如果用户不是第一次在此话题底下进行操作,并且用户之前匿名操作过
+		if(existUserTopic != null && existUserTopic.getRandomNameID() != 0){
+			
+			int randomIconId = existUserTopic.getRandomIconID();
+			// 得到随机头像 id
+			int iconId = randomIconId / 100 + 1;
+			// 得到随机头像的色值
+			int iconColorId = randomIconId % 100 + 1;
+			String iconCode = colorDao.getColorById(iconColorId);
+			// 使用iconId和iconCode拼凑成一个userIcon
+			String userIcon = iconId + "_" + iconCode; // 63_E6A473
+			
+			int randomNameID = existUserTopic.getRandomNameID();
+			String username = randomNameDao.getRandomNameById(randomNameID);
+			
+			// 得到用户最近一次在此话题底下发的弹幕
+			int latestDanmuId = danmudao.getLatestDanmuIdByUserIdAndTopicId(userId, topicId);
+			// isAnonymous: 0为匿名,1为实名,2为不确定
+			if(latestDanmuId == -1) {
+				jsonObject.put("isAnonymous", 2);
+			} else {
+				Danmu latestDanmu = danmudao.getDanmu(latestDanmuId);
+				if(latestDanmu.getUserIcon().contains(".png")) {
+					jsonObject.put("isAnonymous", 1);
+				} else {
+					jsonObject.put("isAnonymous", 0);
+				}
+			}
+			
+			jsonObject.put("randomIconId", randomIconId);
+			jsonObject.put("iconname", userIcon);
+			jsonObject.put("username", username);
+			return jsonObject;
+			
+		}
+		else {
+			
+			// get list of existing userIcons search in user_topic table 
+			List<Integer> existingList = userTopicDao.getuserRandomIconIdsbyTopic(topicId);
+			// 得到随机数
+			randomUserIconId = RandomNumber.getRandomNum(existingList,MAX_RANDOM_ICON_NUMBER);
+			int randomIconId = randomUserIconId;
+			// 得到随机头像 id
+			int iconId = randomIconId / 100 + 1;
+			// 得到随机头像的色值
+			int iconColorId = randomIconId % 100 + 1;
+			String iconCode = colorDao.getColorById(iconColorId);
+			// 使用iconId和iconCode拼凑成一个userIcon
+			String userIcon = iconId + "_" + iconCode; // 63_E6A473
+
+			int randomNameId = randomUserNameId;
+			String username = randomNameDao.getRandomNameById(randomNameId);
+			
+			// 得到用户最近一次在此话题底下发的弹幕
+			int latestDanmuId = danmudao.getLatestDanmuIdByUserIdAndTopicId(userId, topicId);
+			
+			System.out.println("latestDanmuId = " + latestDanmuId);
+			
+			// isAnonymous: 0为匿名,1为实名,2为不确定
+			if(latestDanmuId == -1) {
+				jsonObject.put("isAnonymous", 2);
+			} else {
+				Danmu latestDanmu = danmudao.getDanmu(latestDanmuId);
+				if(latestDanmu.getUserIcon().contains(".png")) {
+					jsonObject.put("isAnonymous", 1);
+				} else {
+					jsonObject.put("isAnonymous", 0);
+				}
+			}
+			
+			jsonObject.put("randomIconId", randomIconId);
+			jsonObject.put("iconname", userIcon);
+			jsonObject.put("username", username);
+			return jsonObject;
+		}
+	}
+	
+
+	public JSONObject getUserIconByComment(String userId, int danmuId) {
+		JSONObject jsonObject= new JSONObject();
+		// 根据 danmuId 得到 topicId
+		String topicId = danmudao.getTopicIdbyDanmuId(danmuId);
+		// 通过userId和topicId从数据库中获取存在的UserTopic信息
+		UserTopic existUserTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId);
+		if(existUserTopic != null && existUserTopic.getRandomNameID() != 0){
 			// 如果用户不是第一次在此话题底下进行操作,并且用户之前匿名操作过
 			int randomIconId = existUserTopic.getRandomIconID();
 			// 得到随机头像 id
@@ -152,16 +250,62 @@ public class TopicServiceImpl implements TopicService {
 			String iconCode = colorDao.getColorById(iconColorId);
 			String userIcon = iconId + "_" + iconCode; // 63_E6A473
 			
-			jsonObject.put("iconname", userIcon);
-			int randomNameID = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId).getRandomNameID();
+			int randomNameID = existUserTopic.getRandomNameID();
 			String username = randomNameDao.getRandomNameById(randomNameID);
+			
+			// 得到用户最近一次在此话题底下发的评论
+			int latestCommentId = commentDao.getLatestCommentIdByUserIdAndDanmuId(userId, danmuId);
+			
+			if(latestCommentId == -1) {
+				jsonObject.put("isAnonymous", 2);
+			} else {
+				Comment latestComment = commentDao.getComment(latestCommentId);
+				if(latestComment.getIsanonymous() == 1) {
+					jsonObject.put("isAnonymous", 1);
+				} else {
+					jsonObject.put("isAnonymous", 0);
+				}
+			}
+			
+			jsonObject.put("randomIconId", randomIconId);
+			jsonObject.put("iconname", userIcon);
 			jsonObject.put("username", username);
 			return jsonObject;
 			
 		}
 		else {
-			jsonObject.put("iconname", DEFAULT_USERICON);
-			String username = randomNameDao.getRandomNameById(0);
+			
+			// get list of existing userIcons search in user_topic table 
+			List<Integer> existingList = userTopicDao.getuserRandomIconIdsbyTopic(topicId);
+			// 得到随机数
+			randomUserIconId = RandomNumber.getRandomNum(existingList,MAX_RANDOM_ICON_NUMBER);
+			int randomIconId = randomUserIconId;
+			// 得到随机头像 id
+			int iconId = randomIconId / 100 + 1;
+			// 得到随机头像的色值
+			int iconColorId = randomIconId % 100 + 1;
+			String iconCode = colorDao.getColorById(iconColorId);
+			String userIcon = iconId + "_" + iconCode; // 63_E6A473
+			
+			int randomNameId = randomUserNameId;
+			String username = randomNameDao.getRandomNameById(randomNameId);
+			
+			// 得到用户最近一次在此话题底下发的评论
+			int latestCommentId = commentDao.getLatestCommentIdByUserIdAndDanmuId(userId, danmuId);
+			
+			if(latestCommentId == -1) {
+				jsonObject.put("isAnonymous", 2);
+			} else {
+				Comment latestComment = commentDao.getComment(latestCommentId);
+				if(latestComment.getIsanonymous() == 1) {
+					jsonObject.put("isAnonymous", 1);
+				} else {
+					jsonObject.put("isAnonymous", 0);
+				}
+			}
+			
+			jsonObject.put("randomIconId", randomIconId);
+			jsonObject.put("iconname", userIcon);
 			jsonObject.put("username", username);
 			return jsonObject;
 		}
@@ -223,4 +367,6 @@ public class TopicServiceImpl implements TopicService {
 			object.put("topic", array.toString());
 			return object.toString();
 	}
+
+
 }

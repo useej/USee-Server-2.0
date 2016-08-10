@@ -301,5 +301,18 @@ public class DanmuDaoImp implements DanmuDao {
 			return false;
 		}
 	}
+
+	public int getLatestDanmuIdByUserIdAndTopicId(String userId, String topicId) {
+		String sql = "SELECT MAX(id) FROM danmu where userID = ? and topicID = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setString(0, userId);
+		query.setString(1, topicId);
+		if(query.uniqueResult() == null){
+			return -1;
+		}
+		else{
+			return (Integer) query.uniqueResult();
+		}
+	}
 	
 }

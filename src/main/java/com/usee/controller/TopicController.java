@@ -55,11 +55,43 @@ public class TopicController {
 		JSONObject userIconjJsonObject = new JSONObject();
 		String userIcon = iconNameJsonObject.getString("iconname");
 		String userName = iconNameJsonObject.getString("username");
+		int isAnonymous = iconNameJsonObject.getInt("isAnonymous");
+		int randomIconId = iconNameJsonObject.getInt("randomIconId");
 
 		System.out.println(userIcon);
 		System.out.println(userName);
+		System.out.println(isAnonymous);
+		System.out.println(randomIconId);
 		userIconjJsonObject.put("usericon", userIcon);
 		userIconjJsonObject.put("username", userName);
+		userIconjJsonObject.put("isanonymous", isAnonymous);
+		userIconjJsonObject.put("randomIconId", randomIconId);
+		return userIconjJsonObject.toString();
+	}
+	
+	@RequestMapping(value = "getusericonbycomment", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String getUserIconByComment(@RequestBody String userAndTopicInfo, HttpServletRequest request){
+		JSONObject userAndTopicInfoJson = new JSONObject().fromObject(userAndTopicInfo);
+		String userId = userAndTopicInfoJson.getString("userid");
+		int danmuId = userAndTopicInfoJson.getInt("danmuid");
+
+		JSONObject iconNameJsonObject = topicService.getUserIconByComment(userId, danmuId);
+		
+		JSONObject userIconjJsonObject = new JSONObject();
+		String userIcon = iconNameJsonObject.getString("iconname");
+		String userName = iconNameJsonObject.getString("username");
+		int isAnonymous = iconNameJsonObject.getInt("isAnonymous");
+		int randomIconId = iconNameJsonObject.getInt("randomIconId");
+
+		System.out.println(userIcon);
+		System.out.println(userName);
+		System.out.println(isAnonymous);
+		System.out.println(randomIconId);
+		userIconjJsonObject.put("usericon", userIcon);
+		userIconjJsonObject.put("username", userName);
+		userIconjJsonObject.put("isanonymous", isAnonymous);
+		userIconjJsonObject.put("randomIconId", randomIconId);
 		return userIconjJsonObject.toString();
 	}
 

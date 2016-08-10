@@ -53,6 +53,11 @@ public class DanmuServiceImp implements DanmuService{
 	public void sendDammu(JSONObject danmu) {
 		TimeUtil timeUtil = new TimeUtil();
 		
+		// 前台传输过来的userIcon和userName和randomIconId
+		String _randomUserIcon = danmu.getString("randomUserIcon");
+		String _randomUserName = danmu.getString("randomUserName");
+		int _randomIconId = danmu.getInt("randomIconId");
+		
 		String userId = danmu.getString("userid");
 		String topicId = danmu.getString("topicid");
 		int randomIconId = 0;
@@ -67,21 +72,12 @@ public class DanmuServiceImp implements DanmuService{
 		if(existUserTopic != null){
 			// 如果用户选择匿名发送,并且existUserTopic.getUserIcon()中存在字符串.png：则证明之前是实名发送,现在是匿名发送
 			if(danmu.getBoolean("isannoymous") && existUserTopic.getUserIcon().contains(".png")) {
-				// 如果用户第一次使用匿名,则设置 randomNameId 和 randomIconId
+				// 如果用户第一次使用匿名,则将前台发送回来的userIcon和userName和randomIconId做相应处理保存下来
 				if(existUserTopic.getRandomIconID() == 0) {
-					// get list of existing userIcons search in user_topic table 
-					List<Integer> existingList = userTopicDao.getuserRandomIconIdsbyTopic(topicId);
-					// 得到随机数
-					randomUserIconId = RandomNumber.getRandomNum(existingList,MAX_RANDOM_ICON_NUMBER);
-					randomIconId = randomUserIconId;
-					// 得到随机头像 id
-					int iconId = randomIconId / 100 + 1;
-					// 得到随机头像的色值
-					int iconColorId = randomIconId % 100 + 1;
-					String iconCode = colorDao.getColorById(iconColorId);
-					
-					randomNameId = randomUserNameId;
-					userIcon = iconId + "_" + iconCode; // 63_E6A473
+					// 由于randomUserIconId之前保存过了,所以不需要进行 
+					randomIconId = _randomIconId;
+					randomNameId = randomNameDao.getRandomNameIdByIdRandomName(_randomUserName);
+					userIcon = _randomUserIcon;
 				} else {
 					// 从existUserTopic中得到randomIconId
 					randomUserIconId = existUserTopic.getRandomIconID();
@@ -130,22 +126,13 @@ public class DanmuServiceImp implements DanmuService{
 			userTopic.setLastVisit_time(timeUtil.currentTimeStamp);
 			userTopic.setFrequency(0);
 			if(danmu.getBoolean("isannoymous")){
-				// get list of existing userIcons search in user_topic table 
-				List<Integer> existingList = userTopicDao.getuserRandomIconIdsbyTopic(topicId);
-				// 得到随机数
-				randomUserIconId = RandomNumber.getRandomNum(existingList,MAX_RANDOM_ICON_NUMBER);
-				randomIconId = randomUserIconId;
-				// 得到随机头像 id
-				int iconId = randomIconId / 100 + 1;
-				// 得到随机头像的色值
-				int iconColorId = randomIconId % 100 + 1;
-				String iconCode = colorDao.getColorById(iconColorId);
+				// 由于randomUserIconId之前保存过了,所以不需要进行 
+				randomIconId = _randomIconId;
+				randomNameId = randomNameDao.getRandomNameIdByIdRandomName(_randomUserName);
+				userIcon = _randomUserIcon;
 				
-				randomNameId = randomUserNameId;
-				userIcon = iconId + "_" + iconCode; // 63_E6A473
-				
-				userTopic.setRandomNameID(randomUserNameId);
-				userTopic.setRandomIconID(randomUserIconId);
+				userTopic.setRandomNameID(randomNameId);
+				userTopic.setRandomIconID(randomIconId);
 				userTopic.setUserIcon(userIcon);
 			}
 			else{
@@ -235,7 +222,27 @@ public class DanmuServiceImp implements DanmuService{
 		JSONArray jsonArray_danmu = JSONArray.fromObject(danmu);
 		JSONArray jsonArray_usercomment = new JSONArray();
 		JSONObject danmuDetails = jsonArray_danmu.getJSONObject(0);
-		danmuDetails.put("nickname", danmuSender.getNickname());
+		
+		// 得到弹幕的昵称,根据弹幕的userIcon判断用户是匿名发送的还是实名发送的
+		String nickname = null;
+		if(danmu.getUserIcon().contains(".png")) {
+			nickname = danmuSender.getNickname();
+		} else {
+			// 得到topicID
+			String danmuSenderTopicId = danmu.getTopicId();
+			// 根据topicID和userID得到UserTopic
+			String danmuSenderUserId = danmuSender.getUserID();
+			UserTopic userTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(danmuSenderUserId, danmuSenderTopicId);
+			// 根据UserTopic得到randomID
+			int randomNameId = userTopic.getRandomNameID();
+			// 根据randomNameId 得到userName
+			String userName = randomNameDao.getRandomNameById(randomNameId);
+			// 将user对象中的userIcon和nickname替换掉
+			nickname = userName;
+		}
+		
+		
+		danmuDetails.put("nickname", nickname);
 		danmuDetails.put("gender", danmuSender.getGender());
 		danmuDetails.put("action", danmuDao.getActionbyUserIdandDanmuId(currentUserId, danmuId));
 		danmuDetails.put("isfav", danmuDao.checkUserFavDanmu(currentUserId, danmuId));
@@ -263,14 +270,18 @@ public class DanmuServiceImp implements DanmuService{
 			// 判断评论时是匿名还是实名. isanonymous等于0为匿名,isanonymous等于1为实名
 			// 如果为匿名,则从UserTopic表中取出匿名头像和昵称
 			if(comment.getIsanonymous() == 0) {
-				// 根据弹幕ID得到topicID
-				String topicId = danmuDao.getTopicIdbyDanmuId(comment.getDanmuId());
-				String userId = comment.getSender();
-				// 根据topicID和userID得到UserTopic
-				UserTopic existUserTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId);
-				// 根据UserTopic得到randomID
-				int randomIconId = existUserTopic.getRandomIconID();
-				int randomNameId = existUserTopic.getRandomNameID();
+//				// 根据弹幕ID得到topicID
+//				String topicId = danmuDao.getTopicIdbyDanmuId(comment.getDanmuId());
+//				String userId = comment.getSender();
+//				// 根据topicID和userID得到UserTopic
+//				UserTopic existUserTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId);
+//				// 根据UserTopic得到randomID
+//				int randomIconId = existUserTopic.getRandomIconID();
+//				int randomNameId = existUserTopic.getRandomNameID();
+				
+				// 得到randomID
+				int randomIconId = comment.getRandomIconID();
+				int randomNameId = comment.getRandomNameID();
 				// 得到随机头像 id
 				int iconId = randomIconId / 100 + 1;
 				// 得到随机头像的色值
@@ -314,6 +325,11 @@ public class DanmuServiceImp implements DanmuService{
 	public Comment commentDanmu(JSONObject danmuComment){
 		TimeUtil timeUtil = new TimeUtil();
 		
+		// 前台传输过来的userIcon和userName和randomIconId
+		String _randomUserIcon = danmuComment.getString("randomUserIcon");
+		String _randomUserName = danmuComment.getString("randomUserName");
+		int _randomIconId = danmuComment.getInt("randomIconId");
+		
 		String userId = danmuComment.getString("userid");
 		int danmuId = danmuComment.getInt("danmuid");
 		String topicId = danmuDao.getTopicIdbyDanmuId(danmuId);
@@ -331,21 +347,12 @@ public class DanmuServiceImp implements DanmuService{
 		if(existUserTopic != null){
 			// 如果用户选择匿名发送,并且existUserTopic.getUserIcon()中存在字符串.png：则证明之前是实名发送,现在是匿名发送
 			if(danmuComment.getBoolean("isannoymous") && existUserTopic.getUserIcon().contains(".png")) {
-				// 如果用户第一次使用匿名,则设置 randomNameId 和 randomIconId
+				// 如果用户第一次使用匿名,则将前台发送回来的userIcon和userName和randomIconId做相应处理保存下来
 				if(existUserTopic.getRandomIconID() == 0) {
-					// get list of existing userIcons search in user_topic table 
-					List<Integer> existingList = userTopicDao.getuserRandomIconIdsbyTopic(topicId);
-					// 得到随机数
-					randomUserIconId = RandomNumber.getRandomNum(existingList,MAX_RANDOM_ICON_NUMBER);
-					randomIconId = randomUserIconId;
-					// 得到随机头像 id
-					int iconId = randomIconId / 100 + 1;
-					// 得到随机头像的色值
-					int iconColorId = randomIconId % 100 + 1;
-					String iconCode = colorDao.getColorById(iconColorId);
-					
-					randomNameId = randomUserNameId;
-					userIcon = iconId + "_" + iconCode; // 63_E6A473
+					// 由于randomUserIconId之前保存过了,所以不需要进行 
+					randomIconId = _randomIconId;
+					randomNameId = randomNameDao.getRandomNameIdByIdRandomName(_randomUserName);
+					userIcon = _randomUserIcon;
 				} else {
 					// 从existUserTopic中得到randomIconId
 					randomUserIconId = existUserTopic.getRandomIconID();
@@ -392,22 +399,13 @@ public class DanmuServiceImp implements DanmuService{
 			userTopic.setLastVisit_time(timeUtil.currentTimeStamp);
 			userTopic.setFrequency(0);
 			if(danmuComment.getBoolean("isannoymous")){
-				// get list of existing userIcons search in user_topic table 
-				List<Integer> existingList = userTopicDao.getuserRandomIconIdsbyTopic(topicId);
-				// 得到随机数
-				randomUserIconId = RandomNumber.getRandomNum(existingList,MAX_RANDOM_ICON_NUMBER);
-				randomIconId = randomUserIconId;
-				// 得到随机头像 id
-				int iconId = randomIconId / 100 + 1;
-				// 得到随机头像的色值
-				int iconColorId = randomIconId % 100 + 1;
-				String iconCode = colorDao.getColorById(iconColorId);
+				// 由于randomUserIconId之前保存过了,所以不需要进行 
+				randomIconId = _randomIconId;
+				randomNameId = randomNameDao.getRandomNameIdByIdRandomName(_randomUserName);
+				userIcon = _randomUserIcon;
 				
-				randomNameId = randomUserNameId;
-				userIcon = iconId + "_" + iconCode; // 63_E6A473
-				
-				userTopic.setRandomNameID(randomUserNameId);
-				userTopic.setRandomIconID(randomUserIconId);
+				userTopic.setRandomNameID(randomNameId);
+				userTopic.setRandomIconID(randomIconId);
 				userTopic.setUserIcon(userIcon);
 			}
 			else{
@@ -418,13 +416,17 @@ public class DanmuServiceImp implements DanmuService{
 			userTopicDao.saveUserTopic(userTopic);
 		}
 		
+		Comment comment = new Comment();
 		// 如果是匿名isanonymous为0,如果是实名isanonymous为1
 		if(danmuComment.getBoolean("isannoymous")){
 			isanonymous = 0;
+			comment.setRandomIconID(randomIconId);
+			comment.setRandomNameID(randomNameId);
 		} else {
 			isanonymous = 1;
+			comment.setRandomIconID(0);
+			comment.setRandomNameID(0);
 		}
-		Comment comment = new Comment();
 		comment.setDanmuId(danmuId);
 		comment.setSender(userId);
 		comment.setReceiver(danmuComment.getString("receiver"));
@@ -482,11 +484,11 @@ public class DanmuServiceImp implements DanmuService{
 		
 		List<Object[]> list = danmuDao.listFavDanmu(jsonObject.getString("userid"));
 		JSONArray jsonArray = JSONArray.fromObject(list);
-		//System.out.println(jsonArray.size());
 		for (int i = 0; i < jsonArray.size(); i ++) {
 			JSONObject tempJsonObject = jsonArray.getJSONObject(i);
 			int danmuId = tempJsonObject.getInt("danmuID");
-			String messages = danmuDao.getDanmu(danmuId).getMessages();
+			Danmu danmu = danmuDao.getDanmu(danmuId);
+			String messages = danmu.getMessages();
 //			// 进行decode
 //			try {
 //				messages = new String(Base64.getUrlDecoder().decode(messages),"UTF-8");
@@ -496,11 +498,29 @@ public class DanmuServiceImp implements DanmuService{
 			tempJsonObject.put("messages", messages);
 			
 			// 根据userID 得到user信息
-			String userID = tempJsonObject.getString("userID");
+			String userID = danmu.getUserId();
 			User user = userDao.getUser(userID);
+			
+			// 得到弹幕的昵称,根据弹幕的userIcon判断用户是匿名发送的还是实名发送的
+			String nickname = null;
+			if(danmu.getUserIcon().contains(".png")) {
+				nickname = user.getNickname();
+			} else {
+				// 得到topicID
+				String topicId = danmu.getTopicId();
+				// 根据topicID和userID得到UserTopic
+				UserTopic userTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userID, topicId);
+				// 根据UserTopic得到randomID
+				int randomNameId = userTopic.getRandomNameID();
+				// 根据randomNameId 得到userName
+				String userName = randomNameDao.getRandomNameById(randomNameId);
+				// 将user对象中的userIcon和nickname替换掉
+				nickname = userName;
+			}
+			
 			tempJsonObject.put("gender", user.getGender());
-			tempJsonObject.put("nickname", user.getNickname());
-			tempJsonObject.put("userIcon", user.getUserIcon());
+			tempJsonObject.put("nickname", nickname);
+			tempJsonObject.put("userIcon", danmu.getUserIcon());
 			
 			// 根据danmuID得到话题名称
 			String topicId = danmuDao.getTopicIdbyDanmuId(danmuId);

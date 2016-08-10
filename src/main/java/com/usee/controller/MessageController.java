@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.usee.dao.ColorDao;
+import com.usee.dao.RandomNameDao;
 import com.usee.dao.TopicDao;
 import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.model.Comment;
@@ -44,6 +44,12 @@ public class MessageController {
 	
 	@Autowired
 	private TopicDao topicDao;
+	
+	@Autowired
+	private ColorDao colorDao;
+	
+	@Autowired
+	private RandomNameDao randomNameDao;
 	
 	@ResponseBody
 	@RequestMapping(value = "getNewMsgsNum", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
@@ -107,10 +113,25 @@ public class MessageController {
 			String topicId = danmuDao.getTopicIdbyDanmuId(danmuId);
 			String topicTitle = topicDao.getTopic(topicId).getTitle();
 						
+			String userName = user.getNickname();
+			String userIcon = user.getUserIcon();
+			if(comment.getIsanonymous() == 0) {
+				// 得到randomID
+				int randomIconId = comment.getRandomIconID();
+				int randomNameId = comment.getRandomNameID();
+				// 得到随机头像 id
+				int iconId = randomIconId / 100 + 1;
+				// 得到随机头像的色值
+				int iconColorId = randomIconId % 100 + 1;
+				String iconCode = colorDao.getColorById(iconColorId);
+				// 根据randomID 得到userIcon和userName
+				userIcon = iconId + "_" + iconCode; // 63_E6A473
+				userName = randomNameDao.getRandomNameById(randomNameId);
+			}
 			Message message = new Message();
-			message.setNickname(user.getNickname());
+			message.setNickname(userName);
 			message.setGender(user.getGender());
-			message.setUserIcon(user.getUserIcon());
+			message.setUserIcon(userIcon);
 			message.setDanmuId(comment.getDanmuId());
 			message.setContent(comment.getContent());
 			message.setCreate_time(comment.getCreate_time());
@@ -160,10 +181,25 @@ public class MessageController {
 			String topicId = danmuDao.getTopicIdbyDanmuId(danmuId);
 			String topicTitle = topicDao.getTopic(topicId).getTitle();
 						
+			String userName = user.getNickname();
+			String userIcon = user.getUserIcon();
+			if(comment.getIsanonymous() == 0) {
+				// 得到randomID
+				int randomIconId = comment.getRandomIconID();
+				int randomNameId = comment.getRandomNameID();
+				// 得到随机头像 id
+				int iconId = randomIconId / 100 + 1;
+				// 得到随机头像的色值
+				int iconColorId = randomIconId % 100 + 1;
+				String iconCode = colorDao.getColorById(iconColorId);
+				// 根据randomID 得到userIcon和userName
+				userIcon = iconId + "_" + iconCode; // 63_E6A473
+				userName = randomNameDao.getRandomNameById(randomNameId);
+			}
 			Message message = new Message();
-			message.setNickname(user.getNickname());
+			message.setNickname(userName);
 			message.setGender(user.getGender());
-			message.setUserIcon(user.getUserIcon());
+			message.setUserIcon(userIcon);
 			message.setDanmuId(comment.getDanmuId());
 			message.setContent(comment.getContent());
 			message.setCreate_time(comment.getCreate_time());

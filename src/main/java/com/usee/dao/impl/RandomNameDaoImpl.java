@@ -21,4 +21,11 @@ public class RandomNameDaoImpl implements RandomNameDao {
 		return (String) query.uniqueResult();
 	}
 
+	public int getRandomNameIdByIdRandomName(String randomUserName) {
+		String sql = "SELECT id from nicknames where nickname = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setString(0, randomUserName);
+		return (Integer) query.uniqueResult();
+	}
+
 }

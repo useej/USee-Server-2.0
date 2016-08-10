@@ -23,11 +23,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
     @ContextConfiguration(name = "child", locations = "classpath:spring-mvc.xml")
 })   
 @Transactional
-//<<<<<<< HEAD:src/test/java/com/usee/controller/getDanmubyTopicTest.java
-//public class getDanmubyTopicTest {
-//=======
+
 public class GetDanmubyTopicTestCase {
-//>>>>>>> upstream/dev:src/test/java/com/usee/controller/GetDanmubyTopicTestCase.java
 
 	@Autowired  
     private WebApplicationContext wac;

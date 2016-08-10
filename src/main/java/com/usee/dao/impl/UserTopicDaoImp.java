@@ -84,5 +84,14 @@ public class UserTopicDaoImp implements UserTopicDao{
 		query.setString(0, topicId);
 		return query.list();
 	}
+
+	public void updateRandomIconId(String userId, String topicId, int randomIconId) {
+		String hql = "update UserTopic ut set ut.randomIconID = :randomIconId where ut.userId = :userId and ut.topicId = :topicId";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setParameter("userId", userId);
+		query.setParameter("topicId", topicId);
+		query.setParameter("randomIconId", randomIconId);
+		query.executeUpdate();
+	}
 	
 }

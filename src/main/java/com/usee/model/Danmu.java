@@ -187,12 +187,15 @@ public class Danmu {
 
 	@Override
 	public String toString() {
-		return "Danmu [id=" + id + ", userId=" + userId + ", devId=" + devId + ", status=" + status + ", topicId="
-				+ topicId + ", lon=" + lon + ", lat=" + lat + ", praisenum=" + praisenum + ", downnum=" + downnum
-				+ ", commentnum=" + commentnum + ", hitnum=" + hitnum + ", create_time=" + create_time
-				+ ", delete_time=" + delete_time + ", address=" + address + ", head=" + head + ", messages=" + messages
-				+ ", userIcon=" + userIcon + "]";
+		return  "{\"id\":" + id + ", \"userId\":\"" + userId
+					+ "\", \"devId\":\"" + devId + "\", \"status\":\"" + status
+					+ "\", \"topicId\":\"" + topicId + "\", \"lon\":\"" + lon
+					+ "\", \"lat\":\"" + lat + "\", \"praisenum\":" + praisenum
+					+ ", \"downnum\":" + downnum + ", \"commentnum\":"
+					+ commentnum + ", \"hitnum\":" + hitnum
+					+ ", \"create_time\":\"" + create_time + "\", \"delete_time\":\""
+					+ delete_time + "\", \"address\":\"" + address + "\", \"head\":"
+					+ head + ", \"messages\":\"" + messages + "\", \"userIcon\":\""
+					+ userIcon + "\"}";
 	}
-
-
 }
