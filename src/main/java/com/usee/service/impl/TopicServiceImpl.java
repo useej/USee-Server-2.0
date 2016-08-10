@@ -50,7 +50,7 @@ public class TopicServiceImpl implements TopicService {
 	public RandomNumber randomNumber = new RandomNumber();
 	public int randomUserIconId = 0;
 	public int randomUserNameId = randomNumber.getRandom(1, MAX_RANDOM_NAME_NUMBER);
-	
+
 	public Topic getTopic(String id) {
 		return topicdao.getTopic(id);
 	}
