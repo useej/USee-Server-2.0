@@ -45,40 +45,10 @@ public class DanmuServiceImp implements DanmuService{
 		
 		String userId = danmu.getString("userid");
 		String topicId = danmu.getString("topicid");
-		int randomIconId = 0;
-		int randomNameId = 0;
-		String lastVisitTime = timeUtil.currentTimeStamp;
-		int frequency = userTopicDao.getLatestFrequency() + 1;
-		String userIcon = userId + ".png";
-		
-		if(userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId) != null){
-			if(danmu.getBoolean("isannoymous")){
-				randomIconId = randomUserIconId;
-				randomNameId = randomUserNameId;
-				userIcon = randomIconId + ".png";
-			}
-			userTopicDao.updateUserTopic(userId, topicId, randomIconId, randomNameId, lastVisitTime, frequency, userIcon);
-		}
-		else{
-			UserTopic userTopic = new UserTopic();
-			userTopic.setUserId(userId);
-			userTopic.setTopicId(topicId);
-			userTopic.setFirstvisit_time(timeUtil.currentTimeStamp);
-			userTopic.setLastVisit_time(timeUtil.currentTimeStamp);
-			userTopic.setFrequency(0);
-			if(danmu.getBoolean("isannoymous")){
-				userTopic.setRandomNameID(randomUserNameId);
-				userTopic.setRandomIconID(randomUserIconId);
-			}
-			else{
-				userTopic.setRandomNameID(0);
-				userTopic.setRandomIconID(0);
-				userTopic.setUserIcon(userId + ".png");
-			}
-			userTopicDao.saveUserTopic(userTopic);
-		}
-		
-		Danmu newDanmu = new Danmu();
+
+        updateUserTopic(userId, topicId, danmu);
+
+        Danmu newDanmu = new Danmu();
 		newDanmu.setDevId(danmu.getString("devid"));
 		newDanmu.setUserId(userId);
 		newDanmu.setStatus("0");
@@ -98,8 +68,8 @@ public class DanmuServiceImp implements DanmuService{
 		danmuDao.saveDanmu(newDanmu);
 	}
 
-	
-	public String getDanmubyTopic(String topicId, String pageNum,
+
+    public String getDanmubyTopic(String topicId, String pageNum,
 			String pageSize) {
 		List<Danmu> list = new ArrayList<Danmu>();
 		if((pageNum == "" && pageSize == "")||(pageNum == null && pageSize == null)){
@@ -181,41 +151,10 @@ public class DanmuServiceImp implements DanmuService{
 		String userId = danmuComment.getString("userid");
 		int danmuId = danmuComment.getInt("danmuid");
 		String topicId = danmuDao.getTopicIdbyDanmuId(danmuId);
-		
-		int randomIconId = 0;
-		int randomNameId = 0;
-		String lastVisitTime = timeUtil.currentTimeStamp;
-		int frequency = userTopicDao.getLatestFrequency() + 1;
-		String userIcon = userId + ".png";
-		
-		if(userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId) != null){
-			if(danmuComment.getBoolean("isannoymous")){
-				randomIconId = randomUserIconId;
-				randomNameId = randomUserNameId;
-				userIcon = randomIconId + ".png";
-			}
-			userTopicDao.updateUserTopic(userId, topicId, randomIconId, randomNameId, lastVisitTime, frequency, userIcon);
-		}
-		else{
-			UserTopic userTopic = new UserTopic();
-			userTopic.setUserId(userId);
-			userTopic.setTopicId(topicId);
-			userTopic.setFirstvisit_time(timeUtil.currentTimeStamp);
-			userTopic.setLastVisit_time(timeUtil.currentTimeStamp);
-			userTopic.setFrequency(0);
-			if(danmuComment.getBoolean("isannoymous")){
-				userTopic.setRandomNameID(randomUserNameId);
-				userTopic.setRandomIconID(randomUserIconId);
-			}
-			else{
-				userTopic.setRandomNameID(0);
-				userTopic.setRandomIconID(0);
-				userTopic.setUserIcon(userId + ".png");
-			}
-			userTopicDao.saveUserTopic(userTopic);
-		}
-		
-		Comment comment = new Comment();
+
+        updateUserTopic(userId, topicId, danmuComment);
+
+        Comment comment = new Comment();
 		comment.setDanmuId(danmuId);
 		comment.setSender(userId);
 		comment.setReceiver(danmuComment.getString("receiver"));
@@ -308,4 +247,41 @@ public class DanmuServiceImp implements DanmuService{
 			return danmuDao.saveUserDanmuAction(userId, danmuId, action, timeUtil.currentTimeStamp);
 		}
 	}
+
+    private void updateUserTopic(String userId, String topicId, JSONObject jsonObject) {
+        TimeUtil timeUtil = new TimeUtil();
+
+        int randomIconId = 0;
+        int randomNameId = 0;
+        String lastVisitTime = timeUtil.currentTimeStamp;
+        int frequency = userTopicDao.getLatestFrequency() + 1;
+        String userIcon = userId + ".png";
+
+        if(userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId) != null){
+            if(jsonObject.getBoolean("isannoymous")){
+                randomIconId = randomUserIconId;
+                randomNameId = randomUserNameId;
+                userIcon = randomIconId + ".png";
+            }
+            userTopicDao.updateUserTopic(userId, topicId, randomIconId, randomNameId, lastVisitTime, frequency, userIcon);
+        }
+        else{
+            UserTopic userTopic = new UserTopic();
+            userTopic.setUserId(userId);
+            userTopic.setTopicId(topicId);
+            userTopic.setFirstvisit_time(timeUtil.currentTimeStamp);
+            userTopic.setLastVisit_time(timeUtil.currentTimeStamp);
+            userTopic.setFrequency(0);
+            if(jsonObject.getBoolean("isannoymous")){
+                userTopic.setRandomNameID(randomUserNameId);
+                userTopic.setRandomIconID(randomUserIconId);
+            }
+            else{
+                userTopic.setRandomNameID(randomIconId);
+                userTopic.setRandomIconID(randomNameId);
+                userTopic.setUserIcon(userIcon);
+            }
+            userTopicDao.saveUserTopic(userTopic);
+        }
+    }
 }

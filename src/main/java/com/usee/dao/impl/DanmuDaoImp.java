@@ -52,7 +52,7 @@ public class DanmuDaoImp implements DanmuDao {
 	 * 根据topicId获取弹幕列表并进行分页
 	 */
 	public List<Danmu> getDanmuList(String topicId, int pageNum, int pageSize) {
-		String hql = "from Danmu d where d.topicId = ?";
+		String hql = "from Danmu d where d.topicId = ? order by d.create_time desc";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, topicId);
 		query.setFirstResult((pageNum - 1) * pageSize);

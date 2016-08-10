@@ -69,6 +69,7 @@ public class TopicController {
 		}
 		System.out.println(userIcon);
 		userIconjJsonObject.put("usericon", userIcon);
+        userIconjJsonObject.put("nickname", iconNameJsonObject.getString("nickname"));
 		return userIconjJsonObject.toString();
 	}
 
