@@ -94,6 +94,16 @@ public class DanmuDaoImp implements DanmuDao {
 		query.setInteger(0, danmuId);
 		return query.uniqueResult().toString();
 	}
+	
+	/**
+	 * 根据danmuId获取userID
+	 */
+	public String getUserIDbyDanmuId(int danmuId){
+		String hql = "select d.userId from Danmu d where d.id = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setInteger(0, danmuId);
+		return query.uniqueResult().toString();
+	}
 		
 	/**
 	 * 根据UserId获取弹幕
@@ -105,7 +115,6 @@ public class DanmuDaoImp implements DanmuDao {
 		return query.list();
 	}
 
-	@Override
 	public boolean updateUserUpDanmu(Boolean isUp, String userId, int danmuId, String upTime) {
 		String sql = "insert into userupdanmu values(NULL, :userId, :danmuId, :upTime)";
 		String sql2 = "delete from userupdanmu where userID = :userId and danmuID = :danmuId";
@@ -128,7 +137,6 @@ public class DanmuDaoImp implements DanmuDao {
 		}
 	}
 
-	@Override
 	public boolean updateUserDownDanmu(Boolean isDown, String userId, int danmuId,
 			String downTime) {
 		String sql = "insert into userdowndanmu values(NULL, :userId, :danmuId, :downTime)";
@@ -152,7 +160,6 @@ public class DanmuDaoImp implements DanmuDao {
 		}
 	}
 
-	@Override
 	public boolean updateUserFavDanmu(Boolean isFav, String userId,
 			int danmuId, String favTime) {
 		String sql = "insert into userfavdanmu values(NULL, :userId, :danmuId, :favTime, NULL)";
@@ -176,7 +183,6 @@ public class DanmuDaoImp implements DanmuDao {
 		}
 	}
 
-	@Override
 	public void saveUserDanmu(String userId, int danmuId, String firstVisitTime, String lastVisitTime, int frequency) {
 		String sql = "insert into user_danmu values(NULL, :userId, :danmuId, :firstVisitTime, NULL, NULL, :lastVisitTime, :frequency)";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
@@ -189,7 +195,6 @@ public class DanmuDaoImp implements DanmuDao {
 		
 	}
 
-	@Override
 	public int getUniqueUserDanmubyUserIdandDanmuId(String userId,
 			int danmuId) {
 		String sql = "select count(*) from user_danmu where userID = ? and danmuID = ?";
@@ -204,7 +209,6 @@ public class DanmuDaoImp implements DanmuDao {
 		}
 	}
 
-	@Override
 	public void updateUserDanmu(String userId, int danmuId,
 			String lastVisitTime, int frequency) {
 		String sql = "update user_danmu set lastVisit_time = :lastVisitTime, frequency = :frequency where userID = :userId and danmuID = :danmuId";
@@ -216,7 +220,6 @@ public class DanmuDaoImp implements DanmuDao {
 		query.executeUpdate();
 	}
 
-	@Override
 	public int getLatestFrequency() {
 		String sql = "SELECT MAX(frequency) FROM user_danmu";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
@@ -228,7 +231,6 @@ public class DanmuDaoImp implements DanmuDao {
 		}
 	}
 
-	@Override
 	public List<Object[]> listFavDanmu(String userId) {
 		String sql = "select * from userfavdanmu where userID = ?";
 		Query query= sessionFactory.getCurrentSession().createSQLQuery(sql);
@@ -238,7 +240,6 @@ public class DanmuDaoImp implements DanmuDao {
 		return lobj;
 	}
 	
-	@Override
 	public int saveUserDanmuAction(String userId, int danmuId, int action,
 			String actionTime) {
 		String sql = "insert into updowndanmu values(NULL, :userId, :danmuId, :action, :actionTime)";
@@ -250,7 +251,6 @@ public class DanmuDaoImp implements DanmuDao {
 		return query.executeUpdate();
 	}
 
-	@Override
 	public int updateUserDanmuAction(String userId, int danmuId, int action,
 			String actionTime) {
 		String sql = "update updowndanmu set action = :action, action_time = :actionTime where userID = :userId and danmuID = :danmuId";
@@ -262,7 +262,6 @@ public class DanmuDaoImp implements DanmuDao {
 		return query.executeUpdate();
 	}
 
-	@Override
 	public int getUniqueUpDownDanmubyUserIdandDanmuId(String userId,
 			int danmuId) {
 		String sql = "select * from updowndanmu where userID = ? and danmuID = ?";
@@ -277,7 +276,6 @@ public class DanmuDaoImp implements DanmuDao {
 		}
 	}
 
-	@Override
 	public int getActionbyUserIdandDanmuId(String userId, int danmuId) {
 		String sql = "select action from updowndanmu where userID = ? and danmuID = ?";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
@@ -291,7 +289,6 @@ public class DanmuDaoImp implements DanmuDao {
 		}
 	}
 
-	@Override
 	public boolean checkUserFavDanmu(String userId, int danmuId) {
 		String sql = "select * from userfavdanmu where userID = ? and danmuID = ?";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
@@ -302,6 +299,19 @@ public class DanmuDaoImp implements DanmuDao {
 		}
 		else {
 			return false;
+		}
+	}
+
+	public int getLatestDanmuIdByUserIdAndTopicId(String userId, String topicId) {
+		String sql = "SELECT MAX(id) FROM danmu where userID = ? and topicID = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setString(0, userId);
+		query.setString(1, topicId);
+		if(query.uniqueResult() == null){
+			return -1;
+		}
+		else{
+			return (Integer) query.uniqueResult();
 		}
 	}
 	

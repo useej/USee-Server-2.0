@@ -438,7 +438,7 @@ public class UserController {
 			// 获取Web项目的全路径
 			realPath = request.getSession().getServletContext().getRealPath("/") + "userIcons";
 			System.out.println(realPath);
-			newFileName = userID + ".jpg";
+			newFileName = userID + ".png";
 			FileUtils.copyInputStreamToFile(headPhotoFile.getInputStream(), new File(realPath, newFileName));
 			returnInfo = "success";
 		}

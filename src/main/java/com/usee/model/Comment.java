@@ -30,6 +30,12 @@ public class Comment {
 	private int type;
 	@Column
 	private String create_time;
+	@Column
+	private int isanonymous ;
+	@Column
+	private int randomNameID;
+	@Column
+	private int randomIconID;
 	
 	public int getId() {
 		return id;
@@ -96,13 +102,33 @@ public class Comment {
 		this.reply_commentId = reply_commentId;
 	}
 	
+	public int getIsanonymous() {
+		return isanonymous;
+	}
+	public void setIsanonymous(int isanonymous) {
+		this.isanonymous = isanonymous;
+	}
+	
+	public int getRandomNameID() {
+		return randomNameID;
+	}
+	public void setRandomNameID(int randomNameID) {
+		this.randomNameID = randomNameID;
+	}
+	public int getRandomIconID() {
+		return randomIconID;
+	}
+	public void setRandomIconID(int randomIconID) {
+		this.randomIconID = randomIconID;
+	}
 	@Override
 	public String toString() {
 		return " {\"id\":" + id + ", \"danmuId\":" + danmuId
 				+ ", \"sender\":\"" + sender + "\", \"receiver\":\"" + receiver
 				+ "\", \"content\":\"" + content + "\", \"replay_commentId\":"
 				+ reply_commentId + ", \"type\":" + type
-				+ ", \"create_time\":\"" + create_time + "\"}";
+				+ ", \"create_time\":\"" + create_time 
+				+ "\", \"randomNameID\":" + randomNameID + ", \"randomIconID\":" + randomIconID + "}";
 	}
 	
 }

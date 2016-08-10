@@ -14,7 +14,7 @@ import com.usee.utils.MD5Util;
 @Service
 public class UserServiceImpl implements UserService {
 	private static final String DEFAULT_NICKNAME = "无名氏";
-	private static final String DEFAULT_USERICON = "1.png";
+	private static final String DEFAULT_USERICON = "0.png";
 	private static final int DEFAULT_GENDER = 2;
 	
 	@Resource

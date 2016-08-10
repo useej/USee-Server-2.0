@@ -43,4 +43,17 @@ public class CommentDaoImpl implements CommentDao{
 		query.setInteger(0, danmuId);
 		return query.list();
 	}
+
+	public int getLatestCommentIdByUserIdAndDanmuId(String sender, int danmuId) {
+		String sql = "SELECT MAX(id) FROM comment where sender = ? and danmuId = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setString(0, sender);
+		query.setInteger(1, danmuId);
+		if(query.uniqueResult() == null){
+			return -1;
+		}
+		else{
+			return (Integer) query.uniqueResult();
+		}
+	}
 }

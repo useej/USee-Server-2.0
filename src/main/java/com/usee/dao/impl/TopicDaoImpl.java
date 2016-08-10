@@ -78,7 +78,6 @@ public class TopicDaoImpl implements TopicDao {
 		
 	}
 
-	@Override
 	public List searchTopic(String keyword) {
 		String hql="from Topic  where title like '%"+keyword+"%'";  
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);

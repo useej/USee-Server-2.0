@@ -22,6 +22,8 @@ public interface TopicService {
 	
 	public JSONObject getUserIconbyTopic(String userId, String topicId);
 	
+	public JSONObject getUserIconByComment(String userId, int danmuId);
+	
 	public void updateUser_topic(String userID,String topicID);
 	
 	public String createTopic(JSONObject topic);
