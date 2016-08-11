@@ -29,5 +29,6 @@ public interface TopicService {
 	public String createTopic(JSONObject topic);
 	
 	public String searchTopic(String keyword);
-			
+
+    public String getHotestTopics(double threshold);
 }

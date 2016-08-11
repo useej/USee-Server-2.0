@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.usee.utils.PullwordApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,10 +47,11 @@ public class TopicServiceImpl implements TopicService {
 	
 	public static final int MAX_RANDOM_NAME_NUMBER = 590;
 	public static final int MAX_RANDOM_ICON_NUMBER = 6400;
+    public static final Double THRESHOLD = 0.8;
+    public static final int HOTTOPICS_SUM = 4;
 	
 	public RandomNumber randomNumber = new RandomNumber();
 	public int randomUserIconId = 0;
-	public int randomUserNameId = randomNumber.getRandom(1, MAX_RANDOM_NAME_NUMBER);
 
 	public Topic getTopic(String id) {
 		return topicdao.getTopic(id);
@@ -72,9 +74,10 @@ public class TopicServiceImpl implements TopicService {
 
 
 	public String getUserTopics(String userID) {
+        PullwordApi pa = new PullwordApi();
+
 		List list1 = new ArrayList();
 		List list2 = new ArrayList();
-		List list3 = new ArrayList();
 		List<String> userTopics = new ArrayList();
 		list1 = topicdao.getUserTopicsID(userID);
 		list2 = danmudao.getDanmubyUserId(userID);
@@ -96,15 +99,15 @@ public class TopicServiceImpl implements TopicService {
 		list1.addAll(list2);
 		
 		for(int i=0; i<list1.size();i++){   
-		       String a = (String) list1.get(i); 
-		       userTopics.addAll(topicdao.getUserTopics(a));
+            String a = (String) list1.get(i);
+            userTopics.addAll(topicdao.getUserTopics(a));
 		}
-		 JSONArray array = JSONArray.fromObject(userTopics);
-		 JSONObject object = new JSONObject();
-			object.put("topic", array.toString());
-			
-			
-			return object.toString();
+        JSONArray array = JSONArray.fromObject(userTopics);
+        pa.sort(array, "lastDanmu_time", false);
+        JSONObject object = new JSONObject();
+        object.put("topic", array.toString());
+
+        return object.toString();
 	}
 
 
@@ -153,6 +156,8 @@ public class TopicServiceImpl implements TopicService {
 	}
 
 	public JSONObject getUserIconbyTopic(String userId, String topicId) {
+        int randomUserNameId = randomNumber.getRandom(1, MAX_RANDOM_NAME_NUMBER);
+
 		JSONObject jsonObject= new JSONObject();
 		// 通过userId和topicId从数据库中获取存在的UserTopic信息
 		UserTopic existUserTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId);
@@ -235,6 +240,8 @@ public class TopicServiceImpl implements TopicService {
 	
 
 	public JSONObject getUserIconByComment(String userId, int danmuId) {
+        int randomUserNameId = randomNumber.getRandom(1, MAX_RANDOM_NAME_NUMBER);
+
 		JSONObject jsonObject= new JSONObject();
 		// 根据 danmuId 得到 topicId
 		String topicId = danmudao.getTopicIdbyDanmuId(danmuId);
@@ -368,5 +375,17 @@ public class TopicServiceImpl implements TopicService {
 			return object.toString();
 	}
 
+    @Override
+    public String getHotestTopics(double threshold) {
+        PullwordApi pa = new PullwordApi();
+
+        List<Topic> list = topicdao.getTopicsbyDanmuNum(HOTTOPICS_SUM);
+        String titles = "";
+        for (Topic t:list) {
+            titles += t.getTitle();
+        }
+        System.out.println(titles);
+        return pa.getHotwords(titles, threshold);
+    }
 
 }
