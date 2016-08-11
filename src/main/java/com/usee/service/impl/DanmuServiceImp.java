@@ -48,7 +48,7 @@ public class DanmuServiceImp implements DanmuService{
 
 	public RandomNumber randomNumber = new RandomNumber();
 	public int randomUserIconId = 0;
-	public int randomUserNameId = randomNumber.getRandom(1, MAX_RANDOM_NAME_NUMBER);
+//	public int randomUserNameId = randomNumber.getRandom(1, MAX_RANDOM_NAME_NUMBER);
 	
 	public void sendDammu(JSONObject danmu) {
 		TimeUtil timeUtil = new TimeUtil();
@@ -252,6 +252,22 @@ public class DanmuServiceImp implements DanmuService{
 		for (Comment comment : comments) {
 			
 			User sender = userDao.getUser(comment.getSender());
+			
+			// 解决hibernate缓存问题,先保存原始数据
+			User temp_user = new User();
+			temp_user.setCellphone(sender.getCellphone());
+			temp_user.setCreateTime(sender.getCreateTime());
+			temp_user.setGender(sender.getGender());
+			temp_user.setNickname(sender.getNickname());
+			temp_user.setOpenID_qq(sender.getOpenID_qq());
+			temp_user.setOpenID_wb(sender.getOpenID_wb());
+			temp_user.setOpenID_wx(sender.getOpenID_wx());
+			temp_user.setPassword(sender.getPassword());
+			temp_user.setUserIcon(sender.getUserIcon());
+			temp_user.setUserID(sender.getUserID());
+			temp_user.setVcSendTime(sender.getVcSendTime());
+			temp_user.setVerificationCode(sender.getVerificationCode());
+			
 			User receiver = userDao.getUser(comment.getReceiver());
 			
 			/*
@@ -311,6 +327,9 @@ public class DanmuServiceImp implements DanmuService{
 			jsonObject_usercomment.put("replycomment_name", receiver.getNickname());	//应该是receiver_name和receiver_gender
 			jsonObject_usercomment.put("replycomment_gender", receiver.getGender());
 			jsonArray_usercomment.add(jsonObject_usercomment);
+			
+			// 解决hibernate缓存问题,还原原始数据
+			sender = temp_user;
 		}		
 		danmuDetails.put("usercomments", jsonArray_usercomment);
 		return danmuDetails.toString();

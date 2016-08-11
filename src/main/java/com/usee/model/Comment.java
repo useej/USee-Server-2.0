@@ -128,7 +128,8 @@ public class Comment {
 				+ "\", \"content\":\"" + content + "\", \"replay_commentId\":"
 				+ reply_commentId + ", \"type\":" + type
 				+ ", \"create_time\":\"" + create_time 
-				+ "\", \"randomNameID\":" + randomNameID + ", \"randomIconID\":" + randomIconID + "}";
+				+ "\", \"randomNameID\":" + randomNameID + ", \"randomIconID\":" + randomIconID
+				+ "\", \"isanonymous\":" + isanonymous +  "}";
 	}
 	
 }
