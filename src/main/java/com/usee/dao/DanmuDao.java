@@ -3,7 +3,6 @@ package com.usee.dao;
 import java.util.List;
 
 import com.usee.model.Danmu;
-import com.usee.model.UserTopic;
 
 public interface DanmuDao {
 
@@ -23,6 +22,8 @@ public interface DanmuDao {
 	public List getDanmubyUserId(String userId);
 	
 	public String getTopicIdbyDanmuId(int danmuId);
+	
+	public String getUserIDbyDanmuId(int danmuId);
 	
 	public boolean updateUserUpDanmu(Boolean isUp, String userId, int danmuId, String upTime);
 	
@@ -49,4 +50,6 @@ public interface DanmuDao {
 	public int getActionbyUserIdandDanmuId(String userId, int danmuId);
 	
 	public boolean checkUserFavDanmu(String userId, int danmuId);
+	
+	public int getLatestDanmuIdByUserIdAndTopicId(String userId, String topicId);
 }

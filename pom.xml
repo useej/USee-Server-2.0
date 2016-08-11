@@ -353,8 +353,32 @@
       <version>1.5.4</version>
       <scope>test</scope>
     </dependency>
+    <!-- 分词 -->
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>3.6.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.wltea.analyzer</groupId>
+      <artifactId>IKAnalyzer</artifactId>
+      <version>2012_u6</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/IKAnalyzer2012_u6.jar
+      </systemPath>
+    </dependency>
   </dependencies>
   <build>
     <finalName>server2.0</finalName>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                  <source>1.6</source>
+                  <target>1.6</target>
+              </configuration>
+          </plugin>
+      </plugins>
   </build>
 </project>

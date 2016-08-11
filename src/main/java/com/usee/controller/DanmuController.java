@@ -1,24 +1,24 @@
 package com.usee.controller;
 
-import net.sf.json.JSONObject;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.usee.model.Comment;
-import com.usee.model.Danmu;
+import com.usee.service.JPushService;
 import com.usee.service.impl.DanmuServiceImp;
+
+import net.sf.json.JSONObject;
 
 
 @Controller
 public class DanmuController {
 	@Autowired
 	private DanmuServiceImp danmuService;
+	@Autowired
+	private JPushService jpushService;
 	
 	@RequestMapping(value = "senddanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
@@ -61,6 +61,16 @@ public class DanmuController {
 	public String commentDanmu(@RequestBody String danmuComment){
 		JSONObject commentJson = new JSONObject().fromObject(danmuComment);
 		String comment = danmuService.commentDanmu(commentJson).toString();
+		// 调用推送接口
+		String receiver = commentJson.getString("receiver");
+		int type = commentJson.getInt("type");
+		if(type == 1) {
+			jpushService.push(receiver, "有人评论您");
+		} else if(type == 2) {
+			jpushService.push(receiver, "有人回复您的评论");
+		} else if(type == 3) {
+			jpushService.push(receiver, "有人给你发悄悄话");
+		}
 		System.out.println(comment);
 		return comment;
 	}

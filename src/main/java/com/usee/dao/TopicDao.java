@@ -23,4 +23,6 @@ public interface TopicDao {
 	public void updateUser_topic(String userID,String topicID);
 	
 	public List searchTopic(String keyword);
+
+    public List<Topic> getTopicsbyDanmuNum(int num);
 }

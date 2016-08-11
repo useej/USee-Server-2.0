@@ -362,7 +362,7 @@ public class UserController {
 		}
 		if (user.getOpenID_wx() != null && !user.getOpenID_wx().equals(updateUser.getOpenID_wx())) {
 			updateUser.setOpenID_wx(user.getOpenID_wx());
-			validateUser = userService.getUserByOpenId("openID_qq", user.getOpenID_qq());
+			validateUser = userService.getUserByOpenId("openID_wx", user.getOpenID_wx());
 			if(validateUser != null) {
 				returnMap.put(RETURN_INFO, "exit");
 				return returnMap;
@@ -370,7 +370,7 @@ public class UserController {
 		}
 		if (user.getOpenID_wb() != null && !user.getOpenID_wb().equals(updateUser.getOpenID_wb())) {
 			updateUser.setOpenID_wb(user.getOpenID_wb());
-			validateUser = userService.getUserByOpenId("openID_qq", user.getOpenID_qq());
+			validateUser = userService.getUserByOpenId("openID_wb", user.getOpenID_wb());
 			if(validateUser != null) {
 				returnMap.put(RETURN_INFO, "exit");
 				return returnMap;
@@ -438,7 +438,7 @@ public class UserController {
 			// 获取Web项目的全路径
 			realPath = request.getSession().getServletContext().getRealPath("/") + "userIcons";
 			System.out.println(realPath);
-			newFileName = userID + ".jpg";
+			newFileName = userID + ".png";
 			FileUtils.copyInputStreamToFile(headPhotoFile.getInputStream(), new File(realPath, newFileName));
 			returnInfo = "success";
 		}

@@ -28,7 +28,7 @@ public class TopicDaoImpl implements TopicDao {
 	}
 
 	public List<Topic> getAllTopic() {
-		String hql = "from Topic";
+		String hql = "from Topic order by lastDanmu_time desc";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 
 		return query.list();
@@ -60,7 +60,7 @@ public class TopicDaoImpl implements TopicDao {
 	 * 获取所有弹幕的Id
 	 */
 	public List getAllTopicId(){
-		String hql ="select id from topic order by lastDanmu_time desc";
+		String hql ="select id from topic";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(hql);
 		return query.list();
 	}
@@ -78,11 +78,19 @@ public class TopicDaoImpl implements TopicDao {
 		
 	}
 
-	@Override
 	public List searchTopic(String keyword) {
 		String hql="from Topic  where title like '%"+keyword+"%'";  
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		return query.list();  
 	}
+
+    @Override
+    public List<Topic> getTopicsbyDanmuNum(int num) {
+        String hql="from Topic order by danmuNum desc";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setFirstResult(0);
+        query.setMaxResults(num);
+        return query.list();
+    }
 
 }
