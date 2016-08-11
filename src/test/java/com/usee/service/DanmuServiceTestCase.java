@@ -23,8 +23,7 @@ import com.usee.service.impl.DanmuServiceImp;
 })   
 //开启Rollback，测试完毕后测试数据不会存到数据库
 @TransactionConfiguration(defaultRollback = true)
-@Transactional
-public class DanmuServiceTestCase {
+@Transactional class DanmuServiceTestCase {
 	@Autowired
 	private DanmuDaoImp danmudao;
 	@Autowired

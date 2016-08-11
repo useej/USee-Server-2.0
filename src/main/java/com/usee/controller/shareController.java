@@ -51,8 +51,8 @@ public class shareController {
 		String topicTitle = topic.getTitle();
 		
 		// 使用topic信息组装成topicUrl
-		String topicUrl = "http://114.215.209.102/USee/danmaku.html?topictitle="
-				+ topicTitle + "&topicid=" + topicId;
+		String topicUrl = "www.useeba.com/danmu.html?title="
+				+ topicTitle + "&tid" + topicId;
 		
 		shareMap.put("topicUrl", topicUrl);
 		shareMap.put("topicDescription", topicDescription);

@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.usee.dao.ColorDao;
+import com.usee.dao.RandomNameDao;
+import com.usee.dao.TopicDao;
+import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.model.Comment;
 import com.usee.model.Message;
 import com.usee.model.User;
@@ -34,6 +38,18 @@ public class MessageController {
 	
 	@Autowired
 	private SqlInjectService sqlInjectService;
+	
+	@Autowired
+	private DanmuDaoImp danmuDao;
+	
+	@Autowired
+	private TopicDao topicDao;
+	
+	@Autowired
+	private ColorDao colorDao;
+	
+	@Autowired
+	private RandomNameDao randomNameDao;
 	
 	@ResponseBody
 	@RequestMapping(value = "getNewMsgsNum", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
@@ -91,14 +107,39 @@ public class MessageController {
 		
 		for (Comment comment : list) {
 			User user = userService.getUser(comment.getSender());
+			// 根据danmuID得到话题名称
+			int danmuId = comment.getDanmuId();
+			String danmuUserID = danmuDao.getUserIDbyDanmuId(danmuId);
+			String topicId = danmuDao.getTopicIdbyDanmuId(danmuId);
+			String topicTitle = topicDao.getTopic(topicId).getTitle();
+						
+			String userName = user.getNickname();
+			String userIcon = user.getUserIcon();
+			if(comment.getIsanonymous() == 0) {
+				// 得到randomID
+				int randomIconId = comment.getRandomIconID();
+				int randomNameId = comment.getRandomNameID();
+				// 得到随机头像 id
+				int iconId = randomIconId / 100 + 1;
+				// 得到随机头像的色值
+				int iconColorId = randomIconId % 100 + 1;
+				String iconCode = colorDao.getColorById(iconColorId);
+				// 根据randomID 得到userIcon和userName
+				userIcon = iconId + "_" + iconCode; // 63_E6A473
+				userName = randomNameDao.getRandomNameById(randomNameId);
+			}
 			Message message = new Message();
-			message.setNickname(user.getNickname());
+			message.setNickname(userName);
 			message.setGender(user.getGender());
-			message.setUserIcon(user.getUserIcon());
+			message.setUserIcon(userIcon);
 			message.setDanmuId(comment.getDanmuId());
 			message.setContent(comment.getContent());
 			message.setCreate_time(comment.getCreate_time());
 			message.setType(comment.getType());
+			message.setCommentId(comment.getId());
+			message.setSender(comment.getSender());
+			message.setDanmuUserID(danmuUserID);
+			message.setTopicTitle(topicTitle);
 			messageList.add(message);
 		}
 	
@@ -134,14 +175,39 @@ public class MessageController {
 		
 		for (Comment comment : list) {
 			User user = userService.getUser(comment.getSender());
+			// 根据danmuID得到话题名称
+			int danmuId = comment.getDanmuId();
+			String danmuUserID = danmuDao.getUserIDbyDanmuId(danmuId);
+			String topicId = danmuDao.getTopicIdbyDanmuId(danmuId);
+			String topicTitle = topicDao.getTopic(topicId).getTitle();
+						
+			String userName = user.getNickname();
+			String userIcon = user.getUserIcon();
+			if(comment.getIsanonymous() == 0) {
+				// 得到randomID
+				int randomIconId = comment.getRandomIconID();
+				int randomNameId = comment.getRandomNameID();
+				// 得到随机头像 id
+				int iconId = randomIconId / 100 + 1;
+				// 得到随机头像的色值
+				int iconColorId = randomIconId % 100 + 1;
+				String iconCode = colorDao.getColorById(iconColorId);
+				// 根据randomID 得到userIcon和userName
+				userIcon = iconId + "_" + iconCode; // 63_E6A473
+				userName = randomNameDao.getRandomNameById(randomNameId);
+			}
 			Message message = new Message();
-			message.setNickname(user.getNickname());
+			message.setNickname(userName);
 			message.setGender(user.getGender());
-			message.setUserIcon(user.getUserIcon());
+			message.setUserIcon(userIcon);
 			message.setDanmuId(comment.getDanmuId());
 			message.setContent(comment.getContent());
 			message.setCreate_time(comment.getCreate_time());
 			message.setType(comment.getType());
+			message.setCommentId(comment.getId());
+			message.setSender(comment.getSender());
+			message.setDanmuUserID(danmuUserID);
+			message.setTopicTitle(topicTitle);
 			messageList.add(message);
 		}
 	
