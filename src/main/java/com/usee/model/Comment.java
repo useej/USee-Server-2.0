@@ -129,7 +129,7 @@ public class Comment {
 				+ reply_commentId + ", \"type\":" + type
 				+ ", \"create_time\":\"" + create_time 
 				+ "\", \"randomNameID\":" + randomNameID + ", \"randomIconID\":" + randomIconID
-				+ "\", \"isanonymous\":" + isanonymous +  "}";
+				+ ", \"isanonymous\":" + isanonymous +  "}";
 	}
 	
 }

@@ -253,20 +253,12 @@ public class DanmuServiceImp implements DanmuService{
 			
 			User sender = userDao.getUser(comment.getSender());
 			
-			// 解决hibernate缓存问题,先保存原始数据
+			// 解决hibernate缓存问题,不修改原始数据,修改临时对象的数据
 			User temp_user = new User();
-			temp_user.setCellphone(sender.getCellphone());
-			temp_user.setCreateTime(sender.getCreateTime());
 			temp_user.setGender(sender.getGender());
 			temp_user.setNickname(sender.getNickname());
-			temp_user.setOpenID_qq(sender.getOpenID_qq());
-			temp_user.setOpenID_wb(sender.getOpenID_wb());
-			temp_user.setOpenID_wx(sender.getOpenID_wx());
-			temp_user.setPassword(sender.getPassword());
 			temp_user.setUserIcon(sender.getUserIcon());
 			temp_user.setUserID(sender.getUserID());
-			temp_user.setVcSendTime(sender.getVcSendTime());
-			temp_user.setVerificationCode(sender.getVerificationCode());
 			
 			User receiver = userDao.getUser(comment.getReceiver());
 			
@@ -309,27 +301,16 @@ public class DanmuServiceImp implements DanmuService{
 				String userIcon = iconId + "_" + iconCode; // 63_E6A473
 				String userName = randomNameDao.getRandomNameById(randomNameId);
 				// 将user对象中的userIcon和nickname替换掉
-				sender.setNickname(userName);
-				sender.setUserIcon(userIcon);
+				temp_user.setNickname(userName);
+				temp_user.setUserIcon(userIcon);
 			} 
 			
 			JSONObject jsonObject_usercomment = new JSONObject();
-			sender.setCellphone(null);
-			sender.setCreateTime(null);
-			sender.setOpenID_qq(null);
-			sender.setOpenID_wx(null);
-			sender.setOpenID_wb(null);
-			sender.setPassword(null);
-			sender.setVcSendTime(null);
-			sender.setVerificationCode(null);
-			jsonObject_usercomment.put("user", sender);
+			jsonObject_usercomment.put("user", temp_user);
 			jsonObject_usercomment.put("comment", comment);
 			jsonObject_usercomment.put("replycomment_name", receiver.getNickname());	//应该是receiver_name和receiver_gender
 			jsonObject_usercomment.put("replycomment_gender", receiver.getGender());
 			jsonArray_usercomment.add(jsonObject_usercomment);
-			
-			// 解决hibernate缓存问题,还原原始数据
-			sender = temp_user;
 		}		
 		danmuDetails.put("usercomments", jsonArray_usercomment);
 		return danmuDetails.toString();

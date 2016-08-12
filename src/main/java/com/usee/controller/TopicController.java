@@ -117,9 +117,7 @@ public class TopicController {
 
     @RequestMapping(value = "gethotsearch", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
-    public String getHotSearch(@RequestBody String parameter){
-        JSONObject json =  new JSONObject().fromObject(parameter);
-        double threshold = json.getDouble("threshold");
-        return topicService.getHotestTopics(threshold);
+    public String getHotSearch(){
+        return topicService.getHotestTopics();
     }
 }

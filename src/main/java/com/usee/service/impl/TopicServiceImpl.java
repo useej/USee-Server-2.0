@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.usee.utils.PullwordApi;
+import com.usee.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +20,6 @@ import com.usee.model.Danmu;
 import com.usee.model.Topic;
 import com.usee.model.UserTopic;
 import com.usee.service.TopicService;
-import com.usee.utils.Distance;
-import com.usee.utils.RandomNumber;
-import com.usee.utils.TimeUtil;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -47,8 +44,8 @@ public class TopicServiceImpl implements TopicService {
 	
 	public static final int MAX_RANDOM_NAME_NUMBER = 590;
 	public static final int MAX_RANDOM_ICON_NUMBER = 6400;
-    public static final Double THRESHOLD = 0.8;
-    public static final int HOTTOPICS_SUM = 4;
+    public static final int HOT_WORDS_NUM = 10;
+    public static final int HOT_TOPIC_TITLE_NUM = 20;
 	
 	public RandomNumber randomNumber = new RandomNumber();
 	public int randomUserIconId = 0;
@@ -376,16 +373,18 @@ public class TopicServiceImpl implements TopicService {
 	}
 
     @Override
-    public String getHotestTopics(double threshold) {
-        PullwordApi pa = new PullwordApi();
+    public String getHotestTopics() {
+        //PullwordApi pa = new PullwordApi();
+        AnsjSegUtil asu = new AnsjSegUtil();
 
-        List<Topic> list = topicdao.getTopicsbyDanmuNum(HOTTOPICS_SUM);
+        List<Topic> list = topicdao.getTopicsbyDanmuNum(HOT_TOPIC_TITLE_NUM);
         String titles = "";
         for (Topic t:list) {
             titles += t.getTitle();
         }
         System.out.println(titles);
-        return pa.getHotwords(titles, threshold);
+        //return pa.getHotwords(titles, threshold);
+        return asu.getPhraseSpilted(titles, HOT_WORDS_NUM);
     }
 
 }
