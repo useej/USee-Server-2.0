@@ -30,4 +30,6 @@ public interface DanmuService {
 	public String getFavDanmuList(JSONObject jsonObject);
 	
 	public int updateUserAction(JSONObject jsonObject);
+
+    public String getLatestDanmuList(JSONObject jsonObject);
 }

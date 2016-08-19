@@ -59,15 +59,32 @@ public class DanmuDaoImp implements DanmuDao {
 		query.setMaxResults(pageSize);
 		return query.list();
 	}
-	
-	/**
+
+    /**
+     *根据topicId获取一段时间之内的弹幕列表
+     */
+    @Override
+    public List<Danmu> getLatestDanmuList(String topicId, String startTime, String endTime) {
+        String hql = "from Danmu d where d.topicId = ? and d.create_time between ? and ? order by d.create_time desc";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setString(0, topicId);
+        query.setString(1, startTime);
+        query.setString(2, endTime);
+        return query.list();
+    }
+
+    /**
 	 * ******废弃*******
 	 * 根据danmuId获取弹幕详情
 	 */
 	/*
 	public List<Object[]> getDanmuDetails(int danmuId){
 		//String hql = "from Danmu as d, User as u where d.userId = u.userId and d.id = ?";
-		String sql = "SELECT d.id AS danmuid, devid, d.userID AS userid, status, topicID, lon, lat, praisenum, downnum, commentnum, hitnum, d.create_time AS dcreatetime, address, delete_time, head, messages, d.userIcon AS duserIcon, gender, nickname, cellphone, password, c.id AS commontid, sender, receiver, content, c.reply_commentID AS replycommontid, type, c.create_time AS ccreatetime FROM danmu d LEFT JOIN user u ON d.userID = u.userID LEFT JOIN comment c ON d.id = c.danmuID WHERE d.id = ?";
+		String sql = "SELECT d.id AS danmuid, devid, d.userID AS userid, status, topicID, lon, lat, " +
+                "praisenum, downnum, commentnum, hitnum, d.create_time AS dcreatetime, address, delete_time, " +
+                "head, messages, d.userIcon AS duserIcon, gender, nickname, cellphone, password, c.id AS commontid," +
+                " sender, receiver, content, c.reply_commentID AS replycommontid, type, c.create_time AS ccreatetime FROM " +
+                "danmu d LEFT JOIN user u ON d.userID = u.userID LEFT JOIN comment c ON d.id = c.danmuID WHERE d.id = ?";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		query.setResultTransformer(org.hibernate.transform.Transformers.ALIAS_TO_ENTITY_MAP);  
 		query.setInteger(0, danmuId);

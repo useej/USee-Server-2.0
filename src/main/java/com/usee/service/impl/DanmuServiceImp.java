@@ -250,7 +250,7 @@ public class DanmuServiceImp implements DanmuService{
 		danmuDetails.put("isfav", danmuDao.checkUserFavDanmu(currentUserId, danmuId));
 
 		for (Comment comment : comments) {
-			
+            JSONObject jsonObject_usercomment = new JSONObject();
 			User sender = userDao.getUser(comment.getSender());
 			
 			// 解决hibernate缓存问题,不修改原始数据,修改临时对象的数据
@@ -303,13 +303,23 @@ public class DanmuServiceImp implements DanmuService{
 				// 将user对象中的userIcon和nickname替换掉
 				temp_user.setNickname(userName);
 				temp_user.setUserIcon(userIcon);
-			} 
-			
-			JSONObject jsonObject_usercomment = new JSONObject();
+
+                int receiverRandomNameId = 0;
+                if(comment.getReply_commentId() != null){
+                    receiverRandomNameId = commentDao.getComment(comment.getReply_commentId()).getRandomNameID();
+                }
+
+                jsonObject_usercomment.put("replycomment_name", randomNameDao.getRandomNameById(receiverRandomNameId));	//应该是receiver_name和receiver_gender
+                jsonObject_usercomment.put("replycomment_gender", randomNameDao.getGenderbyId(receiverRandomNameId));
+			}
+            else {
+                jsonObject_usercomment.put("replycomment_name", receiver.getNickname());    //应该是receiver_name和receiver_gender
+                jsonObject_usercomment.put("replycomment_gender", receiver.getGender());
+            }
+
 			jsonObject_usercomment.put("user", temp_user);
 			jsonObject_usercomment.put("comment", comment);
-			jsonObject_usercomment.put("replycomment_name", receiver.getNickname());	//应该是receiver_name和receiver_gender
-			jsonObject_usercomment.put("replycomment_gender", receiver.getGender());
+
 			jsonArray_usercomment.add(jsonObject_usercomment);
 		}		
 		danmuDetails.put("usercomments", jsonArray_usercomment);
@@ -586,4 +596,21 @@ public class DanmuServiceImp implements DanmuService{
 //            userTopicDao.saveUserTopic(userTopic);
 //        }
 //    }
+
+    public String getLatestDanmuList(JSONObject jsonObject){
+        String topicId = jsonObject.getString("topicid");
+        String startTime = jsonObject.getString("starttime");
+        String T = jsonObject.getString("T");
+
+        int endTime = Integer.parseInt(startTime) + Integer.parseInt(T);
+
+        List<Danmu> list = new ArrayList<Danmu>();
+        list = danmuDao.getLatestDanmuList(topicId, startTime, endTime+"");
+
+        JSONArray array = JSONArray.fromObject(list);
+        JSONObject object = new JSONObject();
+        object.put("danmu", array.toString());
+
+        return object.toString();
+    }
 }

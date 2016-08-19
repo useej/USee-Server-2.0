@@ -14,7 +14,9 @@ public interface DanmuDao {
 	
 	public List<Danmu> getDanmuList(String topicId, int pageNum,
 			int pageSize);
-	
+
+    public List<Danmu> getLatestDanmuList(String topicId, String startTime, String T);
+
 	//public List<Object[]> getDanmuDetails(int danmuId);
 	
 	public int getLatestDanmuId();
