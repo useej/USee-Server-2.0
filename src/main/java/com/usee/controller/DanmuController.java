@@ -128,4 +128,13 @@ public class DanmuController {
 		result.put("result", status);
 		return result.toString();
 	}
+
+    @RequestMapping(value = "getlatestdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String getLatestDanmu(@RequestBody String info){
+        JSONObject danmujson = new JSONObject().fromObject(info);
+        String danmu = danmuService.getLatestDanmuList(danmujson);
+        System.out.println(danmu);
+        return danmu;
+    }
 }

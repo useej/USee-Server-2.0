@@ -56,4 +56,12 @@ public class CommentDaoImpl implements CommentDao{
 			return (Integer) query.uniqueResult();
 		}
 	}
+
+    @Override
+    public Comment getCommentbyReplycommentId(int replycommentId) {
+        String hql = "from Comment c where c.id = ?";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setInteger(0, replycommentId);
+        return (Comment) query.uniqueResult();
+    }
 }
