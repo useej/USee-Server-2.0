@@ -613,4 +613,21 @@ public class DanmuServiceImp implements DanmuService{
 
         return object.toString();
     }
+
+    @Override
+    public String haveNewComments(JSONObject jsonObject) {
+        int danmuId = jsonObject.getInt("danmuid");
+        String time = jsonObject.getString("time");
+        List<Comment> list = commentDao.getCommentbyDanmuIdandCreatetime(danmuId, time);
+
+        JSONObject object = new JSONObject();
+
+        if(list.size() != 0){
+            object.put("havecomment", true);
+        }
+        else {
+            object.put("havecomment", false);
+        }
+        return object.toString();
+    }
 }

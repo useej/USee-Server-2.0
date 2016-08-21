@@ -16,4 +16,6 @@ public interface CommentDao {
 	public int getLatestCommentIdByUserIdAndDanmuId(String sender, int danmuId);
 
     public Comment getCommentbyReplycommentId(int replycommentId);
+
+    public List<Comment> getCommentbyDanmuIdandCreatetime(int danmuId, String createTime);
 }
