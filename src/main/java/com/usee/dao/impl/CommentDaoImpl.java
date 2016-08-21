@@ -64,4 +64,13 @@ public class CommentDaoImpl implements CommentDao{
         query.setInteger(0, replycommentId);
         return (Comment) query.uniqueResult();
     }
+
+    @Override
+    public List<Comment> getCommentbyDanmuIdandCreatetime(int danmuId, String createTime) {
+        String hql = "from Comment c where c.danmuId = ? and c.create_time > ?";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setInteger(0, danmuId);
+        query.setString(1, createTime);
+        return query.list();
+    }
 }

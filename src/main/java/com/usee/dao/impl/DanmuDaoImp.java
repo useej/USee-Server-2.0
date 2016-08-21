@@ -249,7 +249,7 @@ public class DanmuDaoImp implements DanmuDao {
 	}
 
 	public List<Object[]> listFavDanmu(String userId) {
-		String sql = "select * from userfavdanmu where userID = ?";
+		String sql = "select * from userfavdanmu where userID = ? order by fav_time desc";
 		Query query= sessionFactory.getCurrentSession().createSQLQuery(sql);
 		query.setResultTransformer(org.hibernate.transform.Transformers.ALIAS_TO_ENTITY_MAP); 
 		query.setParameter(0, userId);

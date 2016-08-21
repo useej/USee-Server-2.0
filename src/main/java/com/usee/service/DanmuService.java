@@ -32,4 +32,6 @@ public interface DanmuService {
 	public int updateUserAction(JSONObject jsonObject);
 
     public String getLatestDanmuList(JSONObject jsonObject);
+
+    public String haveNewComments(JSONObject jsonObject);
 }
