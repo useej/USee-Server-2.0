@@ -54,4 +54,6 @@ public interface DanmuDao {
 	public boolean checkUserFavDanmu(String userId, int danmuId);
 	
 	public int getLatestDanmuIdByUserIdAndTopicId(String userId, String topicId);
+
+    public int updateReport(String reporter, String contentUserId, String contentId, String contentType, String reportTime, int reportType);
 }

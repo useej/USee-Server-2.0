@@ -1,5 +1,6 @@
 package com.usee.service;
 
+import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
 import com.usee.model.Comment;
@@ -34,4 +35,6 @@ public interface DanmuService {
     public String getLatestDanmuList(JSONObject jsonObject);
 
     public String haveNewComments(JSONObject jsonObject);
+
+    public String reportContent(JSONObject jsonObject);
 }

@@ -145,4 +145,12 @@ public class DanmuController {
         String result = danmuService.haveNewComments(danmuJson);
         return result;
     }
+
+    @RequestMapping(value = "reportcontent", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String reportContent(@RequestBody String info){
+        JSONObject contentJson = new JSONObject().fromObject(info);
+        String result = danmuService.reportContent(contentJson);
+        return result;
+    }
 }

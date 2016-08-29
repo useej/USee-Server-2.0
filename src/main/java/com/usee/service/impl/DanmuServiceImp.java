@@ -630,4 +630,24 @@ public class DanmuServiceImp implements DanmuService{
         }
         return object.toString();
     }
+
+    @Override
+    public String reportContent(JSONObject jsonObject) {
+        TimeUtil timeUtil = new TimeUtil();
+
+        String reporter = jsonObject.getString("userid");
+        String contentUserId = jsonObject.getString("contentuserid");
+        String contentId = jsonObject.getString("contentid");
+        String contentType = jsonObject.getString("contenttype");
+        int reportType = jsonObject.getInt("reporttype");
+        String reportTime = timeUtil.currentTimeStamp;
+        
+        int result = danmuDao.updateReport(reporter, contentUserId, contentId, contentType, reportTime, reportType);
+
+        JSONObject resultJson = new JSONObject();
+
+        resultJson.put("result", result);
+
+        return resultJson.toString();
+    }
 }

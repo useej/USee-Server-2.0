@@ -15,6 +15,9 @@ import com.usee.service.impl.TopicServiceImpl;
 
 import net.sf.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Controller
 public class TopicController {
@@ -119,5 +122,19 @@ public class TopicController {
     @ResponseBody
     public String getHotSearch(){
         return topicService.getHotestTopics();
+    }
+
+    @RequestMapping(value = "liketopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public void liketopic(@RequestBody String topic){
+        JSONObject topicjson =  new JSONObject().fromObject(topic);
+        String userID = topicjson.getString("userId");
+        String topics = topicjson.getString("topics");
+        String[] topicArray = topics.split(",");
+        ArrayList<String> list = new ArrayList<String>();
+        for(String s:topicArray){
+            list.add(s);
+        }
+        topicService.likeTopic(userID, list);
     }
 }
