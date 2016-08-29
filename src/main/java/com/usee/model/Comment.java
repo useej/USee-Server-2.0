@@ -36,6 +36,8 @@ public class Comment {
 	private int randomNameID;
 	@Column
 	private int randomIconID;
+    @Column
+    private int status;
 	
 	public int getId() {
 		return id;
@@ -121,7 +123,16 @@ public class Comment {
 	public void setRandomIconID(int randomIconID) {
 		this.randomIconID = randomIconID;
 	}
-	@Override
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    @Override
 	public String toString() {
 		return " {\"id\":" + id + ", \"danmuId\":" + danmuId
 				+ ", \"sender\":\"" + sender + "\", \"receiver\":\"" + receiver

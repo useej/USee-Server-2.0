@@ -93,5 +93,17 @@ public class UserTopicDaoImp implements UserTopicDao{
 		query.setParameter("randomIconId", randomIconId);
 		query.executeUpdate();
 	}
+
+
+    @Override
+    public void updateUserTopiclike(String userId, String topicId,int dislike) {
+        String hql = "update UserTopic ut set ut.dislike = :dislike where ut.userId = :userId and ut.topicId = :topicId";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("userId", userId);
+        query.setParameter("topicId", topicId);
+        query.setParameter("dislike", dislike);
+        query.executeUpdate();
+
+    }
 	
 }

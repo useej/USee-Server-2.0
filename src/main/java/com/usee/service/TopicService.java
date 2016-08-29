@@ -31,4 +31,6 @@ public interface TopicService {
 	public String searchTopic(String keyword);
 
     public String getHotestTopics();
+
+    public void likeTopic(String userID, List<String> topics);
 }

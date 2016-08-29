@@ -31,7 +31,7 @@ public class DanmuDaoImp implements DanmuDao {
 	 * 根据id获取弹幕
 	 */
 	public Danmu getDanmu(int id) {
-		String hql = "from Danmu d where d.id =?";
+		String hql = "from Danmu d where d.id =? and d.status <> '0'";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setInteger(0, id);
 		return (Danmu)query.uniqueResult();  
@@ -42,7 +42,7 @@ public class DanmuDaoImp implements DanmuDao {
 	 */
 	public List<Danmu> getDanmuList(String topicId) {
 		// TODO Auto-generated method stub
-		String hql = "from Danmu d where d.topicId = ? order by d.create_time desc";
+		String hql = "from Danmu d where d.topicId = ? and d.status <> '0' order by d.create_time desc";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, topicId);
 		return query.list();
@@ -52,7 +52,7 @@ public class DanmuDaoImp implements DanmuDao {
 	 * 根据topicId获取弹幕列表并进行分页
 	 */
 	public List<Danmu> getDanmuList(String topicId, int pageNum, int pageSize) {
-		String hql = "from Danmu d where d.topicId = ? order by d.create_time desc";
+		String hql = "from Danmu d where d.topicId = ? and d.status <> '0' order by d.create_time desc";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, topicId);
 		query.setFirstResult((pageNum - 1) * pageSize);
@@ -65,7 +65,7 @@ public class DanmuDaoImp implements DanmuDao {
      */
     @Override
     public List<Danmu> getLatestDanmuList(String topicId, String startTime, String endTime) {
-        String hql = "from Danmu d where d.topicId = ? and d.create_time between ? and ? order by d.create_time desc";
+        String hql = "from Danmu d where d.topicId = ? and d.create_time between ? and ? and d.status <> '0' order by d.create_time desc";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         query.setString(0, topicId);
         query.setString(1, startTime);
@@ -123,7 +123,7 @@ public class DanmuDaoImp implements DanmuDao {
 	}
 		
 	/**
-	 * 根据UserId获取弹幕
+	 * 根据UserId获取topicId
 	 */
 	public List getDanmubyUserId(String userId){
 		String hql = "select d.topicId AS topicid from Danmu d where d.userId =?";
@@ -331,5 +331,18 @@ public class DanmuDaoImp implements DanmuDao {
 			return (Integer) query.uniqueResult();
 		}
 	}
-	
+
+    @Override
+    public int updateReport(String reporter, String contentUserId, String contentId, String contentType, String reportTime, int reportType) {
+        String sql = "insert into report values(NULL, ?, ?, ?, ?, ?, ?)";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        query.setString(0, reporter);
+        query.setString(1, contentUserId);
+        query.setString(2, contentId);
+        query.setString(3, contentType);
+        query.setString(4, reportTime);
+        query.setInteger(5, reportType);
+        return query.executeUpdate();
+    }
+
 }

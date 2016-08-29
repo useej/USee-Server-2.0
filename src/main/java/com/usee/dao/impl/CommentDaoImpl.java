@@ -31,14 +31,14 @@ public class CommentDaoImpl implements CommentDao{
 	}
 
 	public List<Comment> getCommentbyDanmuId(int danmuId) {
-		String hql = "from Comment c where c.danmuId = ?";
+		String hql = "from Comment c where c.danmuId = ? and c.status <> 0";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setInteger(0, danmuId);
 		return query.list();
 	}
 
 	public List<String> getCommentSenderbyDanmuId(int danmuId) {
-		String hql = "select c.sender from Comment c where c.danmuId = ?";
+		String hql = "select c.sender from Comment c where c.danmuId = ? and c.status <> 0";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setInteger(0, danmuId);
 		return query.list();
@@ -59,7 +59,7 @@ public class CommentDaoImpl implements CommentDao{
 
     @Override
     public Comment getCommentbyReplycommentId(int replycommentId) {
-        String hql = "from Comment c where c.id = ?";
+        String hql = "from Comment c where c.id = ? and c.status <> 0";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         query.setInteger(0, replycommentId);
         return (Comment) query.uniqueResult();
@@ -67,7 +67,7 @@ public class CommentDaoImpl implements CommentDao{
 
     @Override
     public List<Comment> getCommentbyDanmuIdandCreatetime(int danmuId, String createTime) {
-        String hql = "from Comment c where c.danmuId = ? and c.create_time > ?";
+        String hql = "from Comment c where c.danmuId = ? and c.create_time > ? and c.status <> 0";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         query.setInteger(0, danmuId);
         query.setString(1, createTime);
