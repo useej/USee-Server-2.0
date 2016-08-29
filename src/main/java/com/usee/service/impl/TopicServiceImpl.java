@@ -375,7 +375,6 @@ public class TopicServiceImpl implements TopicService {
 			return object.toString();
 	}
 
-    @Override
     public String getHotestTopics(double threshold) {
         PullwordApi pa = new PullwordApi();
 
