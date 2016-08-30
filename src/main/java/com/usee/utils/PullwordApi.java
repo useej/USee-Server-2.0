@@ -64,7 +64,6 @@ public class PullwordApi {
 
     public void sort(JSONArray ja,final String field, boolean isAsc){
         Collections.sort(ja, new Comparator<JSONObject>() {
-            @Override
             public int compare(JSONObject o1, JSONObject o2) {
                 Object f1 = o1.get(field);
                 Object f2 = o2.get(field);
