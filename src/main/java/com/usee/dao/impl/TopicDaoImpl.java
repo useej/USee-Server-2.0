@@ -84,7 +84,6 @@ public class TopicDaoImpl implements TopicDao {
 		return query.list();  
 	}
 
-    @Override
     public List<Topic> getTopicsbyDanmuNum(int num) {
         String hql="from Topic order by danmuNum desc";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
