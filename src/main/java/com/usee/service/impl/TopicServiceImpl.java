@@ -210,7 +210,7 @@ public class TopicServiceImpl implements TopicService {
 				jsonObject.put("isAnonymous", 2);
 			} else {
 				Danmu latestDanmu = danmudao.getDanmu(latestDanmuId);
-				if(latestDanmu.getUserIcon().contains(".png")) {
+				if(latestDanmu.getUserIcon() != null && latestDanmu.getUserIcon().contains(".png")) {
 					jsonObject.put("isAnonymous", 1);
 				} else {
 					jsonObject.put("isAnonymous", 0);

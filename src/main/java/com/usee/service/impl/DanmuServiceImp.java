@@ -515,11 +515,14 @@ public class DanmuServiceImp implements DanmuService{
 //				e.printStackTrace();
 //			}
 
-            if(danmu == null){
-                continue;
+            if(danmu.getStatus().equals("0")){
+                tempJsonObject.put("messages", "该弹幕因举报过多已被屏蔽。");
+            }
+            else {
+                tempJsonObject.put("messages", danmu.getMessages());
             }
 
-			tempJsonObject.put("messages", danmu.getMessages());
+
 			
 			// 根据userID 得到user信息
 			User user = userDao.getUser(danmu.getUserId());

@@ -31,7 +31,7 @@ public class DanmuDaoImp implements DanmuDao {
 	 * 根据id获取弹幕
 	 */
 	public Danmu getDanmu(int id) {
-		String hql = "from Danmu d where d.id =? and d.status <> '0'";
+		String hql = "from Danmu d where d.id =?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setInteger(0, id);
 		return (Danmu)query.uniqueResult();  
