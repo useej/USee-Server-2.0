@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +73,7 @@ public class DanmuServiceImp implements DanmuService{
 		// 如果UserTopic存在记录,则用户不是第一次在此话题底下做操作
 		if(existUserTopic != null){
 			// 如果用户选择匿名发送,并且existUserTopic.getUserIcon()中存在字符串.png：则证明之前是实名发送,现在是匿名发送
-			if(danmu.getBoolean("isannoymous") && existUserTopic.getUserIcon().contains(".png")) {
+			if(danmu.getBoolean("isannoymous") && existUserTopic.getUserIcon() != null && existUserTopic.getUserIcon().contains(".png")) {
 				// 如果用户第一次使用匿名,则将前台发送回来的userIcon和userName和randomIconId做相应处理保存下来
 				if(existUserTopic.getRandomIconID() == 0) {
 					// 由于randomUserIconId之前保存过了,所以不需要进行
@@ -95,8 +96,8 @@ public class DanmuServiceImp implements DanmuService{
 
 				userTopicDao.updateUserTopic(userId, topicId, randomIconId, randomNameId, lastVisitTime, frequency, userIcon);
 			}
-			// 如果用户选择实名发送,并且existUserTopic.getUserIcon()中不存在字符串.png：则证明之前是匿名发送,现在是实名发送
-			else if((!danmu.getBoolean("isannoymous")) && (!existUserTopic.getUserIcon().contains(".png"))) {
+			// 如果用户选择实名发送,并且existUserTopic.getUserIcon()为NULL：则证明之前是匿名发送,现在是实名发送
+			else if((!danmu.getBoolean("isannoymous")) && existUserTopic.getUserIcon() == null ) {
 				// 从existUserTopic中得到randomIconId
 				randomUserIconId = existUserTopic.getRandomIconID();
 				randomIconId = randomUserIconId;
@@ -148,7 +149,7 @@ public class DanmuServiceImp implements DanmuService{
 
 		newDanmu.setDevId(danmu.getString("devid"));
 		newDanmu.setUserId(userId);
-		newDanmu.setStatus("0");
+		newDanmu.setStatus("1");
 		newDanmu.setTopicId(danmu.getString("topicid"));
 		newDanmu.setLon(danmu.getString("lon"));
 		newDanmu.setLat(danmu.getString("lat"));
@@ -177,13 +178,11 @@ public class DanmuServiceImp implements DanmuService{
 		List<Danmu> list = new ArrayList<Danmu>();
 		if((pageNum == "" && pageSize == "")||(pageNum == null && pageSize == null)){
 			list = danmuDao.getDanmuList(topicId);
-			System.out.println(list.get(0).getMessages());
 		}
 		else {
 			int _pageNum = Integer.parseInt(pageNum);
 			int _pageSize = Integer.parseInt(pageSize);
 			list = danmuDao.getDanmuList(topicId, _pageNum, _pageSize);
-			System.out.println(list.get(0).getMessages());
 		}
 		
 //		// 进行decode
@@ -450,6 +449,7 @@ public class DanmuServiceImp implements DanmuService{
 		comment.setType(danmuComment.getInt("type"));
 		comment.setCreate_time(timeUtil.currentTimeStamp);
 		comment.setIsanonymous(isanonymous);
+        comment.setStatus(1);
 		commentDao.saveComment(comment);
 		
 		return comment;
@@ -494,41 +494,48 @@ public class DanmuServiceImp implements DanmuService{
 	}
 
 	public String getFavDanmuList(JSONObject jsonObject) {
-		
-		List<Object[]> list = danmuDao.listFavDanmu(jsonObject.getString("userid"));
-		JSONArray jsonArray = JSONArray.fromObject(list);
+
+        JSONObject json = new JSONObject();
+
+		List<Object[]> danmuList = danmuDao.listFavDanmu(jsonObject.getString("userid"));
+		JSONArray jsonArray = JSONArray.fromObject(danmuList);
+
+        String time = jsonObject.getString("time");
+
 		for (int i = 0; i < jsonArray.size(); i ++) {
 			JSONObject tempJsonObject = jsonArray.getJSONObject(i);
 			int danmuId = tempJsonObject.getInt("danmuID");
-			Danmu danmu = danmuDao.getDanmu(danmuId);
-			String messages = danmu.getMessages();
+
+            Danmu danmu = danmuDao.getDanmu(danmuId);
+
 //			// 进行decode
 //			try {
 //				messages = new String(Base64.getUrlDecoder().decode(messages),"UTF-8");
 //			} catch (UnsupportedEncodingException e) {
 //				e.printStackTrace();
 //			}
-			tempJsonObject.put("messages", messages);
+
+            if(danmu == null){
+                continue;
+            }
+
+			tempJsonObject.put("messages", danmu.getMessages());
 			
 			// 根据userID 得到user信息
-			String userID = danmu.getUserId();
-			User user = userDao.getUser(userID);
+			User user = userDao.getUser(danmu.getUserId());
 			
 			// 得到弹幕的昵称,根据弹幕的userIcon判断用户是匿名发送的还是实名发送的
 			String nickname = null;
-			if(danmu.getUserIcon().contains(".png")) {
+			if(danmu.getUserIcon() != null && danmu.getUserIcon().contains(".png")) {
 				nickname = user.getNickname();
 			} else {
-				// 得到topicID
-				String topicId = danmu.getTopicId();
 				// 根据topicID和userID得到UserTopic
-				UserTopic userTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userID, topicId);
+				UserTopic userTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(danmu.getUserId(), danmu.getTopicId());
 				// 根据UserTopic得到randomID
 				int randomNameId = userTopic.getRandomNameID();
 				// 根据randomNameId 得到userName
-				String userName = randomNameDao.getRandomNameById(randomNameId);
 				// 将user对象中的userIcon和nickname替换掉
-				nickname = userName;
+				nickname = randomNameDao.getRandomNameById(randomNameId);
 			}
 			
 			tempJsonObject.put("gender", user.getGender());
@@ -539,11 +546,16 @@ public class DanmuServiceImp implements DanmuService{
 			String topicId = danmuDao.getTopicIdbyDanmuId(danmuId);
 			String topicTitle = topicDao.getTopic(topicId).getTitle();
 			tempJsonObject.put("topicTitle", topicTitle);
-			
+
+            List<Comment> commentList = commentDao.getCommentbyDanmuIdandCreatetime(danmuId, time);
+            if(commentList.size() != 0){
+                tempJsonObject.put("havecomment", true);
+            }
+            else {
+                tempJsonObject.put("havecomment", false);
+            }
 		}
-		JSONObject json = new JSONObject();
 		json.put("favdanmu", jsonArray);
-		System.out.println(json.toString());
 		return json.toString();
 	}
 
