@@ -1,5 +1,6 @@
 package com.usee.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -31,6 +32,10 @@ public interface TopicService {
 	public String searchTopic(String keyword);
 
     public String getHotestTopics();
+
+    public void dislikeTopic(String userID, List<String> topics);
+
+    public String checkVersion();
 
     public void likeTopic(String userID, List<String> topics);
 }

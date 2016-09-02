@@ -43,7 +43,6 @@ public class DanmuController {
 			pageSize = topicJsonObject.getString("pagesize");
 		}
 		String danmu = danmuService.getDanmubyTopic(topicJsonObject.getString("topicid"), pageNum, pageSize);
-		System.out.println(danmu);
 		return danmu;
 	}
 	
@@ -138,6 +137,11 @@ public class DanmuController {
         return danmu;
     }
 
+    /**
+     * 已与getfavdanmulist接口合并到一起
+     * @param info
+     * @return
+     */
     @RequestMapping(value = "havenewcomments", method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String haveNewComments(@RequestBody String info){

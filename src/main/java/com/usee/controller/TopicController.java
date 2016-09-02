@@ -124,11 +124,35 @@ public class TopicController {
         return topicService.getHotestTopics();
     }
 
+    @RequestMapping(value = "disliketopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public void disliketopic(@RequestBody String topic){
+        JSONObject topicjson =  new JSONObject().fromObject(topic);
+        String userID = topicjson.getString("userid");
+        String topics = topicjson.getString("topics");
+        String[] topicArray = topics.split(",");
+        ArrayList<String> list = new ArrayList<String>();
+        for(String s:topicArray){
+            list.add(s);
+        }
+        topicService.dislikeTopic(userID, list);
+    }
+
+    @RequestMapping(value = "checkversion", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String checkVersion(){
+        JSONObject jsonObject = new JSONObject();
+        String[] version = topicService.checkVersion().split(",");
+        jsonObject.put("versionCode", version[0]);
+        jsonObject.put("versionName", version[1]);
+        return jsonObject.toString();
+    }
+
     @RequestMapping(value = "liketopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
     public void liketopic(@RequestBody String topic){
         JSONObject topicjson =  new JSONObject().fromObject(topic);
-        String userID = topicjson.getString("userId");
+        String userID = topicjson.getString("userid");
         String topics = topicjson.getString("topics");
         String[] topicArray = topics.split(",");
         ArrayList<String> list = new ArrayList<String>();
@@ -137,4 +161,5 @@ public class TopicController {
         }
         topicService.likeTopic(userID, list);
     }
+
 }

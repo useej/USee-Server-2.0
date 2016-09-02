@@ -418,7 +418,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public void likeTopic(String userID, List<String> topics) {
+    public void dislikeTopic(String userID, List<String> topics) {
         TimeUtil timeutil = new TimeUtil();
         String currentTime = timeutil.currentTimeStamp;
         for(String topicId :topics){
@@ -439,7 +439,20 @@ public class TopicServiceImpl implements TopicService {
                 newuserTopic.setUserIcon(DEFAULT_USERICON);
                 userTopicDao.saveUserTopic(newuserTopic);
             }
+        }
+    }
 
+    @Override
+    public String checkVersion() {
+        CheckVersion checkVersion = new CheckVersion();
+        return checkVersion.getNewVersion();
+    }
+
+    @Override
+    public void likeTopic(String userID, List<String> topics) {
+        for(int i=0;i<topics.size();i++){
+            String topicId=topics.get(i);
+            userTopicDao.updateUserTopiclike(userID, topicId, 0);
         }
     }
 }
