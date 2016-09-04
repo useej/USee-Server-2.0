@@ -35,11 +35,11 @@ public class GetUserIconByTopicTest {
 		 mockMvc = webAppContextSetup(wac).build();         
 	}
 	
-	String getUserIconByTopicJson = "{\"userid\":\"C5A6CC6CB2544376878B1E6929B9B249\","
-			+ "\"topicid\":\"11\"}";
+	String getUserIconByTopicJson = "{\"userid\":\"B9EAC945604E443CBEC15838CE95DA08\","
+			+ "\"topicid\":\"1\"}";
 	
 	@Test
-	public void commentDanmuTest() throws Exception{
+	public void getUserIconByTopicTest() throws Exception{
 		mockMvc.perform((post("/getusericonbytopic"))
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(getUserIconByTopicJson.getBytes()) 

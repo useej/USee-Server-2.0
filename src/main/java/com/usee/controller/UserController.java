@@ -118,8 +118,7 @@ public class UserController {
 
 		String cellphone = user.getCellphone();
 		// 如果手机号不准确直接返回错误
-		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE) ||
-				userService.getUserByCellphone(cellphone) == null) {
+		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE)) {
 			map.put(RETURN_INFO, "cellphoneErr");
 			return map;
 		}

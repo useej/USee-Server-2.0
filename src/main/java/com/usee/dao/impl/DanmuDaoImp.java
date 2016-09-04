@@ -63,7 +63,6 @@ public class DanmuDaoImp implements DanmuDao {
     /**
      *根据topicId获取一段时间之内的弹幕列表
      */
-    @Override
     public List<Danmu> getLatestDanmuList(String topicId, String startTime, String endTime) {
         String hql = "from Danmu d where d.topicId = ? and d.create_time between ? and ? and d.status <> '0' order by d.create_time desc";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);

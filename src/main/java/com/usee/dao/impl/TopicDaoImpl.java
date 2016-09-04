@@ -92,4 +92,11 @@ public class TopicDaoImpl implements TopicDao {
         return query.list();
     }
 
+	public String getTopicTitleForWeb(String topicID) {
+		String hql = "select title from Topic t where t.id=?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, topicID);
+		return (String) query.uniqueResult();
+	}
+
 }

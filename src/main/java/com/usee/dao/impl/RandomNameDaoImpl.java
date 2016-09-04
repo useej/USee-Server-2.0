@@ -28,7 +28,6 @@ public class RandomNameDaoImpl implements RandomNameDao {
 		return (Integer) query.uniqueResult();
 	}
 
-    @Override
     public String getGenderbyId(int id) {
         String sql = "SELECT gender from nicknames where id = ?";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);

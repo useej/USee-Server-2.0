@@ -442,17 +442,20 @@ public class TopicServiceImpl implements TopicService {
         }
     }
 
-    @Override
     public String checkVersion() {
         CheckVersion checkVersion = new CheckVersion();
         return checkVersion.getNewVersion();
     }
 
-    @Override
     public void likeTopic(String userID, List<String> topics) {
         for(int i=0;i<topics.size();i++){
             String topicId=topics.get(i);
             userTopicDao.updateUserTopiclike(userID, topicId, 0);
         }
     }
+
+
+	public String getTopicTitleForWeb(String topicID) {
+		return topicdao.getTopicTitleForWeb(topicID);
+	}
 }
