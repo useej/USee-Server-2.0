@@ -19,6 +19,7 @@ import com.usee.model.Comment;
 import com.usee.model.Danmu;
 import com.usee.model.Topic;
 import com.usee.model.UserTopic;
+import com.usee.model.UserTopic_Visit;
 import com.usee.service.TopicService;
 
 import net.sf.json.JSONArray;
@@ -166,10 +167,14 @@ public class TopicServiceImpl implements TopicService {
             String topicId=tempJsonObject.getString("id");
             UserTopic usertopic =  userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userID, topicId);
             if(usertopic!= null){
-                tempJsonObject.put("isread", true);
+        		tempJsonObject.put("isread", true);
             }
             else{
-                tempJsonObject.put("isread", false);
+            	if(userTopicDao.getUserTopic_VisitByUserIdandTopicId(userID, topicId) != null) {
+            		tempJsonObject.put("isread", true);
+            	} else {
+            		tempJsonObject.put("isread", false);
+            	}
             }
 
         }
@@ -348,9 +353,22 @@ public class TopicServiceImpl implements TopicService {
 	public void updateUser_topic(String userID, String topicID) {
 		TimeUtil timeutil = new TimeUtil();
 		String lastVisitTime = timeutil.currentTimeStamp;
-		int frequency = userTopicDao.getLatestFrequency() + 1;
-		userTopicDao.updateUserTopicLVTandFrequency(userID,topicID,lastVisitTime,frequency);
-		
+		if(userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userID, topicID) == null) {
+			UserTopic_Visit userTopic_Visit = userTopicDao.getUserTopic_VisitByUserIdandTopicId(userID, topicID);
+			if(userTopic_Visit == null) {
+				UserTopic_Visit save_userTopic_Visit = new UserTopic_Visit();
+				save_userTopic_Visit.setUserID(userID);
+				save_userTopic_Visit.setTopicID(topicID);
+				save_userTopic_Visit.setFirstvisit_time(lastVisitTime);
+				save_userTopic_Visit.setLastVisit_time(lastVisitTime);
+				userTopicDao.saveUserTopic_visit(save_userTopic_Visit);
+			} else {
+				userTopicDao.updateUserTopic_visit(userID, topicID, lastVisitTime);
+			}
+		} else {
+			int frequency = userTopicDao.getLatestFrequency() + 1;
+			userTopicDao.updateUserTopicLVTandFrequency(userID,topicID,lastVisitTime,frequency);
+		}
 	}
 
 
@@ -442,17 +460,20 @@ public class TopicServiceImpl implements TopicService {
         }
     }
 
-    @Override
     public String checkVersion() {
         CheckVersion checkVersion = new CheckVersion();
         return checkVersion.getNewVersion();
     }
 
-    @Override
     public void likeTopic(String userID, List<String> topics) {
         for(int i=0;i<topics.size();i++){
             String topicId=topics.get(i);
             userTopicDao.updateUserTopiclike(userID, topicId, 0);
         }
     }
+
+
+	public String getTopicTitleForWeb(String topicID) {
+		return topicdao.getTopicTitleForWeb(topicID);
+	}
 }

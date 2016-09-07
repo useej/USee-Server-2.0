@@ -30,35 +30,54 @@ public class GetDanmubyTopicTestCase {
     private WebApplicationContext wac;
 	private MockMvc mockMvc;     
 	
+	private String json = "{\"topicid\":\"1\",\"pagesize\":\"10\","
+			+ "\"pagenum\":\"1\"}";  
+	
 	@Before
 	public void setUp() throws Exception {
 		 mockMvc = webAppContextSetup(wac).build();         
 	}
 
+	
 	/**
 	 * 通过话题Id获取弹幕测试
 	 */
 	@Test
 	public void test() throws Exception{
-		mockMvc.perform((post("/getdmbytopic").param("topicId", "0").param("pageSize", "1").param("pageNum", "1"))
+		mockMvc.perform((post("/getdmbytopic"))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.content(json.getBytes()) 
 			.accept(MediaType.parseMediaType("application/json;charset=UTF-8"))
 			)
 		.andExpect(status().isOk())
 		.andExpect(content().contentType("application/json;charset=UTF-8"))
-		.andExpect(jsonPath("$.danmu.*.address").value("8"))
-        //.andExpect(jsonPath("$.danmu.*.address").doesNotExist())
 		;
-		
-//		String errorBody = "{address:0, commentnum:0}";  
-//		MvcResult result = mockMvc.perform((post("/getdmbytopic").param("topicId", "0").param("pageSize", "1").param("pageNum", "1"))
-//		        .contentType(MediaType.APPLICATION_JSON).content(errorBody)  
-//		        .accept(MediaType.APPLICATION_JSON)) // 执行请求  
-//		        .andExpect(status().isBadRequest()) //400 错误请求  
-//		        .andReturn();  
-		  
-//		Assert.assertTrue(HttpMessageNotReadableException.class.isAssignableFrom(result.getResolvedException().getClass()));// 错误的请求内容体  
 	}
+	
+//	/**
+//	 * 通过话题Id获取弹幕测试
+//	 */
+//	@Test
+//	public void test() throws Exception{
+//		mockMvc.perform((post("/getdmbytopic").param("topicId", "1").param("pageSize", "1").param("pageNum", "1"))
+//			.contentType(MediaType.APPLICATION_JSON_VALUE)
+//			.accept(MediaType.parseMediaType("application/json;charset=UTF-8"))
+//			)
+//		.andExpect(status().isOk())
+//		.andExpect(content().contentType("application/json;charset=UTF-8"))
+//		//.andExpect(jsonPath("$.danmu.*.address").value("8"))
+//        //.andExpect(jsonPath("$.danmu.*.address").doesNotExist())
+//		;
+//		
+////		String errorBody = "{address:0, commentnum:0}";  
+////		MvcResult result = mockMvc.perform((post("/getdmbytopic").param("topicId", "0").param("pageSize", "1").param("pageNum", "1"))
+////		        .contentType(MediaType.APPLICATION_JSON).content(errorBody)  
+////		        .accept(MediaType.APPLICATION_JSON)) // 执行请求  
+////		        .andExpect(status().isBadRequest()) //400 错误请求  
+////		        .andReturn();  
+//		  
+////		Assert.assertTrue(HttpMessageNotReadableException.class.isAssignableFrom(result.getResolvedException().getClass()));// 错误的请求内容体  
+//	}
 
 //	@Test
 //    public void test2() throws Exception {

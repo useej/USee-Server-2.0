@@ -17,9 +17,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usee.model.Topic;
 import com.usee.service.SqlInjectService;
 import com.usee.service.TopicService;
+import com.usee.utils.ShareTopicUtil;
 
 @Controller
-public class shareController {
+public class ShareController {
 	
 	@Resource
 	private TopicService topicService;
@@ -48,15 +49,15 @@ public class shareController {
 		// 得到topic的信息
 		Topic topic = topicService.getTopic(topicId);
 		String topicDescription = topic.getDescription();
-		String topicTitle = topic.getTitle();
 		
 		// 使用topic信息组装成topicUrl
-		String topicUrl = "www.useeba.com/danmu.html?title="
-				+ topicTitle + "&tid" + topicId;
+		String topicUrl = ShareTopicUtil.getShareURL() 
+				+ "?topicid=" + topicId;
 		
 		shareMap.put("topicUrl", topicUrl);
 		shareMap.put("topicDescription", topicDescription);
 		
+		System.out.println(shareMap);
 		return shareMap;
 	}
 

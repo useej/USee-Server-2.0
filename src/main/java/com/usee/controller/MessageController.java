@@ -213,7 +213,32 @@ public class MessageController {
 	
 		System.out.println(messageList);
 		
-		returnMap.put("newMsgs", messageList);
+		returnMap.put("allMsgs", messageList);
+		return returnMap;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "getallMsgsNum", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public Map<String, Object> getallMsgsNumbyID(@RequestBody String json) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		String userID = null;
+		
+		// 防注入
+		String handJson = sqlInjectService.SqlInjectHandle(json);
+		
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			Map<String, String> map = new HashMap<String, String>();
+			map = mapper.readValue(handJson, new TypeReference<Map<String, String>>() {
+			});
+			userID = map.get("userID");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		int allMsgsNum = messageService.getallMsgsbyID(userID).size();
+		
+		returnMap.put("allMsgsNum", allMsgsNum);
 		return returnMap;
 	}
 }
