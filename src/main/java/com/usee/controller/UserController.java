@@ -387,6 +387,58 @@ public class UserController {
 	}
 	
 	/**
+	 * 合并社交账号
+	 */
+	@ResponseBody
+	@RequestMapping("/mergeoauth")
+	public Map<String, Object> mergeOAuth(@RequestBody String json) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		// 防注入
+		String handJson = sqlInjectService.SqlInjectHandle(json);
+		User user = Json2ObjectUtil.getUser(handJson);
+		System.out.println(handJson);
+		User updateUser = userService.getUser(user.getUserID());
+		
+		User validateUser = null;
+		if (user.getOpenID_qq() != null && !user.getOpenID_qq().equals(updateUser.getOpenID_qq())) {
+			updateUser.setOpenID_qq(user.getOpenID_qq());
+			validateUser = userService.getUserByOpenId("openID_qq", user.getOpenID_qq());
+			if(validateUser != null) {
+				validateUser.setOpenID_qq(null);
+				validateUser.setStatus("0");
+				userService.updateUser_OAuth(validateUser);
+			}
+		}
+		if (user.getOpenID_wx() != null && !user.getOpenID_wx().equals(updateUser.getOpenID_wx())) {
+			updateUser.setOpenID_wx(user.getOpenID_wx());
+			validateUser = userService.getUserByOpenId("openID_wx", user.getOpenID_wx());
+			if(validateUser != null) {
+				validateUser.setOpenID_wx(null);
+				validateUser.setStatus("0");
+				userService.updateUser_OAuth(validateUser);
+			}
+		}
+		if (user.getOpenID_wb() != null && !user.getOpenID_wb().equals(updateUser.getOpenID_wb())) {
+			updateUser.setOpenID_wb(user.getOpenID_wb());
+			validateUser = userService.getUserByOpenId("openID_wb", user.getOpenID_wb());
+			if(validateUser != null) {
+				validateUser.setOpenID_wb(null);
+				validateUser.setStatus("0");
+				userService.updateUser_OAuth(validateUser);
+			}
+		}
+
+		userService.updateUser_OAuth(updateUser);
+		
+		returnMap.put(RETURN_INFO, "success");
+		returnMap.put("userID", updateUser.getUserID());
+		returnMap.put("openID_qq", updateUser.getOpenID_qq());
+		returnMap.put("openID_wx", updateUser.getOpenID_wx());
+		returnMap.put("openID_wb", updateUser.getOpenID_wb());
+		return returnMap;
+	}
+	
+	/**
 	 * 解除绑定第三方社交账号
 	 */
 	@ResponseBody
@@ -466,6 +518,22 @@ public class UserController {
 		returnMap.put("userIcon", getUser.getUserIcon());
 		
 		return returnMap;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "feedback", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public void userFeedback(@RequestBody String json) {
+		
+		Map<String, String> map = null;
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			map = new HashMap<String, String>();
+			map = mapper.readValue(json, new TypeReference<Map<String, String>>() {
+			});
+		}catch(Exception e) { }
+		
+		String messages = map.get("messages");
+		userService.feedback(messages);
 	}
 	
 //	public static String getUserIcon(String userIcon) {

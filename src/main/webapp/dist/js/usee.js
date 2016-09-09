@@ -1,10 +1,12 @@
 		
+		var serverPrefix = 'http://114.215.141.67/USee/'; // http://114.215.141.67/USee/
+
 		function danmumethod(){
 		  var method = 'getdmbytopic';   // // getdmbytopic'
 		  return method;
 		}
 		
-		http://114.215.141.67/USee/gettopictitle
+		// http://114.215.141.67/USee/gettopictitle
 		function titlemethod(){
 		  var method = 'gettopictitle';   //  
 		  return method;
@@ -64,11 +66,28 @@
 		
 		
 		function  barrager(){
+		
   		if(run_once){
-      		//如果是首次执行,则设置一个定时器,并且把首次执行置为false
-     	 	looper=setInterval(barrager,looper_time);                
+      		//如果是首次执行,则设置一个定时器,并且把首次执行置为false	
+      		
+      		var totalDM = ref.danmu.length;
+      		var maxLength =0 ;
+      		
+      		for (i =0;i<totalDM;i++) {
+      			  currentLen	 = ref.danmu[i].messages.length;
+      			  if(maxLength < currentLen) {
+      			  			maxLength = currentLen;
+      			  }
+      		}
+      		// alert("MAXDMSIze:"+maxLength);
+      		var window_width = $(window).width()  ;
+			// 控制弹幕速度
+			var speedRatio =0.2
+
+			looper_time=maxLength/ speedRatio; // 
+			// alert("Looper_Time ="+looper_time*12);
+			looper=setInterval(barrager,looper_time*12); 
       	 	run_once=false;
-      	 	// alert( "only once!!!")
   		}
   		
   		if( index ==0){

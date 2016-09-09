@@ -50,6 +50,7 @@ public class CellphoneValidateServiceImpl implements CellphoneValidateService {
 		User user = cellphoneValidateDao.getUserByCellphone(mobile);
 		if(user == null) {
 			user = new User();
+			user.setStatus("1");
 			user.setUserID(UUIDGeneratorUtil.getUUID());
 			user.setNickname("<dbnull>");
 			user.setUserIcon("<dbnull>");

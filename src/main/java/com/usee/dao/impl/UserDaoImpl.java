@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
 import com.usee.dao.UserDao;
+import com.usee.model.Feedback;
 import com.usee.model.User;
 
 @Service
@@ -104,13 +105,14 @@ public class UserDaoImpl implements UserDao {
 	 */
 	public boolean updateUser_OAuth(User user) {
 		
-		String hql = "update User u set u.openID_qq = ?,u.openID_wx = ?,u.openID_wb = ? "
+		String hql = "update User u set u.openID_qq = ?,u.openID_wx = ?,u.openID_wb = ?,u.status = ? "
 				+ "where u.userID = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, user.getOpenID_qq());
 		query.setString(1, user.getOpenID_wx());
 		query.setString(2, user.getOpenID_wb());
-		query.setString(3, user.getUserID());
+		query.setString(3, user.getStatus());
+		query.setString(4, user.getUserID());
 
 		return (query.executeUpdate() > 0);
 	}
@@ -143,6 +145,13 @@ public class UserDaoImpl implements UserDao {
 	public void addUser_OAuth(User user) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(user);
+		session.flush();
+	}
+
+	@Override
+	public void feedback(Feedback feedback) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(feedback);
 		session.flush();
 	}
 

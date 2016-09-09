@@ -16,32 +16,35 @@
 		}, barrage || {});
 
 		var now=new Date(); 
-		numOfYongDao = 8; // If PC MAC broswer, set to 8, mobile phone set to 6
-	
-		if ($(window).width() < 600) {
-			numOfYongDao =6;
-		}
 		
+		numOfYongDao = 1; // If PC MAC broswer, set to 8, mobile phone set to 6
+	    var window_height = $(window).height() - 80;
+		numOfYongDao = Math.floor( window_height / 100) +1 ;
+		
+		currentDanmu = new Array(numOfYongDao);
+		
+		if(numOfYongDao ==0){
+				numOfYongDao = 1;
+		}
 		var maxDistance = 300;
+		
 		var number = now.getSeconds()%numOfYongDao;
 		var previousDanmu = previous_danmus[number];
 		
-		
 		var time = new Date().getTime();
-		var barrager_id = 'barrage_' + time;
+		var barrager_id = 'barrage_' + time+'_YD'+number;
 		var id = '#' + barrager_id;
 		previous_danmus[number] = id;
 		var div_barrager = $("<div class='barrage' id='" + barrager_id + "'></div>").appendTo($(this));
 		
-		// Set the position of Danmu 
-		// container 的高度
-		// var div_container = $("<div class='container'></div>") ;
-		// alert（$(".class").height());
-		var window_height = $(window).height() - 220;
 		var bottom = (barrage.bottom == 0) ? Math.floor(number* window_height /numOfYongDao + 100) : barrage.bottom;
+	    // TODO Avoid dup wait for the first one! 
+		
 		if (bottom > window_height) 
-				{bottom = bottom =200;}
+				{bottom = bottom =100;}
+				
 		div_barrager.css("bottom", bottom + "px");
+		
 		
 		var info = barrage.info;
 		if (info.length < 5) {
@@ -74,7 +77,7 @@
 		div_barrager_box = $("<div class='barrage_box cl'></div>").appendTo(div_barrager);
 		if(barrage.img){
 
-			div_barrager_box.append("<a class='portrait z' href='javascript:;'></a>");
+			div_barrager_box.append("<a class='portrait z' href=''></a>");
 			var img = $("<img src='' >").appendTo(id + " .barrage_box .portrait");
 			img.attr('src', barrage.img);
 		}
@@ -102,20 +105,21 @@
 			'href': barrage.href,
 			'id': barrage.id
 		}).empty().append(barrage.info);
+		
 		if(navigator.userAgent.indexOf("MSIE 6.0")>0  ||  navigator.userAgent.indexOf("MSIE 7.0")>0 ||  navigator.userAgent.indexOf("MSIE 8.0")>0  ){
 
 			content.css('color', barrage.old_ie_color);
 
 		}else{
-
 			content.css('color', barrage.color);
-
 		}
 		
 		var i = 0;
 		var beginTime =  new Date().getTime();
 		div_barrager.css('margin-right', i);
 		var looper = setInterval(barrager, barrage.speed);
+        
+        
         
 		function barrager() {
 		
@@ -126,84 +130,37 @@
 			var speedRatio =0.2
 			currentTime = new Date().getTime();
 			
-			// var screenRadio =0;
-	
 			// Time count 
 			if (currentTime < beginTime + duration ) {
 				// Reduce speed for mobile device
 				if(window_width <800) {
 					speedRatio =0.1;
-					beginDistance = -100;
 				}
 	
-	     var info = barrage.info;
-		if (info.length < 5) {
-			beginDistance = 400;
-
-		} 
-		else if (info.length < 10)  {
-			beginDistance = 800;
-		}
-		else if (info.length < 15)  {
-			beginDistance = 1200;
-		}
-		else   {
-		 	beginDistance = 1500;
-		}
+	    		var info = barrage.info;		
+				currentTime = new Date().getTime();
+				var firstDanmus  = new Array();
+				var width = $(window).width() ;
+				dmposision  = (new Date().getTime() - beginTime ) * barrage.speed*speedRatio;
+				var currentdivWidth = $(id).css("width");	
 				
-		 		// Fast out 
-				$(id).animate({right: '-'+beginDistance+'px' }, 800);
-			 
-				currentTime = new Date().getTime();
-				dmposision  = (currentTime - beginTime ) * barrage.speed*speedRatio;
-				currentTime = new Date().getTime();
-				 $(id).fadeOut(10000);
+				if( typeof currentdivWidth !==  "undefined") {
+						currentdivWidth = parseFloat(currentdivWidth.replace(/px/,""));
+				} else {
+						currentdivWidth = 0;
+				}
+				
+				// Move 
+				$(id).css('margin-right', dmposision );
+				    		  		  
+				fadeoutPosision = width*0.9 ;
+				if (width<600) {
+						fadeoutPosision =  width *1.1;
+				} 
+				 if ( dmposision > fadeoutPosision ) {
+				 	 $(id).fadeOut(4000);
+			}
 				 
-				 // TBF 
-				 if ( dmposision > 1200 ) {
-				     // alert(id+":"+i) ;
-				 	 // $(id).animate({ right: '+'+window_width/5+'px' }, 1000);
-				 	 $(id).fadeOut(2000);
-				 	  // $(id).css('margin-right', -100);
-				 	  // alert($(id).css('margin-right'));
-				 }
-				 
-				 // TODO Update 
-				 // Find out why it is getting slower and slower  and avoid collision! 
-				 $(id).css('margin-right', dmposision);
-				 currentTime = now.getTime() ;
-				 
-				 if ( barrage.info=="刷的飞起！"){
-				 		if(time_elasped ==1){
-				 				 initialPo = dmposision;
-				 		}
-				 		
-				 		if(time_elasped ==3){
-				 				finalPo = dmposision;
-				 		}
-				 		var speed = (finalPo - initialPo) /2;
-				 		document.getElementById('txt').value= barrage.info +" @: "+(speed + " TE:"+time_elasped);
-						document.getElementById('txt2').value= "Danmu:" + index +" @: "+Math.floor(dmposision);
-				 }
-				 
-				 		 // TBD: Collosion Control 		 
-				if (previousDanmu != undefined){
-						// alert(previousDanmu + "<-"+id);
-						previousPoision = $(previousDanmu).css('margin-right');
-						previousPoision =parseInt(previousPoision.substring(0,previousPoision.length-2));
-						previousPoision
-						
-						currentPosition = $(id).css('margin-right');
-						currentPosition = parseInt(currentPosition.substring(0,currentPosition.length-2));
-						// alert ("current : "+currentPosition);
-						// alert (currentPosition + previousPoision);
-						if ( (previousPoision - currentPosition)  < 400 )		{
-								 // alert(previousPoision - currentPosition);
-								 // $(previousPoision).fadeOut(500);
-								 // $(previousPoision).remove();
-						}	
-	
-				 }
 			} else {
 				$(id).remove();
 				i=0;
