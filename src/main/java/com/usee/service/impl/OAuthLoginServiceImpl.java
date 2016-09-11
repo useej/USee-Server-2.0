@@ -207,7 +207,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
 //		default_password = UUIDGeneratorUtil.getUUID();
 //		user.setPassword(default_password);
 		user.setPassword(DEFAULT_PASSWORD);
-		
+		user.setStatus("1");
 		userDao.addUser_OAuth(user);
 		
 	}

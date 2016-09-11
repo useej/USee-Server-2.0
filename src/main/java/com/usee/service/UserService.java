@@ -21,4 +21,6 @@ public interface UserService {
 	public User getUserByOpenId(String tag, String openId);
 	
 	public User getUserByCellphone(String cellphone);
+	
+	public void feedback(String messages);
 }

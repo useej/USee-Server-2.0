@@ -54,6 +54,9 @@ public class Json2ObjectUtil {
 			if(map.containsKey("vcSendTime")) {
 				user.setVcSendTime(map.get("vcSendTime"));
 			}
+			if(map.containsKey("status")) {
+				user.setStatus(map.get("status"));
+			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();

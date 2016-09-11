@@ -1,5 +1,6 @@
 package com.usee.dao;
 
+import com.usee.model.Feedback;
 import com.usee.model.User;
 
 public interface UserDao {
@@ -23,4 +24,6 @@ public interface UserDao {
 	public User getUserByOpenId(String tag, String openId);
 	
 	public User getUserByCellphone(String cellphone);
+	
+	public void feedback(Feedback feedback);
 }

@@ -182,9 +182,9 @@ body {
 .bb-docs-header {
     background: #0d63ab;
     color: #fff;
-    font-size: 24px;
-    padding-bottom: 10px;
-    padding-top: 10px;
+    font-size: 20px;
+    padding-bottom: 2px;
+    padding-top: 2px;
     text-align: left;
     margin-bottom: 1em;
 }
