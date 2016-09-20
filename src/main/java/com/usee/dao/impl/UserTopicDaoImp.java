@@ -33,6 +33,7 @@ public class UserTopicDaoImp implements UserTopicDao{
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, userId);
 		query.setString(1, topicId);
+//		query.setCacheable(true);
 		return (UserTopic)query.uniqueResult();
 	}
 	
@@ -129,6 +130,7 @@ public class UserTopicDaoImp implements UserTopicDao{
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, userId);
 		query.setString(1, topicId);
+//		query.setCacheable(true);
 		return (UserTopic_Visit)query.uniqueResult();
 	}
 	

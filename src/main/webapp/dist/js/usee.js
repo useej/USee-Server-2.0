@@ -1,12 +1,12 @@
-		
-		var serverPrefix = 'http://114.215.141.67/USee/'; // http://114.215.141.67/USee/
 
+		var serverPrefix = ''; // http://114.215.209.102/USee/
+		
+		// TODO:  Remove Duplications	
 		function danmumethod(){
 		  var method = 'getdmbytopic';   // // getdmbytopic'
 		  return method;
 		}
 		
-		// http://114.215.141.67/USee/gettopictitle
 		function titlemethod(){
 		  var method = 'gettopictitle';   //  
 		  return method;
@@ -16,7 +16,7 @@
 		// var topicID = 16;
 		// var sendInfo = '{"topicid":"'+topicID+'"}';
 		// alert(sendInfo);
-
+		
 		$.ajax({
            type: "POST",
            url: "getdmbytopic",
@@ -38,9 +38,8 @@
        });
        }
        
-       // Get First 100 a time
-
-       function getDanmu(method) {
+       // Get First 100 danmu each time 
+    function getDanmu(method) {
      	var jsonhttp = null ;
 		jsonhttp = new XMLHttpRequest();
 		var getdmurl = method;   // 
@@ -65,11 +64,11 @@
 		}
 		
 		
-		function  barrager(){
+	function  barrager(){
 		
   		if(run_once){
-      		//如果是首次执行,则设置一个定时器,并且把首次执行置为false	
-      		
+  		
+      		//如果是首次执行,则设置一个定时器,并且把首次执行置为false	  		
       		var totalDM = ref.danmu.length;
       		var maxLength =0 ;
       		
@@ -79,14 +78,28 @@
       			  			maxLength = currentLen;
       			  }
       		}
-      		// alert("MAXDMSIze:"+maxLength);
+      	
       		var window_width = $(window).width()  ;
-			// 控制弹幕速度
+
+			// 控制弹幕密度
 			var speedRatio =0.2
 
+			if(window_width <800) {
+					speedRatio =0.066;
+			}
+
 			looper_time=maxLength/ speedRatio; // 
-			// alert("Looper_Time ="+looper_time*12);
-			looper=setInterval(barrager,looper_time*12); 
+
+			if(looper_time < 120) {
+					looper_time = 120;
+			}
+
+			if(window_width <800) {
+					looper_time =200;
+			}
+
+ 	
+			looper=setInterval(barrager,looper_time*10); 
       	 	run_once=false;
   		}
   		
@@ -107,25 +120,22 @@
   		//  定期刷新，获取新弹幕
   		// UI Update ! 
   		if (time_elasped > refreshInterval) {
-  				clear_barrage();
-  				// alert (time_elasped);
+  				// clear_barrage(); alert (time_elasped);
 				index =0;  //  开始轮播
 				time_elasped =0;
-				// clearTimeout(t);
-				// timedCount();
 				run_once=false;
+				// alert("Periodic Refreshing ... ")
 				method = danmumethod();
 				ref = getDanmu(method);
       			barrager();
   		}
   		
-  		//所有弹幕发布完毕，清除计时器。
+  		//所有弹幕发布完毕，清除计时器, 轮播
  		 if(index == total){
- 		 	clear_barrage();
-      		index =0;  //  开始轮播
-      		time_elasped =0;
-      		run_once=false;
-      		// barrager();
+ 		 		// clear_barrage();
+      			index =0;  //  开始轮播
+      			time_elasped =0;
+      			run_once=false;
       	}
 	}
 		
@@ -165,4 +175,4 @@
 				if (now.getTime() > exitTime) 
 				return; 
 			} 
-		}
+	}

@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usee.model.User;
-import com.usee.service.OAuthLoginService;
-import com.usee.service.SqlInjectService;
-import com.usee.service.UserService;
+import com.usee.service.impl.OAuthLoginServiceImpl;
+import com.usee.service.impl.SqlInjectServiceImpl;
+import com.usee.service.impl.UserServiceImpl;
 import com.usee.utils.Json2ObjectUtil;
 
 /*
@@ -31,13 +31,13 @@ public class OAuthLoginController {
 	//private static final String USERICON_PREFIX = "http://114.215.209.102/USee/";
 	
 	@Autowired
-	private OAuthLoginService oauthLoginService;
+	private OAuthLoginServiceImpl oauthLoginService;
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userService;
 	
 	@Autowired
-	private SqlInjectService sqlInjectService;
+	private SqlInjectServiceImpl sqlInjectService;
 	
 	/**
 	 * 安卓用户第三方登录方法 将客户端传输过来的信息存储到数据库中
@@ -46,9 +46,11 @@ public class OAuthLoginController {
 	@RequestMapping(value = "android", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	public Map<String, Object> androidLoginOAuth(@RequestBody String json, HttpServletRequest request) {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
-		// 防注入
-		String handJson = sqlInjectService.SqlInjectHandle(json);
-		User user = Json2ObjectUtil.getUser(handJson);
+//		// 防注入
+//		String handJson = sqlInjectService.SqlInjectHandle(json);
+//		User user = Json2ObjectUtil.getUser(handJson);
+		
+		User user = Json2ObjectUtil.getUser(json);
 		
 		String openID_qq = user.getOpenID_qq();
 		String openID_wx = user.getOpenID_wx();

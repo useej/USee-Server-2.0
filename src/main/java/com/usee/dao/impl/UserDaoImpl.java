@@ -28,7 +28,7 @@ public class UserDaoImpl implements UserDao {
 		String hql = "from User u where u.userID=?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, id);
-
+//		query.setCacheable(true);
 		return (User) query.uniqueResult();
 	}
 

@@ -28,20 +28,41 @@
 		}
 		var maxDistance = 300;
 		
-		var number = now.getSeconds()%numOfYongDao;
-		var previousDanmu = previous_danmus[number];
-		
+		var number = Math.round((Math.random())*(numOfYongDao-1)) ; //      now.getSeconds()%numOfYongDao
+
 		var time = new Date().getTime();
 		var barrager_id = 'barrage_' + time+'_YD'+number;
 		var id = '#' + barrager_id;
-		previous_danmus[number] = id;
+
 		var div_barrager = $("<div class='barrage' id='" + barrager_id + "'></div>").appendTo($(this));
 		
-		var bottom = (barrage.bottom == 0) ? Math.floor(number* window_height /numOfYongDao + 100) : barrage.bottom;
+		if (current_DMMRight[number] > 300) {
+			var bottom = (barrage.bottom == 0) ? Math.floor(number* window_height /numOfYongDao + 100) : barrage.bottom;
 	    // TODO Avoid dup wait for the first one! 
-		
+	    	current_DMMRight[number] = 0;
+		}
+		else { // Remove this Danmu ? or place to an empty one 
+			
+			if(typeof(current_DMMRight[number]) === "undefined")  {
+					bottom =  Math.floor(number* window_height /numOfYongDao + 100) ;
+			} else 
+			{
+				for (i =0;i<numOfYongDao;i++) {
+					bottom = 100;
+					if(current_DMMRight[i] == 0)  {
+						bottom =  Math.floor(i* window_height /numOfYongDao + 100) ;
+						i=numOfYongDao;
+					}
+				}
+			}
+				 
+		}
+
 		if (bottom > window_height) 
-				{bottom = bottom =100;}
+				{ 
+					bottom = bottom = Math.floor((numOfYongDao-2)* window_height /numOfYongDao + 100) ;;
+ 
+				}
 				
 		div_barrager.css("bottom", bottom + "px");
 		
@@ -152,6 +173,10 @@
 				
 				// Move 
 				$(id).css('margin-right', dmposision );
+
+				var danmu_YD = id.substr(id.indexOf("_YD")+3,id.length)
+				
+				current_DMMRight[parseInt(danmu_YD)] = dmposision;
 				    		  		  
 				fadeoutPosision = width*0.9 ;
 				if (width<600) {
