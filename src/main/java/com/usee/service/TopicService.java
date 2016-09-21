@@ -38,4 +38,6 @@ public interface TopicService {
     public String checkVersion();
 
     public void likeTopic(String userID, List<String> topics);
+    
+    public String getTopicTitleForWeb(String topicID);
 }

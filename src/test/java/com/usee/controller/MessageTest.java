@@ -30,7 +30,7 @@ public class MessageTest {
 	private MockMvc mockMvc;     
 	
 	private String getNewMsgsNumJson = "{\"userID\":\"866328023315987\","
-			+ "\"latestReadTime\":\"2016-07-27 17:49:10\"}"; 
+			+ "\"latestReadTime\":\"1470511823\"}"; 
 	
 	private String getNewMsgsJson = "{\"userID\":\"866328023315987select ;\","
 			+ "\"latestReadTime\":\"1469612947select ;\"}"; 
@@ -87,6 +87,23 @@ public class MessageTest {
 			)
 		.andExpect(status().isOk())
 		.andExpect(content().contentType("application/json;charset=UTF-8"))
+		;
+	}
+	
+
+	/**
+	 * 得到新消息数目测试
+	 */
+	@Test
+	public void getAllMsgsNumTest() throws Exception{
+		mockMvc.perform((post("/message/getallMsgsNum"))
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.content(getallMsgsJson.getBytes()) 
+			.accept(MediaType.parseMediaType("application/json;charset=UTF-8"))
+			)
+		.andExpect(status().isOk())
+		.andExpect(content().contentType("application/json;charset=UTF-8"))
+		.andExpect(jsonPath("$.allMsgsNum").exists())
 		;
 	}
 	

@@ -47,6 +47,8 @@ public class UserTest {
 	private String bindOAuthJson =  "{\"userID\":\"E53537D4C4294FB88CF8C49C9820ECC5\","
 			+ "\"openID_qq\":\"das135da1sf23as\"}"; 
 	
+	private String feedbackJson =  "{\"messages\":\"有bug\"}"; 
+	
 	@Before
 	public void setUp() throws Exception {
 		 mockMvc = webAppContextSetup(wac).build();         
@@ -175,4 +177,17 @@ public class UserTest {
 		;
 	}
 	
+	/**
+	 * 绑定第三方账号
+	 */
+	@Test
+	public void feedbackTest() throws Exception{
+		mockMvc.perform((post("/user/feedback"))
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.content(feedbackJson.getBytes()) 
+			.accept(MediaType.parseMediaType("application/json;charset=UTF-8"))
+			)
+		.andExpect(status().isOk())
+		;
+	}
 }

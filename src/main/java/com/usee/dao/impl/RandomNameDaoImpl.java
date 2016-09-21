@@ -18,6 +18,7 @@ public class RandomNameDaoImpl implements RandomNameDao {
 		String sql = "SELECT nickname from nicknames where id = ?";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		query.setInteger(0, id);
+//		query.setCacheable(true);
 		return (String) query.uniqueResult();
 	}
 
@@ -28,11 +29,11 @@ public class RandomNameDaoImpl implements RandomNameDao {
 		return (Integer) query.uniqueResult();
 	}
 
-    @Override
     public String getGenderbyId(int id) {
         String sql = "SELECT gender from nicknames where id = ?";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
         query.setInteger(0, id);
+//        query.setCacheable(true);
         return (String) query.uniqueResult();
     }
 

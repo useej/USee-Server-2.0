@@ -4,17 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
-
 import com.usee.utils.AmapAPIUtil;
-import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.usee.dao.ColorDao;
-import com.usee.dao.RandomNameDao;
-import com.usee.dao.TopicDao;
+import com.usee.dao.impl.ColorDaoImpl;
 import com.usee.dao.impl.CommentDaoImpl;
 import com.usee.dao.impl.DanmuDaoImp;
+import com.usee.dao.impl.RandomNameDaoImpl;
+import com.usee.dao.impl.TopicDaoImpl;
 import com.usee.dao.impl.UserDaoImpl;
 import com.usee.dao.impl.UserTopicDaoImp;
 import com.usee.model.Comment;
@@ -39,13 +37,13 @@ public class DanmuServiceImp implements DanmuService{
 	@Resource
 	private CommentDaoImpl commentDao;
 	@Autowired
-	private ColorDao colorDao;
+	private ColorDaoImpl colorDao;
 	@Autowired
-	private TopicDao topicDao;
+	private TopicDaoImpl topicDao;
 	@Autowired
-	private RandomNameDao randomNameDao;
+	private RandomNameDaoImpl randomNameDao;
 	
-	public static final int MAX_RANDOM_NAME_NUMBER = 590;
+	public static final int MAX_RANDOM_NAME_NUMBER = 4000;
 	public static final int MAX_RANDOM_ICON_NUMBER = 6400;
 
 	public RandomNumber randomNumber = new RandomNumber();
@@ -218,15 +216,6 @@ public class DanmuServiceImp implements DanmuService{
 		List<Comment> comments = commentDao.getCommentbyDanmuId(danmuId);
 		User danmuSender = userDao.getUser(danmu.getUserId());
 		
-//		// 进行decode
-//		String decode = danmu.getMessages();
-//		try {
-//			decode = new String(Base64.getUrlDecoder().decode(danmu.getMessages()),"UTF-8");
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		}
-//		danmu.setMessages(decode);
-		
 		updateUserDanmu(currentUserId, danmuId);
 		
 		JSONArray jsonArray_danmu = JSONArray.fromObject(danmu);
@@ -262,11 +251,11 @@ public class DanmuServiceImp implements DanmuService{
 			User sender = userDao.getUser(comment.getSender());
 			
 			// 解决hibernate缓存问题,不修改原始数据,修改临时对象的数据
-			User temp_user = new User();
-			temp_user.setGender(sender.getGender());
-			temp_user.setNickname(sender.getNickname());
-			temp_user.setUserIcon(sender.getUserIcon());
-			temp_user.setUserID(sender.getUserID());
+			User temp_sender_user = new User();
+			temp_sender_user.setGender(sender.getGender());
+			temp_sender_user.setNickname(sender.getNickname());
+			temp_sender_user.setUserIcon(sender.getUserIcon());
+			temp_sender_user.setUserID(sender.getUserID());
 			
 			User receiver = userDao.getUser(comment.getReceiver());
 			
@@ -309,23 +298,28 @@ public class DanmuServiceImp implements DanmuService{
 				String userIcon = iconId + "_" + iconCode; // 63_E6A473
 				String userName = randomNameDao.getRandomNameById(randomNameId);
 				// 将user对象中的userIcon和nickname替换掉
-				temp_user.setNickname(userName);
-				temp_user.setUserIcon(userIcon);
-
-                int receiverRandomNameId = 0;
-                if(comment.getReply_commentId() != null){
-                    receiverRandomNameId = commentDao.getComment(comment.getReply_commentId()).getRandomNameID();
-                }
-
-                jsonObject_usercomment.put("replycomment_name", randomNameDao.getRandomNameById(receiverRandomNameId));	//应该是receiver_name和receiver_gender
-                jsonObject_usercomment.put("replycomment_gender", randomNameDao.getGenderbyId(receiverRandomNameId));
+				temp_sender_user.setNickname(userName);
+				temp_sender_user.setUserIcon(userIcon);
 			}
-            else {
-                jsonObject_usercomment.put("replycomment_name", receiver.getNickname());    //应该是receiver_name和receiver_gender
-                jsonObject_usercomment.put("replycomment_gender", receiver.getGender());
-            }
+			// 判断是否为评论其他人的评论
+            if(comment.getReply_commentId() != null){
+                Comment reply_comment = commentDao.getComment(comment.getReply_commentId());
+                if(reply_comment.getIsanonymous() == 0){
+                	// 如果评论其他的人的匿名评论
+                	
+                	// 得到randomID
+    				int randomNameId1 = reply_comment.getRandomNameID();
+    				// 根据randomID 得到userName
+    				String userName1 = randomNameDao.getRandomNameById(randomNameId1);
+    				
+                	jsonObject_usercomment.put("replycomment_name", userName1);	//应该是receiver_name和receiver_gender
+                } else {
+                	// 如果评论其他的人的实名评论
+                	jsonObject_usercomment.put("replycomment_name", receiver.getNickname());
+                }
+            }		
 
-			jsonObject_usercomment.put("user", temp_user);
+			jsonObject_usercomment.put("user", temp_sender_user);
 			jsonObject_usercomment.put("comment", comment);
 
 			jsonArray_usercomment.add(jsonObject_usercomment);
@@ -674,4 +668,67 @@ public class DanmuServiceImp implements DanmuService{
 
         return resultJson.toString();
     }
+
+	@Override
+	public boolean deleteComment(JSONObject jsonObject) {
+		String sender = jsonObject.getString("userID");
+		int commentID = jsonObject.getInt("commentID");
+		// 根据评论ID和sender得到唯一的评论
+		Comment comment = commentDao.getCommentByIdAndSender(commentID, sender);
+		if(comment == null){
+			return false;
+		}
+		
+		// 先删除回复此条评论的评论
+		deleteReplyComment(commentID);
+		
+		return commentDao.deleteComment(commentID);
+	}
+	
+	// 删除回复评论的评论
+	public void deleteReplyComment(int commentID){
+		List<Comment> replyCommentList = new ArrayList<Comment>();
+		replyCommentList = commentDao.getReplyCommentListbyReplycommentId(commentID);
+		for (Comment reply_comment : replyCommentList) {
+			if((commentDao.getReplyCommentListbyReplycommentId(reply_comment.getId())).size() > 0){
+				deleteReplyComment(reply_comment.getId());
+			}
+			commentDao.deleteComment(reply_comment.getId());
+		}
+	}
+	
+
+	@Override
+	public boolean deleteDanmu(JSONObject jsonObject) {
+		String userID = jsonObject.getString("userID");
+		int danmuID = jsonObject.getInt("danmuID");
+		// 根据评论ID和sender得到唯一的评论
+		Danmu danmu = danmuDao.getDanmuByDanmuIdAndUserId(danmuID, userID);
+		if(danmu == null){
+			return false;
+		}
+		
+		// 先删除将此条弹幕作为外键的表中的列
+		// comment表、updowndanmu表、user_danmu表、userfavdanmu表
+		// 删除comment表
+		List<Comment> CommentList = new ArrayList<Comment>();
+		CommentList = commentDao.getCommentbyDanmuId(danmuID);
+		for (Comment comment : CommentList) {
+			// 先删除回复此条评论的评论
+			deleteReplyComment(comment.getId());
+			
+			commentDao.deleteComment(comment.getId());
+		}
+		
+		// 删除updowndanmu表
+		danmuDao.deleteUpdownDanmu(danmuID);
+		
+		// 删除user_danmu表
+		danmuDao.deleteUser_Danmu(danmuID);
+		
+		// 删除userfavdanmu表
+		danmuDao.deleteUserFavDanmu(danmuID);
+		
+		return danmuDao.deleteDanmu(danmuID);
+	}
 }

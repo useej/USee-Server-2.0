@@ -23,14 +23,14 @@ public class TopicDaoImpl implements TopicDao {
 		String hql = "from Topic t where t.id=?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, id);
-
+//		query.setCacheable(true);
 		return (Topic) query.uniqueResult();
 	}
 
 	public List<Topic> getAllTopic() {
 		String hql = "from Topic order by lastDanmu_time desc";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-
+//		query.setCacheable(true);
 		return query.list();
 	}
 
@@ -53,6 +53,7 @@ public class TopicDaoImpl implements TopicDao {
 		String hql ="select id from Topic where userID=?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, userID);
+//		query.setCacheable(true);
   		return query.list();
 	}
 
@@ -69,6 +70,7 @@ public class TopicDaoImpl implements TopicDao {
 		String hql ="from Topic where id=?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, topicID);
+//		query.setCacheable(true);
 		return query.list();  
 	}
 
@@ -91,5 +93,12 @@ public class TopicDaoImpl implements TopicDao {
         query.setMaxResults(num);
         return query.list();
     }
+
+	public String getTopicTitleForWeb(String topicID) {
+		String hql = "select title from Topic t where t.id=?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, topicID);
+		return (String) query.uniqueResult();
+	}
 
 }

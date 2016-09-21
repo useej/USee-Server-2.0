@@ -23,36 +23,33 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
     @ContextConfiguration(name = "child", locations = "classpath:spring-mvc.xml")
 })   
 @Transactional
-public class oauthLoginAndroidTest {
+
+public class DeleteDanmuTestCase {
 
 	@Autowired  
     private WebApplicationContext wac;
 	private MockMvc mockMvc;     
 	
-	private String qq_AndroidJson ="{\"openID_qq\":\"usee_test_openid_qq2select ;\",\"nickname\":\"usee_test\","
-			+ "\"userIcon\":\"http://cdnq.duitang.com/uploads/item/201412/27/20141227140012_BV2Bu.jpeg\"}";  
+	private String json = "{\"danmuID\":11,\"userID\":\"4010474529378357552\"}";  
 	
 	@Before
 	public void setUp() throws Exception {
 		 mockMvc = webAppContextSetup(wac).build();         
 	}
 
+	
 	/**
-	 * Android端QQ登录测试
+	 * 删除弹幕测试
 	 */
 	@Test
 	public void test() throws Exception{
-		mockMvc.perform((post("/oauthlogin/android"))
+		mockMvc.perform((post("/deletedanmu"))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.content(qq_AndroidJson.getBytes()) 
+			.content(json.getBytes()) 
 			.accept(MediaType.parseMediaType("application/json;charset=UTF-8"))
 			)
 		.andExpect(status().isOk())
 		.andExpect(content().contentType("application/json;charset=UTF-8"))
-		.andExpect(jsonPath("$.user").exists())
-		.andExpect(jsonPath("$.user.password").isEmpty())
-		.andExpect(jsonPath("$.user.cellphone").isEmpty())
 		;
 	}
-
 }

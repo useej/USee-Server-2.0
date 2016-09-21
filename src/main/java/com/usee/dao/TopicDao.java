@@ -25,4 +25,6 @@ public interface TopicDao {
 	public List searchTopic(String keyword);
 
     public List<String> getTopicsbyDanmuNum(int num);
+    
+    public String getTopicTitleForWeb(String topicID);
 }

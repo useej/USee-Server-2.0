@@ -11,6 +11,8 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 public class ScheduledTask {
     private static int counter = 0;
     protected void execute()  {
-
+        long ms = System.currentTimeMillis();
+        System.out.println("\t\t" + new Date(ms));
+        System.out.println("(" + counter++ + ")");
     }
 }

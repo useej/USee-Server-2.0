@@ -24,7 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
     @ContextConfiguration(name = "child", locations = "classpath:spring-mvc.xml")
 })   
 @Transactional
-public class GetUserIconByTopicTest {
+public class ShareTopicTest {
 
 	@Autowired  
     private WebApplicationContext wac;
@@ -35,12 +35,11 @@ public class GetUserIconByTopicTest {
 		 mockMvc = webAppContextSetup(wac).build();         
 	}
 	
-	String getUserIconByTopicJson = "{\"userid\":\"B9EAC945604E443CBEC15838CE95DA08\","
-			+ "\"topicid\":\"1\"}";
+	String getUserIconByTopicJson = "{\"topicId\":\"1\"}";
 	
 	@Test
 	public void getUserIconByTopicTest() throws Exception{
-		mockMvc.perform((post("/getusericonbytopic"))
+		mockMvc.perform((post("/sharetopic"))
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(getUserIconByTopicJson.getBytes()) 
 				.accept(MediaType.parseMediaType("application/json;charset=UTF-8"))

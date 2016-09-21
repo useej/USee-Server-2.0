@@ -3,6 +3,7 @@ package com.usee.dao;
 import java.util.List;
 
 import com.usee.model.UserTopic;
+import com.usee.model.UserTopic_Visit;
 
 public interface UserTopicDao {
 	public void saveUserTopic(UserTopic userTopic);
@@ -24,5 +25,11 @@ public interface UserTopicDao {
 	public List<Integer> getuserRandomIconIdsbyTopic(String topicId);
 
     public void updateUserTopiclike(String userId, String topicId,int like);
+    
+    public void saveUserTopic_visit(UserTopic_Visit userTopic_visit);
+    
+    public void updateUserTopic_visit(String userId, String topicId, String lastVisitTime);
+    
+    public UserTopic_Visit getUserTopic_VisitByUserIdandTopicId(String userId, String topicId);
 	
 }

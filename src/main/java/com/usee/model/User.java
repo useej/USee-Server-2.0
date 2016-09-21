@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -13,6 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = "user")
+//@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class User {
 
 	@Id
@@ -58,6 +61,9 @@ public class User {
 
 	@Column(length = 20)
 	private String vcSendTime;
+	
+	@Column
+	private String status;
 	
 	public String getUserID() {
 		return userID;
@@ -155,12 +161,21 @@ public class User {
 		this.vcSendTime = vcSendTime;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "User [userID=" + userID + ", gender=" + gender + ", nickname=" + nickname + ", userIcon=" + userIcon
 				+ ", cellphone=" + cellphone + ", password=" + password + ", createTime=" + createTime + ", openID_qq="
-				+ openID_qq + ", openID_wx=" + openID_wx + ", openID_wb=" + openID_wb + ", getVerificationCode=" + verificationCode
-				+ ", vcSendTime=" + vcSendTime + "]";
+				+ openID_qq + ", openID_wx=" + openID_wx + ", openID_wb=" + openID_wb + ", verificationCode="
+				+ verificationCode + ", vcSendTime=" + vcSendTime + ", status=" + status + "]";
 	}
 
+	
 }

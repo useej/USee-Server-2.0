@@ -17,7 +17,7 @@ public class MessageDaoImpl implements MessageDao {
 	SessionFactory sessionFactory;
 
 	public int getNewMsgsNum(String userID, String latestReadTime) {
-		String hql = "from Comment c where c.receiver = ? AND c.create_time > ?";
+		String hql = "from Comment c where c.receiver = ? AND c.create_time > ? AND c.status = 1";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, userID);
 		query.setString(1, latestReadTime);
@@ -25,7 +25,7 @@ public class MessageDaoImpl implements MessageDao {
 	}
 
 	public List<Comment> getNewMsgs(String userID, String latestReadTime) {
-		String hql = "from Comment c where c.receiver = ? AND c.create_time > ? ORDER BY c.create_time DESC";
+		String hql = "from Comment c where c.receiver = ? AND c.create_time > ? AND c.status = 1 ORDER BY c.create_time DESC";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, userID);
 		query.setString(1, latestReadTime);
@@ -33,7 +33,7 @@ public class MessageDaoImpl implements MessageDao {
 	}
 
 	public List<Comment> getallMsgsbyID(String userID) {
-		String hql = "from Comment c where c.receiver = ? ORDER BY c.create_time DESC";
+		String hql = "from Comment c where c.receiver = ? AND c.status = 1 ORDER BY c.create_time DESC";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, userID);
 		return query.list();

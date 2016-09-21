@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.usee.dao.UserTopicDao;
 import com.usee.model.UserTopic;
+import com.usee.model.UserTopic_Visit;
 
 @Service
 public class UserTopicDaoImp implements UserTopicDao{
@@ -32,6 +33,7 @@ public class UserTopicDaoImp implements UserTopicDao{
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, userId);
 		query.setString(1, topicId);
+//		query.setCacheable(true);
 		return (UserTopic)query.uniqueResult();
 	}
 	
@@ -105,5 +107,31 @@ public class UserTopicDaoImp implements UserTopicDao{
         query.executeUpdate();
 
     }
+
+	@Override
+	public void saveUserTopic_visit(UserTopic_Visit userTopic_visit) {
+		sessionFactory.getCurrentSession().save(userTopic_visit);
+	}
+
+	@Override
+	public void updateUserTopic_visit(String userId, String topicId, String lastVisitTime) {
+		String hql = "update UserTopic_Visit ut_v set ut_v.lastVisit_time = :lastVisitTime where ut_v.userID = :userId and ut_v.topicID = :topicId";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setParameter("userId", userId);
+		query.setParameter("topicId", topicId);
+		query.setParameter("lastVisitTime", lastVisitTime);
+		query.executeUpdate();
+		
+	}
+
+	@Override
+	public UserTopic_Visit getUserTopic_VisitByUserIdandTopicId(String userId, String topicId) {
+		String hql = "from UserTopic_Visit ut_v where ut_v.userID = ? and ut_v.topicID = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, userId);
+		query.setString(1, topicId);
+//		query.setCacheable(true);
+		return (UserTopic_Visit)query.uniqueResult();
+	}
 	
 }

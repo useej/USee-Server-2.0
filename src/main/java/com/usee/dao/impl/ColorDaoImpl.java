@@ -18,6 +18,7 @@ public class ColorDaoImpl implements ColorDao {
 		String sql = "SELECT code from colorHexCodes where id = ?";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		query.setInteger(0, id);
+//		query.setCacheable(true);
 		return (String) query.uniqueResult();
 	}
 

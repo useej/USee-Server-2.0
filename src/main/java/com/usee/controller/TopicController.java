@@ -1,7 +1,8 @@
 package com.usee.controller;
 
-
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import net.sf.json.JSONObject;
 import com.qiniu.api.auth.AuthException;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usee.model.Topic;
 import com.usee.service.impl.TopicImgServiceImp;
 import com.usee.service.impl.TopicServiceImpl;
-
 
 @Controller
 public class TopicController {
@@ -162,6 +165,25 @@ public class TopicController {
             list.add(s);
         }
         topicService.likeTopic(userID, list);
+    }
+    
+    @RequestMapping(value = "gettopictitle", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public Map<String, Object> getTopicTitleForWeb(@RequestBody String topicIDJson){
+    	Map<String, Object> returnMap = new HashMap<String, Object>();
+    	
+    	ObjectMapper mapper = new ObjectMapper();
+		Map<String, String> map = new HashMap<String, String>();
+		try {
+			map = mapper.readValue(topicIDJson, new TypeReference<Map<String, String>>() {});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	String topicID = map.get("topicID");
+
+    	String topicTitle = topicService.getTopicTitleForWeb(topicID);
+    	returnMap.put("topicTitle", topicTitle);
+    	return returnMap;
     }
 
     @RequestMapping(value = "getuptoken", method = RequestMethod.POST, produces = "application/json;charset=utf-8")

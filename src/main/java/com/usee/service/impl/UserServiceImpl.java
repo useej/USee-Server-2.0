@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.usee.dao.UserDao;
+import com.usee.model.Feedback;
 import com.usee.model.User;
 import com.usee.service.UserService;
 import com.usee.utils.MD5Util;
@@ -99,6 +100,17 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(md5Password);
 		
 		return userDao.modifyPassword(user);
+	}
+
+	@Override
+	public void feedback(String messages) {
+		String time = new Date().getTime() + "";
+		Feedback feedback = new Feedback();
+		feedback.setTime(time);
+		feedback.setMessages(messages);
+		userDao.feedback(feedback);
+		
+		System.out.println(feedback);
 	}
 	
 

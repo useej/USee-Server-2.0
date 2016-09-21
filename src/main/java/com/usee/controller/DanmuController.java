@@ -157,4 +157,27 @@ public class DanmuController {
         String result = danmuService.reportContent(contentJson);
         return result;
     }
+    
+    @RequestMapping(value = "deletecomment", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String deleteComment(@RequestBody String json){
+		JSONObject deleteCommentJson = new JSONObject().fromObject(json);
+		boolean isSuccess = danmuService.deleteComment(deleteCommentJson);
+		JSONObject result = new JSONObject();
+		result.put("status", isSuccess);
+		System.out.println(result);
+		return result.toString();
+	}
+    
+    @RequestMapping(value = "deletedanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String deleteDanmu(@RequestBody String json){
+		JSONObject deleteDanmuJson = new JSONObject().fromObject(json);
+		boolean isSuccess = danmuService.deleteDanmu(deleteDanmuJson);
+		JSONObject result = new JSONObject();
+		result.put("status", isSuccess);
+		System.out.println(result);
+		return result.toString();
+	}
+
 }
