@@ -84,9 +84,9 @@ public class TopicDaoImpl implements TopicDao {
 		return query.list();  
 	}
 
-    public List<Topic> getTopicsbyDanmuNum(int num) {
-        String hql="from Topic order by danmuNum desc";
-        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+    public List<String> getTopicsbyDanmuNum(int num) {
+        String sql="select DISTINCT title from topic ORDER BY danmuNum desc";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
         query.setFirstResult(0);
         query.setMaxResults(num);
         return query.list();

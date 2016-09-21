@@ -1,28 +1,30 @@
 package com.usee.controller;
 
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.usee.model.Topic;
-import com.usee.service.impl.TopicServiceImpl;
-
 import net.sf.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.qiniu.api.auth.AuthException;
+import com.usee.model.Topic;
+import com.usee.service.impl.TopicImgServiceImp;
+import com.usee.service.impl.TopicServiceImpl;
 
 
 @Controller
 public class TopicController {
 	@Autowired
 	private TopicServiceImpl topicService;
+    @Autowired
+    private TopicImgServiceImp topicImgService;
 
 	@RequestMapping(value = "getusertopics", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
@@ -162,4 +164,10 @@ public class TopicController {
         topicService.likeTopic(userID, list);
     }
 
+    @RequestMapping(value = "getuptoken", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String getuotoken( ) throws AuthException, JSONException{
+        String uptoken = topicImgService.getuptoken();
+        return uptoken ;
+    }
 }

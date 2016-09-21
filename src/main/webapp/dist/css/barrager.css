@@ -1,0 +1,28 @@
+.barrage{position: fixed;bottom:70px;right:-600px;display: inline-block;width:500px;z-index: 99999}
+.barrage_box{background-color: rgba(0,0,0,.5);padding-right: 8px; height: 32px;display: inline-block;border-radius: 25px;transition: all .3s;}
+.barrage_box .portrait{ display: inline-block;margin-top: 2px; margin-left: 2px; width: 28px;height: 28px;border-radius: 50%;overflow: hidden;}
+.barrage_box .portrait img{width: 100%;height: 100%;}
+.barrage_box div.p a{ margin-right: 4px; font-size: 20px;color: #fff;line-height: 30px;margin-left: 40px; }
+.barrage_box div.p a:hover{text-decoration: underline;}
+.barrage_box .close{visibility: hidden;opacity: 0; text-align: center; width:25px;height: 25px;margin-left: 20px;border-radius: 50%;background:rgba(255,255,255,.1);margin-top:8px; background-image: url(close.png);}
+.barrage_box:hover .close{visibility:visible;opacity: 1;}
+.barrage_box .close a{display:block;}
+.barrage_box .close .icon-close{font-size: 14px;color:rgba(255,255,255,.5);display: inline-block;margin-top: 5px; }
+.barrage .z {float: left !important;}
+.barrage  a{text-decoration:none;}
+#footer{background:#F37E53; color:white; width:100%;height:48px;clear:both;text-align:right; position:fixed;bottom:0PX;opacity:0.8} 
+.button, .button:visited {
+	background: #F37E53 url(overlay.png) repeat-x;
+	display: inline-block;
+	padding: 5px 5px 5px;
+	color: white;
+	text-decoration: none;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+	border-bottom: 1px solid rgba(0,0,0,0.25);
+	position: relative;
+	cursor: pointer
+}

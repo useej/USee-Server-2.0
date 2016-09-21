@@ -1,14 +1,5 @@
 package com.usee.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import com.usee.utils.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.usee.dao.ColorDao;
 import com.usee.dao.RandomNameDao;
 import com.usee.dao.impl.CommentDaoImpl;
@@ -20,9 +11,16 @@ import com.usee.model.Danmu;
 import com.usee.model.Topic;
 import com.usee.model.UserTopic;
 import com.usee.service.TopicService;
-
+import com.usee.utils.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -407,10 +405,11 @@ public class TopicServiceImpl implements TopicService {
         //PullwordApi pa = new PullwordApi();
         AnsjSegUtil asu = new AnsjSegUtil();
 
-        List<Topic> list = topicdao.getTopicsbyDanmuNum(HOT_TOPIC_TITLE_NUM);
+        List<String> list = topicdao.getTopicsbyDanmuNum(HOT_TOPIC_TITLE_NUM);
+
         String titles = "";
-        for (Topic t:list) {
-            titles += t.getTitle() + ",";
+        for (String s:list) {
+            titles += s + ",";
         }
         System.out.println(titles);
         //return pa.getHotwords(titles, threshold);

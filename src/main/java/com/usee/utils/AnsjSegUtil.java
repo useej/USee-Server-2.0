@@ -15,8 +15,11 @@ public class AnsjSegUtil {
         JSONArray array = new JSONArray();
         JSONObject resultJson = new JSONObject();
 
-        KeyWordComputer kwc = new KeyWordComputer(num);
-        List<Keyword> result = kwc.computeArticleTfidf(phrase);
+//        KeyWordComputer kwc = new KeyWordComputer(num);
+//        List<Keyword> result = kwc.computeArticleTfidf(phrase);
+
+        NewKeyWordComputer nkwc = new NewKeyWordComputer(num);
+        List<Keyword> result = nkwc.computeArticleTfidf(phrase);
 
         String temp = result.toString().substring(1, result.toString().length()-1);
 

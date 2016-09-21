@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.usee.utils.AmapAPIUtil;
 import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,7 @@ public class DanmuServiceImp implements DanmuService{
 	
 	public void sendDammu(JSONObject danmu) {
 		TimeUtil timeUtil = new TimeUtil();
+        AmapAPIUtil amap = new AmapAPIUtil();
 
 		// 前台传输过来的userIcon和userName和randomIconId
 		String _randomUserIcon = danmu.getString("randomUserIcon");
@@ -67,6 +69,13 @@ public class DanmuServiceImp implements DanmuService{
 		String lastVisitTime = timeUtil.currentTimeStamp;
 		int frequency = userTopicDao.getLatestFrequency() + 1;
 		String userIcon = userId + ".png";
+
+        //通过经纬度获取地址
+        String lon = danmu.getString("lon");
+        String lat = danmu.getString("lat");
+        String result = amap.getLocationName(lon + "," + lat);
+        JSONObject addressJson = new JSONObject().fromObject(result);
+        String address = addressJson.getJSONObject("regeocode").getString("formatted_address");
 
 		// 通过userId和topicId从数据库中获取存在的UserTopic信息
 		UserTopic existUserTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId);
@@ -154,7 +163,7 @@ public class DanmuServiceImp implements DanmuService{
 		newDanmu.setLon(danmu.getString("lon"));
 		newDanmu.setLat(danmu.getString("lat"));
 		newDanmu.setCreate_time(timeUtil.currentTimeStamp);
-		newDanmu.setAddress("江苏省南京市佛城西路河海大学江宁校区");
+		newDanmu.setAddress(address);
 		newDanmu.setDelete_time(danmu.getString("delete_time"));
 		
 //		// 进行encode
