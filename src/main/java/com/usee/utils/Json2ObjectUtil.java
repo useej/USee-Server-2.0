@@ -46,7 +46,7 @@ public class Json2ObjectUtil {
 				user.setOpenID_wx(map.get("openID_wx"));
 			}
 			if(map.containsKey("openID_wb")) {
-				user.setOpenID_qq(map.get("openID_wb"));
+				user.setOpenID_wb(map.get("openID_wb"));
 			}
 			if(map.containsKey("verificationCode")) {
 				user.setVerificationCode(map.get("verificationCode"));

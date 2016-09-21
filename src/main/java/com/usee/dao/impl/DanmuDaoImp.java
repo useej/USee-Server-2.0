@@ -34,6 +34,7 @@ public class DanmuDaoImp implements DanmuDao {
 		String hql = "from Danmu d where d.id =?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setInteger(0, id);
+//		query.setCacheable(true);
 		return (Danmu)query.uniqueResult();  
 	}
 	
@@ -45,6 +46,7 @@ public class DanmuDaoImp implements DanmuDao {
 		String hql = "from Danmu d where d.topicId = ? and d.status <> '0' order by d.create_time desc";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, topicId);
+//		query.setCacheable(true);
 		return query.list();
 	}
 
@@ -57,6 +59,7 @@ public class DanmuDaoImp implements DanmuDao {
 		query.setString(0, topicId);
 		query.setFirstResult((pageNum - 1) * pageSize);
 		query.setMaxResults(pageSize);
+//		query.setCacheable(true);
 		return query.list();
 	}
 
@@ -108,6 +111,7 @@ public class DanmuDaoImp implements DanmuDao {
 		String hql = "select topicId from Danmu d where d.id = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setInteger(0, danmuId);
+//		query.setCacheable(true);
 		return query.uniqueResult().toString();
 	}
 	
@@ -128,6 +132,7 @@ public class DanmuDaoImp implements DanmuDao {
 		String hql = "select d.topicId AS topicid from Danmu d where d.userId =?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, userId);
+//		query.setCacheable(true);
 		return query.list();
 	}
 
@@ -252,6 +257,7 @@ public class DanmuDaoImp implements DanmuDao {
 		Query query= sessionFactory.getCurrentSession().createSQLQuery(sql);
 		query.setResultTransformer(org.hibernate.transform.Transformers.ALIAS_TO_ENTITY_MAP); 
 		query.setParameter(0, userId);
+//		query.setCacheable(true);
 		List<Object[]> lobj = query.list();
 		return lobj;
 	}
@@ -297,6 +303,7 @@ public class DanmuDaoImp implements DanmuDao {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		query.setString(0, userId);
 		query.setInteger(1, danmuId);
+//		query.setCacheable(true);
 		if(query.uniqueResult() != null){
 			return Integer.parseInt(query.uniqueResult().toString());
 		}
@@ -310,6 +317,7 @@ public class DanmuDaoImp implements DanmuDao {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		query.setString(0, userId);
 		query.setInteger(1, danmuId);
+//		query.setCacheable(true);
 		if(query.uniqueResult() != null){
 			return true;
 		}
@@ -343,5 +351,70 @@ public class DanmuDaoImp implements DanmuDao {
         query.setInteger(5, reportType);
         return query.executeUpdate();
     }
+
+	@Override
+	public Danmu getDanmuByDanmuIdAndUserId(int danmuID, String userID) {
+		String hql = "from Danmu d where d.id =? and d.userId =?"; 
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setInteger(0, danmuID);
+		query.setString(1, userID);
+		return (Danmu) query.uniqueResult();
+	}
+
+	@Override
+	public boolean deleteUpdownDanmu(int danmuID) {
+		String sql = "delete from updowndanmu where danmuID = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setInteger(0, danmuID);
+		if(query.executeUpdate() != 0)
+		{
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteUser_Danmu(int danmuID) {
+		String sql = "delete from user_danmu where danmuID = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setInteger(0, danmuID);
+		if(query.executeUpdate() != 0)
+		{
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteUserFavDanmu(int danmuID) {
+		String sql = "delete from userfavdanmu where danmuID = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setInteger(0, danmuID);
+		if(query.executeUpdate() != 0)
+		{
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteDanmu(int danmuID) {
+		String sql = "delete from danmu where id = ?";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setInteger(0, danmuID);
+		if(query.executeUpdate() != 0)
+		{
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 
 }

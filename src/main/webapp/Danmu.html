@@ -41,7 +41,7 @@ div#sidebarAd.cleanslate .ad-sponsor{color:#ccc!important;}.zurb-footer-top{back
     
         <div class="text-center">
             <div class="bb-masthead">
-                <h2 id='topicTitle'>  Loading ... </h2>
+                <h2 id='topicTitle'>  Loadinging ... </h2>
            			<!-- <input id="txt" font-size= 20px color ="#F4F4F4" width="600px"> </input>
            			
            			<input id="txt2" font-size= 20px color ="#F4F4F4" width="600px"> </input>
@@ -75,11 +75,10 @@ div#sidebarAd.cleanslate .ad-sponsor{color:#ccc!important;}.zurb-footer-top{back
 		document.title = title.topicTitle;
 		$("#topicTitle").html(title.topicTitle);
 		
-		var initialPo =0;
-		var finalPo =0;
 				 
 		// Init 
-		previous_danmus = new Array();
+		current_DMMRight = new Array();
+       
 		// Get data from server 
 		var method = danmumethod();
 		ref = getDanmu(method);

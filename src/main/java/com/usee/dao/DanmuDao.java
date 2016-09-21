@@ -56,4 +56,14 @@ public interface DanmuDao {
 	public int getLatestDanmuIdByUserIdAndTopicId(String userId, String topicId);
 
     public int updateReport(String reporter, String contentUserId, String contentId, String contentType, String reportTime, int reportType);
+
+    public Danmu getDanmuByDanmuIdAndUserId(int danmuID, String userID);
+    
+    public boolean deleteUpdownDanmu(int danmuID);
+
+    public boolean deleteUser_Danmu(int danmuID);
+    
+    public boolean deleteUserFavDanmu(int danmuID);
+    
+    public boolean deleteDanmu(int danmuID);
 }

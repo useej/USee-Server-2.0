@@ -6,10 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "usertopic_visit")
+//@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class UserTopic_Visit {
 	@Id
 	@GeneratedValue(generator = "usertopicGenerator")    

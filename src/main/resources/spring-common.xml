@@ -18,7 +18,7 @@
 		<property name="username" value="root" />
 		<property name="password" value="931010" />
 	</bean>
-     
+	
 	<!-- 配置SessionFactory -->
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
@@ -43,6 +43,32 @@
 		 <property name="packagesToScan" value="com.usee.model"/>
 	</bean>
 	
+	<!-- 配置SessionFactory -->
+<!--	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+ -->
+				<!-- 缓存配置 -->
+<!--				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_structured_entries">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">
+				   com.googlecode.hibernate.memcached.MemcachedRegionFactory
+				</prop>
+				<prop key="hibernate.memcached.servers">114.215.141.67:11211</prop>
+				<prop key="hibernate.memcached.operationTimeout">60000</prop>
+				<prop key="hibernate.cache.region_prefix">quality.cache.ehcache</prop>
+			</props>
+		</property>
+		<property name="packagesToScan" value="com.usee.model"/>
+	</bean>
+ -->	
+ 
 	<!-- 事务管理器 -->
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">

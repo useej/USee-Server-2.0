@@ -18,4 +18,10 @@ public interface CommentDao {
     public Comment getCommentbyReplycommentId(int replycommentId);
 
     public List<Comment> getCommentbyDanmuIdandCreatetime(int danmuId, String createTime);
+    
+    public Comment getCommentByIdAndSender(int commentID, String sender);
+    
+    public List<Comment> getReplyCommentListbyReplycommentId(int replycommentId);
+    
+    public boolean deleteComment(int commentID);
 }
