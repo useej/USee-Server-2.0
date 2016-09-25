@@ -4,9 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="topic")
@@ -54,6 +52,9 @@ public class Topic {
 
 	@Column(length=20)
 	private String delete_time;
+	
+	@Transient
+	private String[] imgurls;
 	
 	public String getId() {
 		return id;
@@ -165,6 +166,24 @@ public class Topic {
 
 	public void setDelete_time(String delete_time) {
 		this.delete_time = delete_time;
+	}
+	
+	
+
+	public String[] getImgurls() {
+		return imgurls;
+	}
+
+	public void setImgurls(String[] imgurls) {
+		this.imgurls = imgurls;
+	}
+
+	@Override
+	public String toString() {
+		return "Topic [id=" + id + ", title=" + title + ", description=" + description + ", lon=" + lon + ", lat=" + lat
+				+ ", radius=" + radius + ", create_time=" + create_time + ", lastDanmu_time=" + lastDanmu_time
+				+ ", userID=" + userID + ", poi=" + poi + ", danmuNum=" + danmuNum + ", expired=" + expired + ", type="
+				+ type + ", delete_time=" + delete_time + "]";
 	}
 	
 }

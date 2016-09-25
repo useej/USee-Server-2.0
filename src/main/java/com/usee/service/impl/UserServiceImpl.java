@@ -1,16 +1,28 @@
 package com.usee.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.usee.dao.UserDao;
+import com.usee.dao.DanmuDao;
+import com.usee.dao.impl.DanmuDaoImp;
+import com.usee.dao.impl.TopicDaoImpl;
+import com.usee.dao.impl.UserDaoImpl;
+import com.usee.dao.impl.UserTopicDaoImp;
 import com.usee.model.Feedback;
 import com.usee.model.User;
+import com.usee.model.UserTopic;
 import com.usee.service.UserService;
 import com.usee.utils.MD5Util;
+
+import net.sf.json.JSONObject;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -19,9 +31,18 @@ public class UserServiceImpl implements UserService {
 	private static final int DEFAULT_GENDER = 2;
 	
 	@Resource
-	private UserDao userDao;
+	private UserDaoImpl userDao;
+	
+	@Autowired
+	private UserTopicDaoImp userTopicDao;
+	
+	@Autowired
+	private TopicDaoImpl topicDaoImpl;
+	
+	@Autowired
+	private DanmuDaoImp danmuDaoImp;
 
-	public void setUserDao(UserDao userDao) {
+	public void setUserDao(UserDaoImpl userDao) {
 		this.userDao = userDao;
 	}
 
@@ -111,6 +132,34 @@ public class UserServiceImpl implements UserService {
 		userDao.feedback(feedback);
 		
 		System.out.println(feedback);
+	}
+
+	@Override
+	public String getRealnameInfo(String userID) {
+		JSONObject resultJson = new JSONObject();
+		
+		User user = userDao.getUser(userID);
+		List<UserTopic> topicList = userTopicDao.getUserTopicbyUserId(userID);
+		List<Map<String, String>> topicInfoList = new ArrayList<Map<String,String>>();
+		for (UserTopic userTopic : topicList) {
+			
+			System.out.println(userTopic.toString());
+			
+			String topicID = userTopic.getTopicId();
+			if(danmuDaoImp.hasRealnameDmByUserIdAndTopicId(userID, topicID)) {
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("topicID", userTopic.getTopicId());
+				map.put("title", topicDaoImpl.getTopicTitleForWeb(userTopic.getTopicId()));
+				topicInfoList.add(map);
+			}
+		}
+		
+		resultJson.put("userID", user.getUserID());
+		resultJson.put("gender", user.getGender());
+		resultJson.put("nickname", user.getNickname());
+		resultJson.put("userIcon", user.getUserIcon());
+		resultJson.put("topic", topicInfoList);
+		return resultJson.toString();
 	}
 	
 

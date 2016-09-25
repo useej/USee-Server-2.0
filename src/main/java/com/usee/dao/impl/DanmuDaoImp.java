@@ -8,10 +8,16 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.usee.dao.DanmuDao;
 import com.usee.model.Danmu;
-import com.usee.model.UserTopic;
+import com.usee.model.Topicimg;
+
+import net.sf.json.JSONObject;
 @Service
 public class DanmuDaoImp implements DanmuDao {
 	@Resource
@@ -415,6 +421,38 @@ public class DanmuDaoImp implements DanmuDao {
 		else{
 			return false;
 		}
+	}
+
+	@Override
+	public List<Object[]> getNewDanmu(String createTime) {
+		String sql = "select t.title, d.messages from danmu d, topic t "
+				+ "where d.topicID = t.id and d.userID in  "
+				+ "(select userID from user where createTime > ?) order by d.create_time desc";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setString(0, createTime);
+		return query.list();
+	}
+
+	@Override
+	public boolean hasRealnameDmByUserIdAndTopicId(String userID, String topicID) {
+		String hql = "from Danmu d where d.topicId = ? and d.userId = ? and d.userIcon LIKE '%.png' and d.status <> 0";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setString(0, topicID);
+        query.setString(1, userID);
+//        query.setString(2, "");
+        List list = query.list();
+        
+        System.out.println(list.size());
+        
+        for (Object object : list) {
+			System.out.println((Danmu)object);
+		}
+        
+        if(list.size() == 0){
+        	return false;
+        } else {
+        	return true;
+        }		
 	}
 
 }

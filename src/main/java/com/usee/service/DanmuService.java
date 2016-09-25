@@ -43,4 +43,6 @@ public interface DanmuService {
     public void deleteReplyComment(int commentID);
     
     public boolean deleteDanmu(JSONObject jsonObject);
+    
+    public String getNewDanmu(JSONObject jsonObject);
 }

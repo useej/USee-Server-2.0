@@ -2,6 +2,7 @@ package com.usee.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,14 +14,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import net.sf.json.JSONObject;
-import com.qiniu.api.auth.AuthException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qiniu.api.auth.AuthException;
 import com.usee.model.Topic;
+import com.usee.model.Topicimg;
 import com.usee.service.impl.TopicImgServiceImp;
 import com.usee.service.impl.TopicServiceImpl;
+
+import net.sf.json.JSONObject;
 
 @Controller
 public class TopicController {
@@ -109,6 +112,12 @@ public class TopicController {
 		JSONObject newTopicJson = new JSONObject().fromObject(newTopic);
 		String newId = topicService.createTopic(newTopicJson);
 		Topic userTopics = topicService.getTopic(newId);
+		
+		// 保存图片
+		newTopicJson.put("topicID", userTopics.getId());
+		Topicimg newtopicimg = topicImgService.saveTopicimg(newTopicJson);
+		userTopics.setImgurls(newtopicimg.getImgurls());
+		
 		System.out.println(userTopics);
 		return userTopics;
 	}
@@ -185,11 +194,50 @@ public class TopicController {
     	returnMap.put("topicTitle", topicTitle);
     	return returnMap;
     }
+    
+    @ResponseBody
+	@RequestMapping(value = "gettopicinfo", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public String getTopicInfo(@RequestBody String json) {
+		JSONObject jsonObject = JSONObject.fromObject(json);
+		String topicID  = jsonObject.getString("topicID");
+		
+		Topic topic = topicService.getTopic(topicID);
+		JSONObject resultJson = new JSONObject();
+		resultJson.put("topic", topic);
+		return resultJson.toString();
+	}
 
+    
+    /*
+     * 下面的与topicImg有关
+     */
     @RequestMapping(value = "getuptoken", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
-    public String getuotoken( ) throws AuthException, JSONException{
-        String uptoken = topicImgService.getuptoken();
-        return uptoken ;
+    public String getuptoken( ) throws AuthException, JSONException{
+        String resultJson = topicImgService.getuptoken();
+        return resultJson.toString();
     }
+    
+    @RequestMapping(value = "savetopicimg", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String saveTopicImg(@RequestBody String json){
+    	JSONObject jsonObject = JSONObject.fromObject(json);
+    	Topicimg newtopicimg = topicImgService.saveTopicimg(jsonObject);
+    	JSONObject resultJson = new JSONObject();
+		resultJson.put("topicimg", newtopicimg);
+		return resultJson.toString();
+    }
+    
+    @RequestMapping(value = "gettopicimg", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String getTopicImg(@RequestBody String json){
+    	JSONObject jsonObject = JSONObject.fromObject(json);
+    	String topicID  = jsonObject.getString("topicID");
+    	List<String> imgUrlList = topicImgService.getTopicimg(topicID);
+    	
+    	JSONObject resultJson = new JSONObject();
+		resultJson.put("imgUrl", imgUrlList);
+		return resultJson.toString();
+    }
+	
 }

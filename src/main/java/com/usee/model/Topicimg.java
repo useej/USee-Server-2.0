@@ -1,21 +1,22 @@
 package com.usee.model;
 
+import java.util.Arrays;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.xml.soap.Text;
+import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name="topicimg")
 public class Topicimg {
 	@Id
-
+	@GeneratedValue(generator = "danmuGenerator")    
+	@GenericGenerator(name = "danmuGenerator", strategy = "identity")
 	@Column
 	private int id;
 	
@@ -27,6 +28,9 @@ public class Topicimg {
 	
 	@Column
 	private String imgurl;
+	
+	@Transient
+	private String[] imgurls;
 
 	public int getId() {
 		return id;
@@ -59,7 +63,19 @@ public class Topicimg {
 	public void setImgurl(String imgurl) {
 		this.imgurl = imgurl;
 	}
-	
 
+	public String[] getImgurls() {
+		return imgurls;
+	}
+
+	public void setImgurls(String[] imgurls) {
+		this.imgurls = imgurls;
+	}
+
+	@Override
+	public String toString() {
+		return "Topicimg [id=" + id + ", topicid=" + topicid + ", views=" + views + ", imgurl=" + imgurl + ", imgurls="
+				+ Arrays.toString(imgurls) + "]";
+	}
 
 }

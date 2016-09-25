@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -51,6 +52,9 @@ public class Danmu {
 	private String messages;
 	@Column
 	private String userIcon;
+	
+	@Transient
+	private String[] imgurls;
 
 	public int getId() {
 		return id;
@@ -186,6 +190,14 @@ public class Danmu {
 
 	public void setUserIcon(String userIcon) {
 		this.userIcon = userIcon;
+	}
+
+	public String[] getImgurls() {
+		return imgurls;
+	}
+
+	public void setImgurls(String[] imgurls) {
+		this.imgurls = imgurls;
 	}
 
 	@Override
