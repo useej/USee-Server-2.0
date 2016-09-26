@@ -196,8 +196,8 @@ public class DanmuController {
     @RequestMapping(value = "getnewdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getNewDanmu(@RequestBody String json){
-		JSONObject deleteDanmuJson = new JSONObject().fromObject(json);
-		String returnJson = danmuService.getNewDanmu(deleteDanmuJson);
+		JSONObject newDanmuJson = new JSONObject().fromObject(json);
+		String returnJson = danmuService.getNewDanmu(newDanmuJson);
 		System.out.println(returnJson);
 		return returnJson;
 	}
@@ -205,6 +205,7 @@ public class DanmuController {
 
 	/*
 	 * 下面的与DanmuImgs有关
+	 * 下面两个接口已经合并至其他接口，暂时废弃
 	 */
 	@RequestMapping(value = "savedanmuimgs", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody

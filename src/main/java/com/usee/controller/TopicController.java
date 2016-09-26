@@ -210,6 +210,7 @@ public class TopicController {
     
     /*
      * 下面的与topicImg有关
+     * 下面两个接口已经合并至其他接口，暂时废弃，只有getuptoken有用
      */
     @RequestMapping(value = "getuptoken", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
