@@ -1,14 +1,14 @@
 
-		var serverPrefix = ''; // http://114.215.209.102/USee/
+		var serverPrefix = 'http://114.215.209.102/USee/'; // http://114.215.209.102/USee/
 		
 		// TODO:  Remove Duplications	
 		function danmumethod(){
-		  var method = 'getdmbytopic';   // // getdmbytopic'
+		  var method = serverPrefix+'getdmbytopic';   // // getdmbytopic'
 		  return method;
 		}
 		
 		function titlemethod(){
-		  var method = 'gettopictitle';   //  
+		  var method = serverPrefix+'gettopictitle';   //  
 		  return method;
 		}
 		
@@ -85,20 +85,15 @@
 			var speedRatio =0.2
 
 			if(window_width <800) {
-					speedRatio =0.066;
+					speedRatio =0.5;
 			}
 
 			looper_time=maxLength/ speedRatio; // 
 
 			if(looper_time < 120) {
-					looper_time = 120;
+					looper_time = 200;
 			}
 
-			if(window_width <800) {
-					looper_time =200;
-			}
-
- 	
 			looper=setInterval(barrager,looper_time*10); 
       	 	run_once=false;
   		}
@@ -110,7 +105,13 @@
   		// 注册用户的URL可以取得
   		// 非注册用户 渲染 Or 随机头像 'img':'barrager.png'
   		// TODO Remove the URL
-  		var imgUrl = "userIcons/"+ ref.danmu[index].userId +".png"
+  		var userIcon  = ref.danmu[index].userIcon;
+  		var imgUrl = "static/domino-mask.png"; 
+  		 
+  		if (userIcon.indexOf("_") < 0){  		
+  				 imgUrl = "userIcons/"+ ref.danmu[index].userId +".png"
+  		}
+  		
      	var danmu_i={'img':imgUrl,'info':ref.danmu[index].messages,'speed':1};
         
   		$('body').barrager(danmu_i);

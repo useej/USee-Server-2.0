@@ -23,4 +23,6 @@ public interface UserService {
 	public User getUserByCellphone(String cellphone);
 	
 	public void feedback(String messages);
+	
+	public String getRealnameInfo(String userID);
 }

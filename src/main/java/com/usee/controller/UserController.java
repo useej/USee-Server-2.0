@@ -21,9 +21,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usee.model.User;
 import com.usee.service.SqlInjectService;
-import com.usee.service.UserService;
+import com.usee.service.impl.UserServiceImpl;
 import com.usee.utils.Json2ObjectUtil;
 import com.usee.utils.MD5Util;
+
+import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("/user")
@@ -36,7 +38,7 @@ public class UserController {
 	private static final long VALIDITY_TIME = 600000;
 
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userService;
 	
 	@Autowired
 	private SqlInjectService sqlInjectService;
@@ -536,11 +538,16 @@ public class UserController {
 		userService.feedback(messages);
 	}
 	
-//	public static String getUserIcon(String userIcon) {
-//		if(userIcon.length() < 10) {
-//			return USERICON_PREFIX + "randomIcons/" + userIcon;
-//		} else {
-//			return USERICON_PREFIX + "userIcons/" + userIcon;
-//		}
-//	}
+	@ResponseBody
+	@RequestMapping(value = "getrealnameinfo", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public String getRealnameInfo(@RequestBody String json) {
+		
+		JSONObject jsonObject = JSONObject.fromObject(json);
+		String userID  = jsonObject.getString("userID");
+		
+		String resultJson = userService.getRealnameInfo(userID);
+		System.out.println(resultJson);
+		return resultJson;
+	}
+
 }

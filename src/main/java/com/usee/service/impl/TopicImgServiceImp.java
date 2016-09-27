@@ -1,19 +1,19 @@
 package com.usee.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.json.JSONException;
 import org.springframework.stereotype.Service;
 
 import com.qiniu.api.auth.AuthException;
-import com.usee.dao.impl.DanmuDaoImp;
-import com.usee.dao.impl.TopicDaoImpl;
 import com.usee.dao.impl.TopicimgDaoImp;
-import com.usee.dao.impl.UserTopicDaoImp;
 import com.usee.model.Topicimg;
 import com.usee.service.TopicImgService;
 import com.usee.utils.QiniuServiceImpl;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Service
@@ -28,31 +28,50 @@ public class TopicImgServiceImp implements TopicImgService {
 	public String getuptoken() throws AuthException, JSONException {
 		QiniuServiceImpl qiniuService= new QiniuServiceImpl();
         //设置AccessKey
-        qiniuService.setAccessKey("W3VCxhIZCNSidAA-oYBOYiFHMMlN0i4BGdrJaIB5");
+        qiniuService.setAccessKey("PbiwSKKCFf_7WKHv3DuMItdEkTp2jRpzozvA9_U5");
         //设置SecretKey
-        qiniuService.setSecretKey("HrJr_Rq5DHT7Lp1WVKVVsf6nP-UADXIcSylRvyFP");
+        qiniuService.setSecretKey("suH9RPao25xBFgSa6tS5y7UJ_TtMHQ65jkdFfxUB");
         //设置存储空间
         qiniuService.setBucketName("usee");
         //设置七牛域名
-        qiniuService.setDomain("odok0w4o2.bkt.clouddn.com");
+        qiniuService.setDomain("http://odyutrywf.qnssl.com");
         
-		String uptoken1 = qiniuService.getUpToken();
-		String uptoken = "{"+uptoken1+"}";
-		System.out.println(uptoken);
-		return uptoken;
-	}
-	public String saveTopicimg(JSONObject Topicimg) {
+		String uptoken = qiniuService.getUpToken();
 		
-		String topicid = Topicimg.getString("topicid");
+		JSONObject resultJson = new JSONObject();
+		resultJson.put("uptoken", uptoken);
+		resultJson.put("domain", "http://odyutrywf.qnssl.com");
+		return resultJson.toString();
+	}
+	public Topicimg saveTopicimg(JSONObject topicimg) {
+		
+		String topicid = topicimg.getString("topicID");
 		int views = 1;
-		String imgurl = Topicimg.getString("imgurl");
+		JSONArray imgurls = topicimg.getJSONArray("imgurls");
+		
 		Topicimg newtopicimg = new Topicimg();
 		newtopicimg.setTopicid(topicid);
 		newtopicimg.setViews(views);
-		newtopicimg.setImgurl(imgurl);
-		topicimgdao.savetopicimg(newtopicimg);
+		String[] _imgurls = new String[imgurls.size()];
 		
-		return null;
+		for(int i=0; i<imgurls.size(); i++){
+			Topicimg _newtopicimg = new Topicimg();
+			_newtopicimg.setTopicid(topicid);
+			_newtopicimg.setViews(views);
+			String imgurl = imgurls.getString(i);
+			_imgurls[i] = imgurl;
+			_newtopicimg.setImgurl(imgurl);
+			topicimgdao.savetopicimg(_newtopicimg);
+		}
+		
+		newtopicimg.setImgurl(null);
+		newtopicimg.setImgurls(_imgurls);
+		return newtopicimg;
+	}
+
+	@Override
+	public List<String> getTopicimg(String topicID) {
+		return topicimgdao.gettopicimg(topicID);
 	}
 	
 

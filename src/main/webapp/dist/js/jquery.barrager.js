@@ -36,7 +36,7 @@
 
 		var div_barrager = $("<div class='barrage' id='" + barrager_id + "'></div>").appendTo($(this));
 		
-		if (current_DMMRight[number] > 300) {
+		if (current_DMMRight[number] > 500) {
 			var bottom = (barrage.bottom == 0) ? Math.floor(number* window_height /numOfYongDao + 100) : barrage.bottom;
 	    // TODO Avoid dup wait for the first one! 
 	    	current_DMMRight[number] = 0;
@@ -69,30 +69,30 @@
 		
 		var info = barrage.info;
 		if (info.length < 5) {
-			div_barrager.css("width",   "300px");
+			div_barrager.css("width",   "200px");
 			div_barrager.css("right",   "-400px"); 
 		} 
 		else if (info.length < 10)  {
-			div_barrager.css("width",   "500px");
+			div_barrager.css("width",   "400px");
 			div_barrager.css("right",   "-600px"); 
 		}
 		else if (info.length < 15)  {
-			div_barrager.css("width",   "800px");
-			div_barrager.css("right",   "-900px"); 
+			div_barrager.css("width",   "600px");
+			div_barrager.css("right",   "-800px"); 
 		}
 		else if (info.length < 20)  {
-			div_barrager.css("width",   "1000px");
-			div_barrager.css("right",   "-1100px"); 
+			div_barrager.css("width",   "800px");
+			div_barrager.css("right",   "-1000px"); 
 		}
 		else if (info.length < 30)  {
-			div_barrager.css("width",   "1500px");
-			div_barrager.css("right",   "-1700px"); 
+			div_barrager.css("width",   "1200px");
+			div_barrager.css("right",   "-1200px"); 
 		} else if (info.length < 40) {
-			div_barrager.css("width",   "2000px");
-			div_barrager.css("right",   "-2200px"); 
+			div_barrager.css("width",   "1600px");
+			div_barrager.css("right",   "-1300px"); 
 		} else {
-			div_barrager.css("width",   "2500px");
-			div_barrager.css("right",   "-2700px"); 
+			div_barrager.css("width",   "1800px");
+			div_barrager.css("right",   "-1400px"); 
 		}
 		
 		div_barrager_box = $("<div class='barrage_box cl'></div>").appendTo(div_barrager);
@@ -148,23 +148,27 @@
 			var currentTime = new Date().getTime();
 		    	 
 			// 控制弹幕速度
-			var speedRatio =0.2
+			var speedRatio =5
 			currentTime = new Date().getTime();
+			runningTime = 3000;
 			
 			// Time count 
 			if (currentTime < beginTime + duration ) {
 				// Reduce speed for mobile device
+		
 				if(window_width <800) {
-					speedRatio =0.1;
+					speedRatio =10;
+					// runningTime 走完屏幕画的时间
 				}
+				middleScreen = Math.floor(window_width / 2);
 	
 	    		var info = barrage.info;		
 				currentTime = new Date().getTime();
 				var firstDanmus  = new Array();
 				var width = $(window).width() ;
-				dmposision  = (new Date().getTime() - beginTime ) * barrage.speed*speedRatio;
-				var currentdivWidth = $(id).css("width");	
+				dmposision  = Math.floor((new Date().getTime() - beginTime) /speedRatio) * barrage.speed;
 				
+				var currentdivWidth = $(id).css("width");	
 				if( typeof currentdivWidth !==  "undefined") {
 						currentdivWidth = parseFloat(currentdivWidth.replace(/px/,""));
 				} else {
@@ -172,18 +176,28 @@
 				}
 				
 				// Move 
-				$(id).css('margin-right', dmposision );
-
+			   // $(id).css('margin-right', dmposision );
+			   // alert("'+="+middleScreen+"'");
+			   
+			   
+			   $(id).animate({
+  						      marginRight: '+=500'
+    						}, runningTime, function() {
+    						
+    			}
+				);	
+			
 				var danmu_YD = id.substr(id.indexOf("_YD")+3,id.length)
 				
 				current_DMMRight[parseInt(danmu_YD)] = dmposision;
 				    		  		  
 				fadeoutPosision = width*0.9 ;
-				if (width<600) {
-						fadeoutPosision =  width *1.1;
+				
+				if (width<800) {
+						fadeoutPosision =  width *1.2;
 				} 
 				 if ( dmposision > fadeoutPosision ) {
-				 	 $(id).fadeOut(4000);
+				 	 $(id).fadeOut(8000);
 			}
 				 
 			} else {

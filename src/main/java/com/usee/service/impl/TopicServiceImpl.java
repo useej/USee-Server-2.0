@@ -5,6 +5,7 @@ import com.usee.dao.RandomNameDao;
 import com.usee.dao.impl.CommentDaoImpl;
 import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.dao.impl.TopicDaoImpl;
+import com.usee.dao.impl.TopicimgDaoImp;
 import com.usee.dao.impl.UserTopicDaoImp;
 import com.usee.model.Comment;
 import com.usee.model.Danmu;
@@ -38,6 +39,8 @@ public class TopicServiceImpl implements TopicService {
 	private ColorDao colorDao;
 	@Autowired
 	private CommentDaoImpl commentDao;
+	@Autowired
+	private TopicimgDaoImp topicimgDaoImp;
 	
 	private static final String DEFAULT_USERICON = "0.png";
 	
@@ -94,8 +97,18 @@ public class TopicServiceImpl implements TopicService {
 
         for(int i=0; i<list1.size();i++){
             String a = (String) list1.get(i);
-            userTopics.addAll(topicdao.getUserTopics(a));
+            
+            List<Topic> list = topicdao.getUserTopics(a);
+            for (Topic topic : list) {
+	            // 获取话题图片
+	            List<String> imgurls = topicimgDaoImp.gettopicimg(topic.getId());
+	            topic.setImgurls(imgurls.toArray(new String[imgurls.size()]));
+	            
+				JSONObject topicJSON = JSONObject.fromObject(topic);
+				userTopics.add(topicJSON.toString());
+			}
         }
+        
         JSONArray array = JSONArray.fromObject(userTopics);
         JSONArray array1 = JSONArray.fromObject(userTopics);
         int a1 = 0;
@@ -104,6 +117,7 @@ public class TopicServiceImpl implements TopicService {
             JSONObject tempJsonObject = array.getJSONObject(i);
             String topicId=tempJsonObject.getString("id");
             UserTopic usertopic =  userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userID, topicId);
+            
             if(usertopic!=null){
                 int like = usertopic.getDislike();
                 if(like == 1){
@@ -125,6 +139,13 @@ public class TopicServiceImpl implements TopicService {
         List list = new ArrayList();
         List<Topic> list1 = new ArrayList();
         list1 = topicdao.getAllTopic();
+        
+        for (Topic topic : list1) {
+            // 获取话题图片
+            List<String> imgurls = topicimgDaoImp.gettopicimg(topic.getId());
+            topic.setImgurls(imgurls.toArray(new String[imgurls.size()]));
+		}
+        
         JSONArray array = JSONArray.fromObject(list1);
         JSONArray array1 = JSONArray.fromObject(list1);
         JSONArray array2 = JSONArray.fromObject(list1);

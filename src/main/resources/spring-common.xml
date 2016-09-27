@@ -12,31 +12,33 @@
     <!-- 配置调度程序 quartz ，其中配置 JobDetail 有两种方式 -->
     <!-- 方式二：使用 MethodInvokingJobDetailFactoryBean，任务类可以不实现 Job 接口，通过 targetMethod 指定调用方法 -->
     <!-- 定义目标 bean 和 bean 中的方法 -->
-    <bean id="ScheduledTaskJob" class="com.usee.utils.ScheduledTask"/>
+<!--    <bean id="ScheduledTaskJob" class="com.usee.utils.ScheduledTask"/>
     <bean id="ScheduledTaskMethod" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
             <ref bean="ScheduledTaskJob"/>
         </property>
-        <property name="targetMethod">  <!-- 要执行的方法名称 -->
-            <value>execute</value>
+        <property name="targetMethod">  
+ -->
+        	<!-- 要执行的方法名称 -->
+<!--            <value>execute</value>
         </property>
     </bean>
-
+ -->
     <!-- 调度触发器 -->
-    <bean id="CronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+<!--    <bean id="CronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="ScheduledTaskMethod"></property>
         <property name="cronExpression" value="0/5 * * * * ?"></property>
     </bean>
-
+-->
     <!-- 调度工厂  -->
-    <bean id="SpringJobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+<!--    <bean id="SpringJobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
                 <ref bean="CronTriggerBean"/>
             </list>
         </property>
     </bean>
-
+-->
 
     <!-- 配置数据源 -->
 	<bean id="dataSource"
@@ -45,7 +47,7 @@
 		<property name="url"
 			value="jdbc:mysql://localhost:3306/usee?useUnicode=true&amp;characterEncoding=utf8" />
 		<property name="username" value="root" />
-		<property name="password" value="root" />
+		<property name="password" value="931010" />
 	</bean>
 	
 	<!-- 配置SessionFactory -->

@@ -133,5 +133,5 @@ public class UserTopicDaoImp implements UserTopicDao{
 //		query.setCacheable(true);
 		return (UserTopic_Visit)query.uniqueResult();
 	}
-	
+
 }
