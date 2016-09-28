@@ -1,14 +1,15 @@
 
-		var serverPrefix = ''; // http://114.215.209.102/USee/
+		var serverPrefix = 'http://114.215.209.102/USee/'; // http://114.215.209.102/USee/
+		var footerClosed = 0;
 		
 		// TODO:  Remove Duplications	
 		function danmumethod(){
-		  var method = 'getdmbytopic';   // // getdmbytopic'
+		  var method = serverPrefix+'getdmbytopic';   // // getdmbytopic'
 		  return method;
 		}
 		
 		function titlemethod(){
-		  var method = 'gettopictitle';   //  
+		  var method = serverPrefix+'gettopictitle';   //  
 		  return method;
 		}
 		
@@ -67,7 +68,6 @@
 	function  barrager(){
 		
   		if(run_once){
-  		
       		//如果是首次执行,则设置一个定时器,并且把首次执行置为false	  		
       		var totalDM = ref.danmu.length;
       		var maxLength =0 ;
@@ -85,20 +85,15 @@
 			var speedRatio =0.2
 
 			if(window_width <800) {
-					speedRatio =0.066;
+					speedRatio =0.5;
 			}
 
 			looper_time=maxLength/ speedRatio; // 
 
 			if(looper_time < 120) {
-					looper_time = 120;
+					looper_time = 200;
 			}
 
-			if(window_width <800) {
-					looper_time =200;
-			}
-
- 	
 			looper=setInterval(barrager,looper_time*10); 
       	 	run_once=false;
   		}
@@ -110,21 +105,23 @@
   		// 注册用户的URL可以取得
   		// 非注册用户 渲染 Or 随机头像 'img':'barrager.png'
   		// TODO Remove the URL
-  		var imgUrl = "userIcons/"+ ref.danmu[index].userId +".png"
-     	var danmu_i={'img':imgUrl,'info':ref.danmu[index].messages,'speed':1};
+  		var userIcon  = ref.danmu[index].userIcon;
+  		var imgUrl = "static/domino-mask.png"; 
+  		 
+  		if (userIcon.indexOf("_") < 0){  		
+  				 imgUrl = "userIcons/"+ ref.danmu[index].userId +".png"
+  		}
+  		
+     	var danmu_i={'img':imgUrl,'info':convertEmoji(ref.danmu[index].messages),'speed':1};
         
   		$('body').barrager(danmu_i);
-  		//索引自增
   		index++;
-  		
   		//  定期刷新，获取新弹幕
-  		// UI Update ! 
+  		
   		if (time_elasped > refreshInterval) {
-  				// clear_barrage(); alert (time_elasped);
-				index =0;  //  开始轮播
+  				index =0;  //  开始轮播
 				time_elasped =0;
 				run_once=false;
-				// alert("Periodic Refreshing ... ")
 				method = danmumethod();
 				ref = getDanmu(method);
       			barrager();
@@ -154,7 +151,6 @@
 	}
 	
 		function getTopicTitle(){		//获取QuerryString中的TopicID
-			// alert(getQueryStringByName("title"));
 			return getQueryStringByName("title");
 		}
 	
@@ -167,7 +163,7 @@
      return result[1];
 	}
 	
-		function sleep(numberMillis) { 
+   function sleep(numberMillis) { 
 			var now = new Date(); 
 			var exitTime = now.getTime() + numberMillis; 
 			while (true) { 
@@ -176,3 +172,46 @@
 				return; 
 			} 
 	}
+	
+// 自带Emoji字符串的转换
+function convertEmoji(str){
+    subStrings = str.split(']');
+    result = "";
+    
+	for (i =0; i < subStrings.length;i++) {
+     if ( subStrings[i].indexOf("/") >= 0 ) {
+       //1. 提取Emoji字符串
+    	emoji = subStrings[i].substr(subStrings[i].indexOf("/"),subStrings[i].length);
+    	prefix = subStrings[i].substr(0,subStrings[i].indexOf("/"));
+    	emoji = emoji + "]";
+    
+    	// 2. 查表把/YYY] 变成  <img>	
+    	for (j=0;j<mappings.length;j++) {
+    	        emj = mappings[j].match(emoji);
+    			if ( emj != null && typeof(emj) !== "undefined") {
+    					// alert(mappings[j]);
+    					res = mappings[j].split('|');
+    					imgIcon = res[1];
+    					imgIcon = "static/emoji/"+imgIcon+".png";
+    					result=result + prefix+ '<img src="'+imgIcon+'" style ="width: 24px;height: 24px">';
+    			}
+    		}
+    	}
+    	else { // No Emoji, remains the same.
+    		result+=subStrings[i];
+    	}
+    }  // End For 
+    
+    return result;
+   }
+
+		   
+		$(function(){
+				$("#closeButton").click(function(){
+				$("#footer").css("display","none");//点击隐藏
+				footerClosed = 1;
+		});
+		});
+
+	
+	

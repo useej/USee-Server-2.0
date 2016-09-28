@@ -1,0 +1,35 @@
+body {
+    background-color: #1e3e57;
+    font-family: "Source Han Sans CN","Hiragino Sans GB", "Microsoft YaHei","WenQuanYi Micro Hei";
+}
+#search {
+    text-align: center;
+}
+.container {
+    padding-top: 10px;
+}
+.topbar {
+    width: 210px;
+    float: right;
+    margin-bottom: 10px;
+}
+.content {
+    color: #fff;
+    clear: both;
+}
+.content table {
+    text-align: center;
+}
+.content table tbody tr td {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+.content thead {
+    background-color: #c3484a;
+    font-weight: bold;
+}
+.content tbody .danmu-title {
+    background-color: darkgoldenrod;
+}
+.content tbody .danmu-content {
+    background-color: darkgreen;
+}

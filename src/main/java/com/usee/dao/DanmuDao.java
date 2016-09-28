@@ -66,4 +66,6 @@ public interface DanmuDao {
     public boolean deleteUserFavDanmu(int danmuID);
     
     public boolean deleteDanmu(int danmuID);
+    
+    public List<Danmu> getDanmuListByInterval(String topicID, String startTime, String endTime);
 }

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>  新用户的弹幕 </title>
+<link href="static/css/jquery-ui.css" rel="stylesheet">
+<link href="static/css/buttons.css" rel="stylesheet">
+<script type="text/javascript" src="static/js/jquery-1.8.1.js"></script>
+<script type="text/javascript" src="static/js/jquery-ui.js"></script>
+<script type="text/javascript" src="dist/js/dateinput-ch-ZN.js"></script>
+<link href="dist/css/red-datepicker.css" rel="stylesheet">
+    
+<style type="text/css">
+table.gridtable {
+	font-family: verdana,arial,sans-serif;
+	font-size:12px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+</style>
+
+  <script>
+  	var serverPrefix = 'http://114.215.209.102//USee/'; // http://114.215.209.102/USee/
+		
+	function newdmmethod(){
+		  var method = serverPrefix+'getnewdanmu';   // // getdmbytopic'
+		  return method;
+		}
+		
+	function getNewDanmu(method,beginTime) {
+     		var jsonhttp = null ;
+			jsonhttp = new XMLHttpRequest();
+			var getdmurl = method;   // 
+			jsonhttp.open("POST", getdmurl,false);
+			// var data = '{"topicid":"'+getTopicID()+'","pagesize":"100","pagenum":"1"}';
+			var data = '{"createTime":"'+beginTime +'"}';
+			jsonhttp.send(data);
+			result = jsonhttp.responseText;
+			ref =eval("("+result+")");
+			return ref;
+		}
+		
+	function createTable(newDanmus) {
+		var data = new Array();
+    data.push('<p>从该时间开始，新用户创建了' + newDanmus.result.length + '条弹幕</p>');
+    	data.push('<table border=1 class="gridtable" ><tbody>');
+          data.push('<th>话题名</th>');
+          data.push('<th>弹幕内容</th>');
+       		for (var i = 0; i < newDanmus.result.length; i++) {
+       		 data.push('<tr>');       		
+        		data.push('<td>' + ref.result[i].title + '</td>');
+        		data.push('<td>' + ref.result[i].danmu + '</td>');
+        	data.push('</tr>');
+      	 }
+       data.push('</tbody><table>');
+       document.getElementById('table1').innerHTML = data.join('');
+   }
+   
+   function showFunctionRunTime(f) {
+    var t1 = new Date();
+    f();
+    var t2 = new Date();
+    alert(t2 - t1);
+   }
+   
+   function getTime() {
+      return  $('#datepicker').val()
+   }
+		
+/*		
+  $(function() {
+    $( "#datepicker" ).datepicker({
+    		altField: "#alternate",
+      		altFormat: "yy-mm-dd"
+    });
+  });
+  */
+  </script>
+</head>
+<body>
+ 
+<p>请选择用户账户的创建时间：<input type="text" id="datepicker" style="width:200px;height:22px;" >
+ <a class="button button-primary button-small" onclick="createTable(getNewDanmu(newdmmethod(),getTime()))">Go</a>
+</p> 
+
+<div id="table1" style="width:500px" > 
+</div>
+
+<script>
+   	$(document).ready(function() {   
+       $('#datepicker').datepicker({
+          altField: "#alternate",
+          altFormat: "yy-mm-dd"
+
+       }); //绑定输入框
+	}); 
+	
+ 	// var newDanmus = getNewDanmu(newdmmethod());
+ 	getTime();
+	// alert(newDanmus.result.length)
+  </script>
+
+  <input type="hidden" id="alternate" size="30" >
+  
+</body>
+</html>

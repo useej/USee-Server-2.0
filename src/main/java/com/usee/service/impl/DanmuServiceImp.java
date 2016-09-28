@@ -1,7 +1,10 @@
 package com.usee.service.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import com.usee.utils.AmapAPIUtil;
@@ -730,5 +733,39 @@ public class DanmuServiceImp implements DanmuService{
 		danmuDao.deleteUserFavDanmu(danmuID);
 		
 		return danmuDao.deleteDanmu(danmuID);
+	}
+
+	@Override
+	public List<Map<String, String>> getIntervalDanmu(String topicID, String startTime, String endTime) {
+		TimeUtil timeUtil = new TimeUtil();
+		String _startTime = null;
+		String _endTime = null;
+		try {
+			_startTime = timeUtil.date2Timestamp(startTime);
+			_endTime = timeUtil.date2Timestamp(endTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		List<Danmu> danmuList = danmuDao.getDanmuListByInterval(topicID, _startTime, _endTime);
+		List<Map<String, String>> intervalDanmuList = new ArrayList<Map<String,String>>();
+		for (Danmu danmu : danmuList) {
+			Map<String, String> map = new HashMap<String, String>();
+			if(danmu.getUserIcon().contains(".png")){
+				// 证明此条弹幕为实名发送
+				User user = userDao.getUser(danmu.getUserId());
+				map.put("nickName", user.getNickname());
+				map.put("message", danmu.getMessages());
+			} else {
+				// 证明此条弹幕为匿名发送
+				UserTopic userTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(danmu.getUserId(), topicID);
+				String nickName = randomNameDao.getRandomNameById(userTopic.getRandomNameID());
+				map.put("nickName", nickName);
+				map.put("message", danmu.getMessages());
+			}
+			intervalDanmuList.add(map);
+			
+		}
+		
+		return intervalDanmuList;
 	}
 }

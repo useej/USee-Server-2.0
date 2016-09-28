@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>USee内容管理</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <link rel="stylesheet" href="./bootstrap.min.css">
+  <link rel="stylesheet" href="./bootstrap-datetimepicker.min.css">
+  <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <input type="text" id="search" class="form-control" placeholder="点击选择日期">
+    </div>
+    <div class="content">
+       <div id = "danmuInfo" > 
+       </div>
+      <table class="table">
+        <thead>
+         <td>话题</td>
+          <td>弹幕内容</td>
+        </thead>
+        <tbody id="danmu"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="./jquery-3.1.0.js" ></script>
+  <script src="./bootstrap.min.js"></script>
+  <script src="./bootstrap-datetimepicker.min.js"></script>
+  <script src="./bootstrap-datetimepicker.cn.min.js"></script>
+  <script src="./index.js"></script>
+</body>
+</html>

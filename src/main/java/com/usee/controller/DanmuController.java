@@ -1,5 +1,8 @@
 package com.usee.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -180,4 +183,18 @@ public class DanmuController {
 		return result.toString();
 	}
 
+    @RequestMapping(value = "getuserdmByInterval", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String getIntervalDanmu(@RequestBody String json){
+		JSONObject intervalDmJson = new JSONObject().fromObject(json);
+		String startTime = intervalDmJson.getString("startTime");
+		String endTime = intervalDmJson.getString("endTime");
+		String topicID = intervalDmJson.getString("topicID");
+		List<Map<String, String>> list = danmuService.getIntervalDanmu(topicID, startTime, endTime);
+		
+		JSONObject result = new JSONObject();
+		result.put("intervaldanmu", list);
+		System.out.println(result);
+		return result.toString();
+	}
 }

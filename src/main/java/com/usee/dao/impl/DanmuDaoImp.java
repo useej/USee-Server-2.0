@@ -417,4 +417,14 @@ public class DanmuDaoImp implements DanmuDao {
 		}
 	}
 
+	@Override
+	public List<Danmu> getDanmuListByInterval(String topicID, String startTime, String endTime) {
+		String hql = "from Danmu d where d.topicId = ? and d.create_time >= ? and d.create_time <= ? and d.status <> '0' order by d.create_time desc";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, topicID);
+		query.setString(1, startTime);
+		query.setString(2, endTime);
+		return query.list();
+	}
+
 }
