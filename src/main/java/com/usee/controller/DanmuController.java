@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.usee.model.Danmu;
+import com.usee.model.DanmuImgs;
 import com.usee.service.JPushService;
+import com.usee.service.impl.DanmuImgsServiceImp;
 import com.usee.service.impl.DanmuServiceImp;
 
 import net.sf.json.JSONObject;
@@ -22,13 +25,21 @@ public class DanmuController {
 	private DanmuServiceImp danmuService;
 	@Autowired
 	private JPushService jpushService;
+    @Autowired
+    private DanmuImgsServiceImp danmuImgsService;
 	
 	@RequestMapping(value = "senddanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public String sendDanmu(@RequestBody String newDanmu){
+	public Danmu sendDanmu(@RequestBody String newDanmu){
 		JSONObject newDanmuJson = new JSONObject().fromObject(newDanmu);
 		danmuService.sendDammu(newDanmuJson);
-		String danmu = danmuService.getDanmu(danmuService.getLatestDanmuId()).toString();
+		Danmu danmu = danmuService.getDanmu(danmuService.getLatestDanmuId());
+		
+		// 保存图片
+		newDanmuJson.put("danmuID", danmu.getId());
+		DanmuImgs newdanmuImgs = danmuImgsService.saveDanmuImgs(newDanmuJson);
+		danmu.setImgurls(newdanmuImgs.getImgurls());
+		
 		System.out.println(danmu);
 		return danmu;
 	}
@@ -182,6 +193,16 @@ public class DanmuController {
 		System.out.println(result);
 		return result.toString();
 	}
+    
+    @RequestMapping(value = "getnewdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String getNewDanmu(@RequestBody String json){
+		JSONObject newDanmuJson = new JSONObject().fromObject(json);
+		String returnJson = danmuService.getNewDanmu(newDanmuJson);
+		System.out.println(returnJson);
+		return returnJson;
+	}
+
 
     @RequestMapping(value = "getuserdmByInterval", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
@@ -197,4 +218,31 @@ public class DanmuController {
 		System.out.println(result);
 		return result.toString();
 	}
+    
+	/*
+	 * 下面的与DanmuImgs有关
+	 * 下面两个接口已经合并至其他接口，暂时废弃
+	 */
+	@RequestMapping(value = "savedanmuimgs", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String saveDanmuImgs(@RequestBody String json){
+    	JSONObject jsonObject = JSONObject.fromObject(json);
+    	DanmuImgs newdanmuImgs = danmuImgsService.saveDanmuImgs(jsonObject);
+    	JSONObject resultJson = new JSONObject();
+		resultJson.put("danmuImgs", newdanmuImgs);
+		return resultJson.toString();
+    }
+    
+    @RequestMapping(value = "getdanmuimgs", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String getDanmuImgs(@RequestBody String json){
+    	JSONObject jsonObject = JSONObject.fromObject(json);
+    	int danmuID  = jsonObject.getInt("danmuID");
+    	List<String> imgUrlList = danmuImgsService.getDanmuImgs(danmuID);
+    	
+    	JSONObject resultJson = new JSONObject();
+		resultJson.put("imgUrl", imgUrlList);
+		return resultJson.toString();
+    }
+
 }

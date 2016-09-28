@@ -47,4 +47,6 @@ public interface DanmuService {
     public boolean deleteDanmu(JSONObject jsonObject);
     
     public List<Map<String, String>> getIntervalDanmu(String topicID, String startTime, String endTime);
+
+    public String getNewDanmu(JSONObject jsonObject);
 }

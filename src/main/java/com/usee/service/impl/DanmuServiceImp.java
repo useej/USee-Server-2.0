@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.usee.dao.impl.ColorDaoImpl;
 import com.usee.dao.impl.CommentDaoImpl;
 import com.usee.dao.impl.DanmuDaoImp;
+import com.usee.dao.impl.DanmuImgsDaoImp;
 import com.usee.dao.impl.RandomNameDaoImpl;
 import com.usee.dao.impl.TopicDaoImpl;
 import com.usee.dao.impl.UserDaoImpl;
@@ -45,6 +46,8 @@ public class DanmuServiceImp implements DanmuService{
 	private TopicDaoImpl topicDao;
 	@Autowired
 	private RandomNameDaoImpl randomNameDao;
+	@Autowired
+	private DanmuImgsDaoImp danmuImgsDaoImp;
 	
 	public static final int MAX_RANDOM_NAME_NUMBER = 4000;
 	public static final int MAX_RANDOM_ICON_NUMBER = 6400;
@@ -195,6 +198,12 @@ public class DanmuServiceImp implements DanmuService{
 			list = danmuDao.getDanmuList(topicId, _pageNum, _pageSize);
 		}
 		
+		// 获取弹幕图片
+		for (Danmu danmu : list) {
+			List<String> imgurls = danmuImgsDaoImp.getDanmuImgs(danmu.getId());
+			danmu.setImgurls(imgurls.toArray(new String[imgurls.size()]));
+		}
+		
 //		// 进行decode
 //		for (Danmu danmu : list) {
 //			String decode = danmu.getMessages();
@@ -243,7 +252,10 @@ public class DanmuServiceImp implements DanmuService{
 			nickname = userName;
 		}
 		
+		// 得到弹幕图片
+		List<String> imgurls = danmuImgsDaoImp.getDanmuImgs(danmuId);
 		
+		danmuDetails.put("imgurls", imgurls.toArray(new String[imgurls.size()]));
 		danmuDetails.put("nickname", nickname);
 		danmuDetails.put("gender", danmuSender.getGender());
 		danmuDetails.put("action", danmuDao.getActionbyUserIdandDanmuId(currentUserId, danmuId));
@@ -627,7 +639,13 @@ public class DanmuServiceImp implements DanmuService{
 
         List<Danmu> list = new ArrayList<Danmu>();
         list = danmuDao.getLatestDanmuList(topicId, startTime, endTime+"");
-
+        
+		// 获取弹幕图片
+		for (Danmu danmu : list) {
+			List<String> imgurls = danmuImgsDaoImp.getDanmuImgs(danmu.getId());
+			danmu.setImgurls(imgurls.toArray(new String[imgurls.size()]));
+		}
+        
         JSONArray array = JSONArray.fromObject(list);
         JSONObject object = new JSONObject();
         object.put("danmu", array.toString());
@@ -767,5 +785,36 @@ public class DanmuServiceImp implements DanmuService{
 		}
 		
 		return intervalDanmuList;
+	}
+	
+	public String getNewDanmu(JSONObject jsonObject) {
+		TimeUtil timeUtil = new TimeUtil();
+        String time  = jsonObject.getString("createTime");
+        time = time + " 8:00:00";
+        String createTime = null;
+		try {
+			createTime = timeUtil.date2Timestamp(time) + "000";
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(createTime);
+        
+        List<Object[]> list = danmuDao.getNewDanmu(createTime);
+        
+        
+        List<Map<String, String>> listMap = new ArrayList<Map<String, String>>();
+        for (Object[] string : list) {
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("title", (String) string[0]);
+			map.put("danmu", (String) string[1]);
+			listMap.add(map);
+		}
+        
+        JSONObject resultJson = new JSONObject();
+
+        resultJson.put("result", listMap);
+
+        return resultJson.toString();
 	}
 }

@@ -9,26 +9,26 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
-import com.usee.dao.TopicimgDao;
-import com.usee.model.Topicimg;
+import com.usee.dao.DanmuImgsDao;
+import com.usee.model.DanmuImgs;
 
 @Service
-public class TopicimgDaoImp implements TopicimgDao {
+public class DanmuImgsDaoImp implements DanmuImgsDao {
 	@Resource
 	private SessionFactory sessionFactory;
 	
-	public void savetopicimg(Topicimg topicimg) {
+	public void saveDanmuImgs(DanmuImgs DanmuImgs) {
 		Session session = sessionFactory.getCurrentSession();
-		session.save(topicimg);
+		session.save(DanmuImgs);
 		session.flush();
 		
 	}
 
 	@Override
-	public List<String> gettopicimg(String topicID) {
-		String hql = "select ti.imgurl from Topicimg ti where ti.topicid = ?";
+	public List<String> getDanmuImgs(int danmuID) {
+		String hql = "select di.imgurl from DanmuImgs di where di.danmuID = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setString(0, topicID);
+		query.setInteger(0, danmuID);
 		return query.list();
 	}
 

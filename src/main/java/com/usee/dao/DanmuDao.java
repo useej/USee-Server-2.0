@@ -68,4 +68,8 @@ public interface DanmuDao {
     public boolean deleteDanmu(int danmuID);
     
     public List<Danmu> getDanmuListByInterval(String topicID, String startTime, String endTime);
+
+    public List<Object[]> getNewDanmu(String createTime);
+    
+    public boolean hasRealnameDmByUserIdAndTopicId(String userID, String topicID);
 }

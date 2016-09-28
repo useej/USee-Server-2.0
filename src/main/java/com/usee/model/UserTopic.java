@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -38,6 +39,8 @@ public class UserTopic {
 	private int dislike;
 	@Column
 	private String userIcon;
+	@Transient
+	private String[] imgurls;
 	
 	public int getId() {
 		return id;
@@ -99,4 +102,19 @@ public class UserTopic {
 	public void setUserIcon(String userIcon) {
 		this.userIcon = userIcon;
 	}
+	
+	public String[] getImgurls() {
+		return imgurls;
+	}
+	public void setImgurls(String[] imgurls) {
+		this.imgurls = imgurls;
+	}
+	@Override
+	public String toString() {
+		return "UserTopic [id=" + id + ", userId=" + userId + ", topicId=" + topicId + ", firstvisit_time="
+				+ firstvisit_time + ", randomNameID=" + randomNameID + ", randomIconID=" + randomIconID
+				+ ", lastVisit_time=" + lastVisit_time + ", frequency=" + frequency + ", dislike=" + dislike
+				+ ", userIcon=" + userIcon + "]";
+	}
+	
 }

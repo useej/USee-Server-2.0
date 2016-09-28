@@ -12,8 +12,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name="topicimg")
-public class Topicimg {
+@Table(name="danmuimgs")
+public class DanmuImgs {
 	@Id
 	@GeneratedValue(generator = "danmuGenerator")    
 	@GenericGenerator(name = "danmuGenerator", strategy = "identity")
@@ -21,7 +21,7 @@ public class Topicimg {
 	private int id;
 	
 	@Column(length=32)
-	private String topicid;
+	private int danmuID;
 
 	@Column(length=32)
 	private int views;
@@ -40,12 +40,12 @@ public class Topicimg {
 		this.id = id;
 	}
 
-	public String getTopicid() {
-		return topicid;
+	public int getDanmuID() {
+		return danmuID;
 	}
 
-	public void setTopicid(String topicid) {
-		this.topicid = topicid;
+	public void setDanmuID(int danmuID) {
+		this.danmuID = danmuID;
 	}
 
 	public int getViews() {
@@ -63,6 +63,7 @@ public class Topicimg {
 	public void setImgurl(String imgurl) {
 		this.imgurl = imgurl;
 	}
+	
 
 	public String[] getImgurls() {
 		return imgurls;
@@ -74,8 +75,9 @@ public class Topicimg {
 
 	@Override
 	public String toString() {
-		return "Topicimg [id=" + id + ", topicid=" + topicid + ", views=" + views + ", imgurl=" + imgurl + ", imgurls="
+		return "DanmuImgs [id=" + id + ", danmuID=" + danmuID + ", views=" + views + ", imgurl=" + imgurl + ", imgurls="
 				+ Arrays.toString(imgurls) + "]";
 	}
+
 
 }

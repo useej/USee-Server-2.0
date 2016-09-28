@@ -1,6 +1,9 @@
 
 		var serverPrefix = 'http://114.215.209.102/USee/'; // http://114.215.209.102/USee/
+<<<<<<< HEAD
 		var footerClosed = 0;
+=======
+>>>>>>> upstream/dev
 		
 		// TODO:  Remove Duplications	
 		function danmumethod(){
@@ -112,7 +115,11 @@
   				 imgUrl = "userIcons/"+ ref.danmu[index].userId +".png"
   		}
   		
+<<<<<<< HEAD
      	var danmu_i={'img':imgUrl,'info':convertEmoji(ref.danmu[index].messages),'speed':1};
+=======
+     	var danmu_i={'img':imgUrl,'info':ref.danmu[index].messages,'speed':1};
+>>>>>>> upstream/dev
         
   		$('body').barrager(danmu_i);
   		index++;

@@ -31,5 +31,5 @@ public interface UserTopicDao {
     public void updateUserTopic_visit(String userId, String topicId, String lastVisitTime);
     
     public UserTopic_Visit getUserTopic_VisitByUserIdandTopicId(String userId, String topicId);
-	
+    
 }
