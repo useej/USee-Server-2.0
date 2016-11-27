@@ -73,6 +73,12 @@ public class TopicImgServiceImp implements TopicImgService {
 	public List<String> getTopicimg(String topicID) {
 		return topicimgdao.gettopicimg(topicID);
 	}
+
+	@Override
+	public String getFirstTopicimg(String topicID) {
+		return topicimgdao.getFirsttopicimg(topicID);
+	}
+	
 	
 
 }

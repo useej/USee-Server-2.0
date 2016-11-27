@@ -17,5 +17,6 @@ public interface TopicImgService {
 	
 	public List<String> getTopicimg(String topicID);
 	
+	public String getFirstTopicimg(String topicID);
 	
 }

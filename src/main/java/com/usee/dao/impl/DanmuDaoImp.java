@@ -457,4 +457,23 @@ public class DanmuDaoImp implements DanmuDao {
         }		
 	}
 
+	@Override
+	public List<Danmu> getDanmuByTopicIdAndUserId(String userID, String topicID) {
+		String hql = "from Danmu d where d.topicId = ? and d.userId = ? and d.status <> '0' order by d.create_time desc";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, topicID);
+		query.setString(1, userID);
+		return query.list();
+	}
+
+	@Override
+	public List<Danmu> getHotDanmu(String topicID) {
+		String hql = "from Danmu d where d.topicId = ? and d.status <> 0 and d.commentnum > 3 order  by d.commentnum desc";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setMaxResults(3);
+		query.setFirstResult(0);
+		query.setString(0, topicID);
+		return query.list();
+	}
+
 }

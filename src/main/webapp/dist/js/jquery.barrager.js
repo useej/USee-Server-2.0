@@ -35,15 +35,10 @@
 		var id = '#' + barrager_id;
 		var div_barrager = $("<div class='barrage' id='" + barrager_id + "'></div>").appendTo($(this));
 		
-<<<<<<< HEAD
 		var bottomHeight = 30;
 		
 		if (current_DMMRight[number] > 500) {
 			var bottom = (barrage.bottom == 0) ? Math.floor(number* window_height /numOfYongDao + bottomHeight) : barrage.bottom;
-=======
-		if (current_DMMRight[number] > 500) {
-			var bottom = (barrage.bottom == 0) ? Math.floor(number* window_height /numOfYongDao + 100) : barrage.bottom;
->>>>>>> upstream/dev
 	    // TODO Avoid dup wait for the first one! 
 	    	current_DMMRight[number] = 0;
 		}
@@ -88,7 +83,6 @@
 		}
 		else if (info.length < 20)  {
 			div_barrager.css("width",   "800px");
-<<<<<<< HEAD
 			div_barrager.css("right",   "-1200px"); 
 		}
 		else if (info.length < 30)  {
@@ -100,19 +94,6 @@
 		} else {
 			div_barrager.css("width",   "1800px");
 			div_barrager.css("right",   "-2000px"); 
-=======
-			div_barrager.css("right",   "-1000px"); 
-		}
-		else if (info.length < 30)  {
-			div_barrager.css("width",   "1200px");
-			div_barrager.css("right",   "-1200px"); 
-		} else if (info.length < 40) {
-			div_barrager.css("width",   "1600px");
-			div_barrager.css("right",   "-1300px"); 
-		} else {
-			div_barrager.css("width",   "1800px");
-			div_barrager.css("right",   "-1400px"); 
->>>>>>> upstream/dev
 		}
 		
 		div_barrager_box = $("<div class='barrage_box cl'></div>").appendTo(div_barrager);
@@ -179,6 +160,7 @@
 				if(window_width <800) {
 					speedRatio =10;
 					// runningTime 走完屏幕画的时间
+					runningTime = 5000;
 				}
 				middleScreen = Math.floor(window_width / 2);
 	
@@ -195,7 +177,6 @@
 						currentdivWidth = 0;
 				}
 				
-<<<<<<< HEAD
 				fadeoutPosision = width*0.9 ;
 				
 				if (width<800) {
@@ -209,15 +190,6 @@
 			   mright = '+='+middleScreen;
 			   $(id).animate({
   						      marginRight: mright
-=======
-				// Move 
-			   // $(id).css('margin-right', dmposision );
-			   // alert("'+="+middleScreen+"'");
-			   
-			   
-			   $(id).animate({
-  						      marginRight: '+=500'
->>>>>>> upstream/dev
     						}, runningTime, function() {
     						
     			}
@@ -227,19 +199,9 @@
 				
 				current_DMMRight[parseInt(danmu_YD)] = dmposision;
 				    		  		  
-<<<<<<< HEAD
 				
 				 if ( dmposision > fadeoutPosision ) {
 				 	 $(id).fadeOut(10000);
-=======
-				fadeoutPosision = width*0.9 ;
-				
-				if (width<800) {
-						fadeoutPosision =  width *1.2;
-				} 
-				 if ( dmposision > fadeoutPosision ) {
-				 	 $(id).fadeOut(8000);
->>>>>>> upstream/dev
 			}
 				 
 			} else {

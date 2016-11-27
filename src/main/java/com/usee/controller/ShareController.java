@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usee.model.Topic;
 import com.usee.service.SqlInjectService;
 import com.usee.service.TopicService;
+import com.usee.service.impl.TopicImgServiceImp;
+import com.usee.utils.DownloadURL;
 import com.usee.utils.ShareTopicUtil;
 
 @Controller
@@ -24,9 +28,12 @@ public class ShareController {
 	
 	@Resource
 	private TopicService topicService;
-	
+	@Autowired
+	private TopicImgServiceImp topicImgService;
 	@Autowired
 	private SqlInjectService sqlInjectService;
+	
+	public static String SHATR_CONTENT = "这个话题很有趣，邀请你一起来弹吧!";
 	
 	@ResponseBody
 	@RequestMapping("/sharetopic")
@@ -48,17 +55,36 @@ public class ShareController {
         
 		// 得到topic的信息
 		Topic topic = topicService.getTopic(topicId);
-		String topicDescription = topic.getDescription();
+//		String topicDescription = topic.getDescription();
+		String firstTopicImg = topicImgService.getFirstTopicimg(topicId);
+		String topicTitle = topic.getTitle();
+		
+		if(firstTopicImg == null) {
+			firstTopicImg = "";
+		}
 		
 		// 使用topic信息组装成topicUrl
 		String topicUrl = ShareTopicUtil.getShareURL() 
 				+ "?topicid=" + topicId;
 		
 		shareMap.put("topicUrl", topicUrl);
-		shareMap.put("topicDescription", topicDescription);
+		shareMap.put("title", topicTitle);
+		shareMap.put("shareContent", SHATR_CONTENT);
+		shareMap.put("topicImg", firstTopicImg);
+		
 		
 		System.out.println(shareMap);
 		return shareMap;
+	}
+	
+	@RequestMapping("/download")
+	public void downloadAPK(HttpServletRequest request,HttpServletResponse response){
+		String downloadURL = DownloadURL.getDownloadURL();
+		try {
+			response.sendRedirect(downloadURL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

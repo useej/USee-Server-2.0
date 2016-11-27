@@ -1,5 +1,6 @@
 package com.usee.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.usee.model.Comment;
 import com.usee.model.Danmu;
 import com.usee.model.DanmuImgs;
 import com.usee.service.JPushService;
 import com.usee.service.impl.DanmuImgsServiceImp;
 import com.usee.service.impl.DanmuServiceImp;
+import com.usee.utils.StatusCode;
 
 import net.sf.json.JSONObject;
 
@@ -30,8 +33,21 @@ public class DanmuController {
 	
 	@RequestMapping(value = "senddanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public Danmu sendDanmu(@RequestBody String newDanmu){
+	public Map<String, Object> sendDanmu(@RequestBody String newDanmu){
 		JSONObject newDanmuJson = new JSONObject().fromObject(newDanmu);
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		
+		// 检查弹幕
+		int statusCode = danmuService.checkDanmu(newDanmuJson);
+		returnMap.put("code", statusCode);
+		// 判断返回码
+		if(statusCode != StatusCode._200) {
+			if(statusCode == StatusCode._405){
+				returnMap.put("comment", null);
+				return returnMap;
+			}
+		} 
+		
 		danmuService.sendDammu(newDanmuJson);
 		Danmu danmu = danmuService.getDanmu(danmuService.getLatestDanmuId());
 		
@@ -40,8 +56,10 @@ public class DanmuController {
 		DanmuImgs newdanmuImgs = danmuImgsService.saveDanmuImgs(newDanmuJson);
 		danmu.setImgurls(newdanmuImgs.getImgurls());
 		
-		System.out.println(danmu);
-		return danmu;
+		returnMap.put("danmu", danmu);
+		System.out.println(returnMap);
+		return returnMap;
+		
 	}
 	
 	@RequestMapping(value = "getdmbytopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
@@ -71,21 +89,39 @@ public class DanmuController {
 	
 	@RequestMapping(value = "commentdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public String commentDanmu(@RequestBody String danmuComment){
+	public Map<String, Object> commentDanmu(@RequestBody String danmuComment){
 		JSONObject commentJson = new JSONObject().fromObject(danmuComment);
-		String comment = danmuService.commentDanmu(commentJson).toString();
+		System.out.println(commentJson);
+		
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		
+		// 检查评论
+		int statusCode = danmuService.checkComment(commentJson);
+		returnMap.put("code", statusCode);
+		// 判断返回码
+		if(statusCode != StatusCode._200) {
+			
+		} 
+		
+		Comment comment = danmuService.commentDanmu(commentJson);
 		// 调用推送接口
 		String receiver = commentJson.getString("receiver");
 		int type = commentJson.getInt("type");
+		Map<String, String> extras = new HashMap<String, String>();
 		if(type == 1) {
-			jpushService.push(receiver, "有人评论您");
+			extras.put("type", "common");
+			jpushService.push(receiver, "有人评论您", extras);
 		} else if(type == 2) {
-			jpushService.push(receiver, "有人回复您的评论");
+			extras.put("type", "common");
+			jpushService.push(receiver, "有人回复您的评论", extras);
 		} else if(type == 3) {
-			jpushService.push(receiver, "有人给你发悄悄话");
+			extras.put("type", "common");
+			jpushService.push(receiver, "有人给你发悄悄话", extras);
 		}
-		System.out.println(comment);
-		return comment;
+		
+		returnMap.put("comment", comment);
+		System.out.println(returnMap);
+		return returnMap;
 	}
 	
 	@RequestMapping(value = "updanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
@@ -218,6 +254,19 @@ public class DanmuController {
 		System.out.println(result);
 		return result.toString();
 	}
+    
+    @RequestMapping(value = "gethotdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String getHotDanmu(@RequestBody String json){
+    	JSONObject jsonObject = JSONObject.fromObject(json);
+    	String topicID  = jsonObject.getString("topicID");
+    	List<Danmu> hotDanmuList = danmuService.getHotDanmu(topicID);
+    	JSONObject resultJson = new JSONObject();
+		resultJson.put("hotdanmu", hotDanmuList);
+		
+		System.out.println(resultJson);
+		return resultJson.toString();
+    }
     
 	/*
 	 * 下面的与DanmuImgs有关

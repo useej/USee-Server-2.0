@@ -51,5 +51,34 @@ public class GetRealnameInfoTestCase {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType("application/json;charset=UTF-8"))
 		;
+		
+		/*
+		{
+			"userID":"7A5214CA1C76457586F91E8EE4F0DCFB",
+			"gender":1,
+			"nickname":"森林",
+			"userIcon":"7A5214CA1C76457586F91E8EE4F0DCFB.png",
+			"topic":[
+				{
+					"create_time":"1473499854",
+					"danmuNum":32,
+					"delete_time":"",
+					"description":"贝微微&肖奈",
+					"expired":0,
+					"id":"1",
+					"imgurls":[],
+					"lastDanmu_time":"1474607673",
+					"lat":31.912884,
+					"lon":118.78847,
+					"poi":"",
+					"radius":15000,
+					"title":"微微一笑很倾城",
+					"type":"",
+					"userID":"7A5214CA1C76457586F91E8EE4F0DCFB"
+				},
+			]
+		}
+		
+		*/
 	}
 }

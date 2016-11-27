@@ -32,4 +32,12 @@ public class TopicimgDaoImp implements TopicimgDao {
 		return query.list();
 	}
 
+	@Override
+	public String getFirsttopicimg(String topicID) {
+		String hql = "select MIN(ti.imgurl) from Topicimg ti where ti.topicid = ?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, topicID);
+		return (String) query.uniqueResult();
+	}
+
 }

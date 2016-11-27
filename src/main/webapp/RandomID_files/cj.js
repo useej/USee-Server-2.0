@@ -30,7 +30,7 @@ function start() {
 function startNum() {
 	num = Math.floor(Math.random() * pcount);
 	nametxt.html(xinm[num]);
-	phonetxt.html(phone[num]);
+	phonetxt.html(phone[num].substr(0,6));
 	t = setTimeout(startNum, 0);
 }
 //停止跳动
@@ -82,15 +82,15 @@ function loadData()
      var jsonhttp = null ;
 	jsonhttp = new XMLHttpRequest();
 		// var getdmurl = "http://114.215.209.102/USee/getdmbytopic";
-	var getdmurl = 'http://121.42.149.46/USee/getuserdmByInterval';   // 
+	var getdmurl = 'http://114.215.209.102/USee/getuserdmByInterval';   // 
     jsonhttp.open("POST", getdmurl,false);
     jsonhttp.setRequestHeader("Content-Type","application/json");
 		
-	var data = '{"topicID":"2","startTime":"2016-9-10 17:33:52","endTime":"2016-9-23 16:39:12"}';
+	var data = '{"topicID":"273","startTime":"2016-9-20 17:33:52","endTime":"2016-9-26 16:39:12"}';
 	jsonhttp.send(data);
 	result = jsonhttp.responseText;
 	ref = eval("("+result+")");
-	alert(result);
+
 	len = ref.intervaldanmu.length;
 	for(i=0;i<len;i++) {
 		entry = ref.intervaldanmu[i];

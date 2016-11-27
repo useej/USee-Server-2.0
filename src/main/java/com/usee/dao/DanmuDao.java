@@ -72,4 +72,8 @@ public interface DanmuDao {
     public List<Object[]> getNewDanmu(String createTime);
     
     public boolean hasRealnameDmByUserIdAndTopicId(String userID, String topicID);
+    
+    public List<Danmu> getDanmuByTopicIdAndUserId(String userID, String topicID);
+    
+    public List<Danmu> getHotDanmu(String topicID);
 }

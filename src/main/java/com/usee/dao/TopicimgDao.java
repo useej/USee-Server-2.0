@@ -8,4 +8,6 @@ public interface TopicimgDao {
 	public void savetopicimg(Topicimg topicimg);
 	
 	public List<String> gettopicimg(String topicID);
+	
+	public String getFirsttopicimg(String topicID);
 }

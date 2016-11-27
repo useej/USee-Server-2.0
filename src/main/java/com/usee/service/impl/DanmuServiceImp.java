@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import com.usee.utils.AmapAPIUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,9 @@ import com.usee.model.Danmu;
 import com.usee.model.User;
 import com.usee.model.UserTopic;
 import com.usee.service.DanmuService;
+import com.usee.utils.AmapAPIUtil;
 import com.usee.utils.RandomNumber;
+import com.usee.utils.StatusCode;
 import com.usee.utils.TimeUtil;
 
 import net.sf.json.JSONArray;
@@ -462,6 +464,7 @@ public class DanmuServiceImp implements DanmuService{
 		comment.setReceiver(danmuComment.getString("receiver"));
 		comment.setContent(danmuComment.getString("content"));
 		if(danmuComment.get("reply_commentid") != null){
+			System.out.println(danmuComment.get("reply_commentid"));
 			comment.setReply_commentId(danmuComment.getInt("reply_commentid"));
 		}
 		comment.setType(danmuComment.getInt("type"));
@@ -816,5 +819,39 @@ public class DanmuServiceImp implements DanmuService{
         resultJson.put("result", listMap);
 
         return resultJson.toString();
+	}
+
+	@Override
+	public int checkDanmu(JSONObject danmu) {
+		String userID = danmu.getString("userid");
+		String topicID = danmu.getString("topicid");
+		String messages = danmu.getString("messages");
+		
+		List<Danmu> danmuList = danmuDao.getDanmuByTopicIdAndUserId(userID, topicID);
+		int num = 0;
+		for (Danmu danmu2 : danmuList) {
+			if(danmu2.getMessages().equals(messages)){
+				num ++;
+			} else {
+				continue;
+			}
+		}
+		
+		if(num >= 3) {
+			return StatusCode._405;
+		} else {
+			return StatusCode._200;
+		}
+	}
+
+	@Override
+	public int checkComment(JSONObject danmu) {
+		
+		return StatusCode._200;
+	}
+
+	@Override
+	public List<Danmu> getHotDanmu(String topicID) {
+		return danmuDao.getHotDanmu(topicID);
 	}
 }

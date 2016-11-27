@@ -49,4 +49,10 @@ public interface DanmuService {
     public List<Map<String, String>> getIntervalDanmu(String topicID, String startTime, String endTime);
 
     public String getNewDanmu(JSONObject jsonObject);
+    
+    public int checkDanmu(JSONObject danmu);
+    
+    public int checkComment(JSONObject danmu);
+    
+    public List<Danmu> getHotDanmu(String topicID);
 }

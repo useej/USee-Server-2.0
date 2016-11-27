@@ -204,6 +204,8 @@ public class TopicController {
 		Topic topic = topicService.getTopic(topicID);
 		JSONObject resultJson = new JSONObject();
 		resultJson.put("topic", topic);
+		
+		System.out.println(resultJson);
 		return resultJson.toString();
 	}
 

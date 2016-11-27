@@ -1,5 +1,7 @@
 package com.usee.service.impl;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.usee.service.JPushService;
@@ -22,11 +24,13 @@ public class JPushServiceImpl implements JPushService {
 	private static String title = "USee";
 	private static String alert;
 	private static String alias;
+	private static Map<String, String> extras;
 
-	public void push(String userID, String message) {
+	public void push(String userID, String message, Map<String, String> _extras) {
 		
 		alias = userID;
 		alert = message;
+		extras = _extras;
 
 		// 设置appkey、master secret以及消息过期时间
 		@SuppressWarnings("deprecation")
@@ -53,6 +57,30 @@ public class JPushServiceImpl implements JPushService {
 			//LOG.info("Msg ID: " + e.getMsgId());
 		}
 	}
+	
+	public void push_all(String message, Map<String, String> _extras) {
+		
+		alert = message;
+		extras = _extras;
+
+		// 设置appkey、master secret以及消息过期时间
+		@SuppressWarnings("deprecation")
+		JPushClient jpushClient = new JPushClient(MASTER_SECRET, APPKER, 60 * 60 * 24);
+
+		// 构建一个 PushPayload 对象
+		PushPayload payload = buildPushObject_android_all_alertWithTitle();
+
+		try {
+			PushResult result = jpushClient.sendPush(payload);
+			System.out.println("Got result - " + result);
+
+		} catch (APIConnectionException e) {
+			e.printStackTrace();
+
+		} catch (APIRequestException e) {
+			e.printStackTrace();
+		}
+	}
 
 	// 快捷地构建推送对象：所有平台，所有设备，内容为 ALERT 的通知
 	public static PushPayload buildPushObject_all_all_alert() {
@@ -67,13 +95,22 @@ public class JPushServiceImpl implements JPushService {
 				.setNotification(Notification.alert(alert))
 				.build();
 	}
+	
+	// 构建推送对象：平台是 Android，所有用户，内容是 Android 通知 ALERT，并且标题为 TITLE
+		public static PushPayload buildPushObject_android_all_alertWithTitle() {
+			return PushPayload.newBuilder()
+					.setPlatform(Platform.android())
+					.setAudience(Audience.all())
+					.setNotification(Notification.android(alert, title, extras))
+					.build();
+		}
 
 	// 构建推送对象：平台是 Android，目标是 alias 为  alias 的设备，内容是 Android 通知 ALERT，并且标题为 TITLE
 	public static PushPayload buildPushObject_android_alias_alertWithTitle() {
 		return PushPayload.newBuilder()
 				.setPlatform(Platform.android())
 				.setAudience(Audience.alias(alias))
-				.setNotification(Notification.android(alert, title, null))
+				.setNotification(Notification.android(alert, title, extras))
 				.build();
 	}
 

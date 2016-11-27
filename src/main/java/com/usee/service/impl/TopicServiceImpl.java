@@ -53,7 +53,12 @@ public class TopicServiceImpl implements TopicService {
 	public int randomUserIconId = 0;
 
 	public Topic getTopic(String id) {
-		return topicdao.getTopic(id);
+		Topic topic = new Topic();
+		topic = topicdao.getTopic(id);
+		// 获取话题图片
+        List<String> imgurls = topicimgDaoImp.gettopicimg(topic.getId());
+        topic.setImgurls(imgurls.toArray(new String[imgurls.size()]));
+		return topic;
 	}
 
 	
