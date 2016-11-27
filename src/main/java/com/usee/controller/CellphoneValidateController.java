@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.usee.service.CellphoneValidateService;
 import com.usee.service.SqlInjectService;
+import com.usee.service.impl.CellphoneValidateServiceImpl;
 import com.usee.utils.MD5Util;
 
 @Controller
@@ -23,7 +23,7 @@ import com.usee.utils.MD5Util;
 public class CellphoneValidateController {
 
 	@Autowired
-	CellphoneValidateService cellphoneValidateService;
+	CellphoneValidateServiceImpl cellphoneValidateService;
 	
 	@Autowired
 	private SqlInjectService sqlInjectService;

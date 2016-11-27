@@ -8,16 +8,9 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.usee.dao.DanmuDao;
 import com.usee.model.Danmu;
-import com.usee.model.Topicimg;
-
-import net.sf.json.JSONObject;
 @Service
 public class DanmuDaoImp implements DanmuDao {
 	@Resource
@@ -424,6 +417,15 @@ public class DanmuDaoImp implements DanmuDao {
 	}
 
 	@Override
+	public List<Danmu> getDanmuListByInterval(String topicID, String startTime, String endTime) {
+		String hql = "from Danmu d where d.topicId = ? and d.create_time >= ? and d.create_time <= ? and d.status <> '0' order by d.create_time desc";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, topicID);
+		query.setString(1, startTime);
+		query.setString(2, endTime);
+		return query.list();
+	}
+
 	public List<Object[]> getNewDanmu(String createTime) {
 		String sql = "select t.title, d.messages from danmu d, topic t "
 				+ "where d.topicID = t.id and d.userID in  "
@@ -453,6 +455,25 @@ public class DanmuDaoImp implements DanmuDao {
         } else {
         	return true;
         }		
+	}
+
+	@Override
+	public List<Danmu> getDanmuByTopicIdAndUserId(String userID, String topicID) {
+		String hql = "from Danmu d where d.topicId = ? and d.userId = ? and d.status <> '0' order by d.create_time desc";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, topicID);
+		query.setString(1, userID);
+		return query.list();
+	}
+
+	@Override
+	public List<Danmu> getHotDanmu(String topicID) {
+		String hql = "from Danmu d where d.topicId = ? and d.status <> 0 and d.commentnum > 3 order  by d.commentnum desc";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setMaxResults(3);
+		query.setFirstResult(0);
+		query.setString(0, topicID);
+		return query.list();
 	}
 
 }

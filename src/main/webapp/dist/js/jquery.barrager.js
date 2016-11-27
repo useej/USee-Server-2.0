@@ -18,8 +18,8 @@
 		var now=new Date(); 
 		
 		numOfYongDao = 1; // If PC MAC broswer, set to 8, mobile phone set to 6
-	    var window_height = $(window).height() - 80;
-		numOfYongDao = Math.floor( window_height / 100) +1 ;
+	    var window_height = $(window).height() - 70;
+		numOfYongDao = Math.floor( window_height / 80) +1 ;
 		
 		currentDanmu = new Array(numOfYongDao);
 		
@@ -33,24 +33,25 @@
 		var time = new Date().getTime();
 		var barrager_id = 'barrage_' + time+'_YD'+number;
 		var id = '#' + barrager_id;
-
 		var div_barrager = $("<div class='barrage' id='" + barrager_id + "'></div>").appendTo($(this));
 		
+		var bottomHeight = 30;
+		
 		if (current_DMMRight[number] > 500) {
-			var bottom = (barrage.bottom == 0) ? Math.floor(number* window_height /numOfYongDao + 100) : barrage.bottom;
+			var bottom = (barrage.bottom == 0) ? Math.floor(number* window_height /numOfYongDao + bottomHeight) : barrage.bottom;
 	    // TODO Avoid dup wait for the first one! 
 	    	current_DMMRight[number] = 0;
 		}
 		else { // Remove this Danmu ? or place to an empty one 
 			
 			if(typeof(current_DMMRight[number]) === "undefined")  {
-					bottom =  Math.floor(number* window_height /numOfYongDao + 100) ;
+					bottom =  Math.floor(number* window_height /numOfYongDao + bottomHeight) ;
 			} else 
 			{
 				for (i =0;i<numOfYongDao;i++) {
-					bottom = 100;
+					bottom = bottomHeight;
 					if(current_DMMRight[i] == 0)  {
-						bottom =  Math.floor(i* window_height /numOfYongDao + 100) ;
+						bottom =  Math.floor(i* window_height /numOfYongDao + bottomHeight) ;
 						i=numOfYongDao;
 					}
 				}
@@ -60,7 +61,7 @@
 
 		if (bottom > window_height) 
 				{ 
-					bottom = bottom = Math.floor((numOfYongDao-2)* window_height /numOfYongDao + 100) ;;
+					bottom = bottom = Math.floor((numOfYongDao-1)* window_height /numOfYongDao + bottomHeight) ;;
  
 				}
 				
@@ -82,17 +83,17 @@
 		}
 		else if (info.length < 20)  {
 			div_barrager.css("width",   "800px");
-			div_barrager.css("right",   "-1000px"); 
+			div_barrager.css("right",   "-1200px"); 
 		}
 		else if (info.length < 30)  {
 			div_barrager.css("width",   "1200px");
-			div_barrager.css("right",   "-1200px"); 
+			div_barrager.css("right",   "-1400px"); 
 		} else if (info.length < 40) {
 			div_barrager.css("width",   "1600px");
-			div_barrager.css("right",   "-1300px"); 
+			div_barrager.css("right",   "-1800px"); 
 		} else {
 			div_barrager.css("width",   "1800px");
-			div_barrager.css("right",   "-1400px"); 
+			div_barrager.css("right",   "-2000px"); 
 		}
 		
 		div_barrager_box = $("<div class='barrage_box cl'></div>").appendTo(div_barrager);
@@ -159,6 +160,7 @@
 				if(window_width <800) {
 					speedRatio =10;
 					// runningTime 走完屏幕画的时间
+					runningTime = 5000;
 				}
 				middleScreen = Math.floor(window_width / 2);
 	
@@ -175,13 +177,19 @@
 						currentdivWidth = 0;
 				}
 				
-				// Move 
-			   // $(id).css('margin-right', dmposision );
-			   // alert("'+="+middleScreen+"'");
-			   
-			   
+				fadeoutPosision = width*0.9 ;
+				
+				if (width<800) {
+						fadeoutPosision =  width *1.2;
+						middleScreen = middleScreen + 400;
+				} 
+				else {
+						middleScreen = middleScreen + 300;
+				}
+				
+			   mright = '+='+middleScreen;
 			   $(id).animate({
-  						      marginRight: '+=500'
+  						      marginRight: mright
     						}, runningTime, function() {
     						
     			}
@@ -191,13 +199,9 @@
 				
 				current_DMMRight[parseInt(danmu_YD)] = dmposision;
 				    		  		  
-				fadeoutPosision = width*0.9 ;
 				
-				if (width<800) {
-						fadeoutPosision =  width *1.2;
-				} 
 				 if ( dmposision > fadeoutPosision ) {
-				 	 $(id).fadeOut(8000);
+				 	 $(id).fadeOut(10000);
 			}
 				 
 			} else {

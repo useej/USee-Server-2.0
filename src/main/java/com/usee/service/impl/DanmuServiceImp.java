@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import com.usee.utils.AmapAPIUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,9 @@ import com.usee.model.Danmu;
 import com.usee.model.User;
 import com.usee.model.UserTopic;
 import com.usee.service.DanmuService;
+import com.usee.utils.AmapAPIUtil;
 import com.usee.utils.RandomNumber;
+import com.usee.utils.StatusCode;
 import com.usee.utils.TimeUtil;
 
 import net.sf.json.JSONArray;
@@ -462,6 +464,7 @@ public class DanmuServiceImp implements DanmuService{
 		comment.setReceiver(danmuComment.getString("receiver"));
 		comment.setContent(danmuComment.getString("content"));
 		if(danmuComment.get("reply_commentid") != null){
+			System.out.println(danmuComment.get("reply_commentid"));
 			comment.setReply_commentId(danmuComment.getInt("reply_commentid"));
 		}
 		comment.setType(danmuComment.getInt("type"));
@@ -754,6 +757,39 @@ public class DanmuServiceImp implements DanmuService{
 	}
 
 	@Override
+	public List<Map<String, String>> getIntervalDanmu(String topicID, String startTime, String endTime) {
+		TimeUtil timeUtil = new TimeUtil();
+		String _startTime = null;
+		String _endTime = null;
+		try {
+			_startTime = timeUtil.date2Timestamp(startTime);
+			_endTime = timeUtil.date2Timestamp(endTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		List<Danmu> danmuList = danmuDao.getDanmuListByInterval(topicID, _startTime, _endTime);
+		List<Map<String, String>> intervalDanmuList = new ArrayList<Map<String,String>>();
+		for (Danmu danmu : danmuList) {
+			Map<String, String> map = new HashMap<String, String>();
+			if(danmu.getUserIcon().contains(".png")){
+				// 证明此条弹幕为实名发送
+				User user = userDao.getUser(danmu.getUserId());
+				map.put("nickName", user.getNickname());
+				map.put("message", danmu.getMessages());
+			} else {
+				// 证明此条弹幕为匿名发送
+				UserTopic userTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(danmu.getUserId(), topicID);
+				String nickName = randomNameDao.getRandomNameById(userTopic.getRandomNameID());
+				map.put("nickName", nickName);
+				map.put("message", danmu.getMessages());
+			}
+			intervalDanmuList.add(map);
+			
+		}
+		
+		return intervalDanmuList;
+	}
+	
 	public String getNewDanmu(JSONObject jsonObject) {
 		TimeUtil timeUtil = new TimeUtil();
         String time  = jsonObject.getString("createTime");
@@ -783,5 +819,39 @@ public class DanmuServiceImp implements DanmuService{
         resultJson.put("result", listMap);
 
         return resultJson.toString();
+	}
+
+	@Override
+	public int checkDanmu(JSONObject danmu) {
+		String userID = danmu.getString("userid");
+		String topicID = danmu.getString("topicid");
+		String messages = danmu.getString("messages");
+		
+		List<Danmu> danmuList = danmuDao.getDanmuByTopicIdAndUserId(userID, topicID);
+		int num = 0;
+		for (Danmu danmu2 : danmuList) {
+			if(danmu2.getMessages().equals(messages)){
+				num ++;
+			} else {
+				continue;
+			}
+		}
+		
+		if(num >= 3) {
+			return StatusCode._405;
+		} else {
+			return StatusCode._200;
+		}
+	}
+
+	@Override
+	public int checkComment(JSONObject danmu) {
+		
+		return StatusCode._200;
+	}
+
+	@Override
+	public List<Danmu> getHotDanmu(String topicID) {
+		return danmuDao.getHotDanmu(topicID);
 	}
 }

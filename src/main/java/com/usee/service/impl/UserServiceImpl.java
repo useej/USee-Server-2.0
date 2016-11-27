@@ -14,9 +14,11 @@ import org.springframework.stereotype.Service;
 import com.usee.dao.DanmuDao;
 import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.dao.impl.TopicDaoImpl;
+import com.usee.dao.impl.TopicimgDaoImp;
 import com.usee.dao.impl.UserDaoImpl;
 import com.usee.dao.impl.UserTopicDaoImp;
 import com.usee.model.Feedback;
+import com.usee.model.Topic;
 import com.usee.model.User;
 import com.usee.model.UserTopic;
 import com.usee.service.UserService;
@@ -41,6 +43,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private DanmuDaoImp danmuDaoImp;
+	
+	@Autowired
+	private TopicimgDaoImp topicimgDaoImp;
 
 	public void setUserDao(UserDaoImpl userDao) {
 		this.userDao = userDao;
@@ -140,17 +145,21 @@ public class UserServiceImpl implements UserService {
 		
 		User user = userDao.getUser(userID);
 		List<UserTopic> topicList = userTopicDao.getUserTopicbyUserId(userID);
-		List<Map<String, String>> topicInfoList = new ArrayList<Map<String,String>>();
+		List<String> topicInfoList = new ArrayList<String>();
 		for (UserTopic userTopic : topicList) {
 			
 			System.out.println(userTopic.toString());
 			
 			String topicID = userTopic.getTopicId();
 			if(danmuDaoImp.hasRealnameDmByUserIdAndTopicId(userID, topicID)) {
-				Map<String, String> map = new HashMap<String, String>();
-				map.put("topicID", userTopic.getTopicId());
-				map.put("title", topicDaoImpl.getTopicTitleForWeb(userTopic.getTopicId()));
-				topicInfoList.add(map);
+				Topic topic = new Topic();
+				topic = topicDaoImpl.getTopic(topicID);
+				// 获取话题图片
+	            List<String> imgurls = topicimgDaoImp.gettopicimg(topic.getId());
+	            topic.setImgurls(imgurls.toArray(new String[imgurls.size()]));
+	            
+				JSONObject topicJSON = JSONObject.fromObject(topic);
+				topicInfoList.add(topicJSON.toString());
 			}
 		}
 		

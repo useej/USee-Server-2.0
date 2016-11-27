@@ -1,10 +1,12 @@
 package com.usee.service;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
+import java.util.List;
+import java.util.Map;
 
 import com.usee.model.Comment;
 import com.usee.model.Danmu;
+
+import net.sf.json.JSONObject;
 
 public interface DanmuService {
 
@@ -44,5 +46,13 @@ public interface DanmuService {
     
     public boolean deleteDanmu(JSONObject jsonObject);
     
+    public List<Map<String, String>> getIntervalDanmu(String topicID, String startTime, String endTime);
+
     public String getNewDanmu(JSONObject jsonObject);
+    
+    public int checkDanmu(JSONObject danmu);
+    
+    public int checkComment(JSONObject danmu);
+    
+    public List<Danmu> getHotDanmu(String topicID);
 }

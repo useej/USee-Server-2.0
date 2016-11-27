@@ -1,7 +1,6 @@
 package com.usee.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import com.usee.model.Danmu;
 
@@ -68,7 +67,13 @@ public interface DanmuDao {
     
     public boolean deleteDanmu(int danmuID);
     
+    public List<Danmu> getDanmuListByInterval(String topicID, String startTime, String endTime);
+
     public List<Object[]> getNewDanmu(String createTime);
     
     public boolean hasRealnameDmByUserIdAndTopicId(String userID, String topicID);
+    
+    public List<Danmu> getDanmuByTopicIdAndUserId(String userID, String topicID);
+    
+    public List<Danmu> getHotDanmu(String topicID);
 }

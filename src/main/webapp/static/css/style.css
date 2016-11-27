@@ -1,6 +1,7 @@
 body {
-    color: #F4F4F4;
+    color: #4FC0EA;
     font-family: "proxima-nova","Helvetica Neue","Helvetica","sans-serif";
+    background-image:url(./bj.jpg);
 }
 
 .bb-js .navbar-inverse {
