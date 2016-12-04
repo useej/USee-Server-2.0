@@ -19,13 +19,13 @@ public class Topic {
 
 	@Column(length=70)
 	private String description;
-	
+
 	@Column
 	private double lon;
-	
+
 	@Column
 	private double lat;
-	
+
 	@Column(length=3)
 	private int radius;
 
@@ -34,28 +34,28 @@ public class Topic {
 
 	@Column(length=20)
 	private String lastDanmu_time;
-	
+
 	@Column(length=32)
 	private String userID;
-	
+
 	@Column(length=70)
 	private String poi;
-	
+
 	@Column(length=10)
 	private int danmuNum;
-	
+
 	@Column(length=1)
 	private int expired ;
-	
+
 	@Column(length=5)
 	private String type;
 
 	@Column(length=20)
 	private String delete_time;
-	
+
 	@Transient
 	private String[] imgurls;
-	
+
 	public String getId() {
 		return id;
 	}
@@ -167,8 +167,8 @@ public class Topic {
 	public void setDelete_time(String delete_time) {
 		this.delete_time = delete_time;
 	}
-	
-	
+
+
 
 	public String[] getImgurls() {
 		return imgurls;
@@ -185,5 +185,5 @@ public class Topic {
 				+ ", userID=" + userID + ", poi=" + poi + ", danmuNum=" + danmuNum + ", expired=" + expired + ", type="
 				+ type + ", delete_time=" + delete_time + "]";
 	}
-	
+
 }

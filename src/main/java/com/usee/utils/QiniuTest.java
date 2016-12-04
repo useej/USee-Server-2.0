@@ -14,7 +14,7 @@ public class QiniuTest {
     private QiniuServiceImpl qiniuService = null;
 
     @Test
-    @Before
+//    @Before
     public void init() {
         qiniuService = new QiniuServiceImpl();
         //设置AccessKey
@@ -27,7 +27,7 @@ public class QiniuTest {
         qiniuService.setDomain("odok0w4o2.bkt.clouddn.com");
     }
 
-    @Test
+ //   @Test
     public void testUpload() throws AuthException, JSONException {
         File file = new File("D:/qiche.jpg");
         String uptoken = qiniuService.getUpToken();
@@ -35,7 +35,7 @@ public class QiniuTest {
 //        qiniuService.uploadFile(file);
     }
 
-    @Test
+ //   @Test
     public void testDownloadFileUrl() throws Exception {
         String filePath = qiniuService.getDownloadFileUrl("qiche.jpg");
         System.out.println("file path == " + filePath);
