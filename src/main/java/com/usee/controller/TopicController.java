@@ -40,7 +40,7 @@ public class TopicController {
 		System.out.println(userTopics);
 		return userTopics ;
 	}
-	
+
 	@RequestMapping(value = "getnearbytopics", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getNearbyTopics(@RequestBody String location ){
@@ -62,7 +62,7 @@ public class TopicController {
 		String topicId = userAndTopicInfoJson.getString("topicid");
 
 		JSONObject iconNameJsonObject = topicService.getUserIconbyTopic(userId, topicId);
-		
+
 		JSONObject userIconjJsonObject = new JSONObject();
 		String userIcon = iconNameJsonObject.getString("iconname");
 		String userName = iconNameJsonObject.getString("username");
@@ -75,7 +75,7 @@ public class TopicController {
 		userIconjJsonObject.put("randomIconId", randomIconId);
 		return userIconjJsonObject.toString();
 	}
-	
+
 	@RequestMapping(value = "getusericonbycomment", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getUserIconByComment(@RequestBody String userAndTopicInfo, HttpServletRequest request){
@@ -84,7 +84,7 @@ public class TopicController {
 		int danmuId = userAndTopicInfoJson.getInt("danmuid");
 
 		JSONObject iconNameJsonObject = topicService.getUserIconByComment(userId, danmuId);
-		
+
 		JSONObject userIconjJsonObject = new JSONObject();
 		String userIcon = iconNameJsonObject.getString("iconname");
 		String userName = iconNameJsonObject.getString("username");
@@ -98,31 +98,31 @@ public class TopicController {
 		return userIconjJsonObject.toString();
 	}
 
-	
+
 	@RequestMapping(value = "updateusertopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public void updateUser_topic(@RequestBody String ID){
 		JSONObject IDJson =  new JSONObject().fromObject(ID);
 		topicService.updateUser_topic(IDJson.getString("userid"),IDJson.getString("topicid"));
 	}
-	
+
 	@RequestMapping(value = "createtopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public Topic createtopic(@RequestBody String newTopic){
 		JSONObject newTopicJson = new JSONObject().fromObject(newTopic);
 		String newId = topicService.createTopic(newTopicJson);
 		Topic userTopics = topicService.getTopic(newId);
-		
+
 		// 保存图片
 		newTopicJson.put("topicID", userTopics.getId());
 		Topicimg newtopicimg = topicImgService.saveTopicimg(newTopicJson);
 		userTopics.setImgurls(newtopicimg.getImgurls());
-		
+
 		System.out.println(userTopics);
 		return userTopics;
 	}
 
-	
+
 	@RequestMapping(value = "searchtopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String searchtopic(@RequestBody String keyword){
@@ -175,12 +175,12 @@ public class TopicController {
         }
         topicService.likeTopic(userID, list);
     }
-    
+
     @RequestMapping(value = "gettopictitle", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
     public Map<String, Object> getTopicTitleForWeb(@RequestBody String topicIDJson){
     	Map<String, Object> returnMap = new HashMap<String, Object>();
-    	
+
     	ObjectMapper mapper = new ObjectMapper();
 		Map<String, String> map = new HashMap<String, String>();
 		try {
@@ -194,22 +194,22 @@ public class TopicController {
     	returnMap.put("topicTitle", topicTitle);
     	return returnMap;
     }
-    
+
     @ResponseBody
 	@RequestMapping(value = "gettopicinfo", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	public String getTopicInfo(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.fromObject(json);
 		String topicID  = jsonObject.getString("topicID");
-		
+
 		Topic topic = topicService.getTopic(topicID);
 		JSONObject resultJson = new JSONObject();
 		resultJson.put("topic", topic);
-		
+
 		System.out.println(resultJson);
 		return resultJson.toString();
 	}
 
-    
+
     /*
      * 下面的与topicImg有关
      * 下面两个接口已经合并至其他接口，暂时废弃，只有getuptoken有用
@@ -220,7 +220,7 @@ public class TopicController {
         String resultJson = topicImgService.getuptoken();
         return resultJson.toString();
     }
-    
+
     @RequestMapping(value = "savetopicimg", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
     public String saveTopicImg(@RequestBody String json){
@@ -230,17 +230,37 @@ public class TopicController {
 		resultJson.put("topicimg", newtopicimg);
 		return resultJson.toString();
     }
-    
+
     @RequestMapping(value = "gettopicimg", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
     public String getTopicImg(@RequestBody String json){
     	JSONObject jsonObject = JSONObject.fromObject(json);
     	String topicID  = jsonObject.getString("topicID");
     	List<String> imgUrlList = topicImgService.getTopicimg(topicID);
-    	
+
     	JSONObject resultJson = new JSONObject();
 		resultJson.put("imgUrl", imgUrlList);
 		return resultJson.toString();
     }
+
+		/**
+		 * 通过话题类型得到topics
+		 * @param typeID
+		 * @return
+		 */
+		@RequestMapping(value = "gettopicsbytype", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String getTopicsbyType(@RequestBody String typeID){
+		JSONObject typeJsonObject = new JSONObject().fromObject(typeID);
+		typeID=typeJsonObject.getString("typeID");
+//		String pageNum = null;
+//		String pageSize = null;
+
+		String topic = topicService.getTopicsbyType(typeID);
+		return topic;
+	}
+
+
 	
+
 }

@@ -16,19 +16,19 @@ public interface TopicService {
 	public void addTopic(Topic topic);
 
 	public boolean delTopic(String id);
-	
+
 	public String getUserTopics(String userID);
-	
+
 	public String getNearbyTopics (double ux, double uy, int userRadius, String userID);
-	
+
 	public JSONObject getUserIconbyTopic(String userId, String topicId);
-	
+
 	public JSONObject getUserIconByComment(String userId, int danmuId);
-	
+
 	public void updateUser_topic(String userID,String topicID);
-	
+
 	public String createTopic(JSONObject topic);
-	
+
 	public String searchTopic(String keyword);
 
     public String getHotestTopics();
@@ -38,6 +38,9 @@ public interface TopicService {
     public String checkVersion();
 
     public void likeTopic(String userID, List<String> topics);
-    
+
     public String getTopicTitleForWeb(String topicID);
+
+	public String getTopicsbyType(String typeID);
+
 }

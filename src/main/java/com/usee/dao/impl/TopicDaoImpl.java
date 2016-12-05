@@ -15,10 +15,10 @@ import com.usee.model.Topic;
 
 @Service
 public class TopicDaoImpl implements TopicDao {
-	
+
 	@Resource
 	private SessionFactory sessionFactory;
-	
+
 	public Topic getTopic(String id) {
 		String hql = "from Topic t where t.id=?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
@@ -65,25 +65,25 @@ public class TopicDaoImpl implements TopicDao {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(hql);
 		return query.list();
 	}
-	
+
 	public List getUserTopics(String topicID) {
 		String hql ="from Topic where id=?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, topicID);
 //		query.setCacheable(true);
-		return query.list();  
+		return query.list();
 	}
 
-	
+
 	public void updateUser_topic(String userID, String topicID) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public List searchTopic(String keyword) {
-		String hql="from Topic  where title like '%"+keyword+"%'";  
+		String hql="from Topic  where title like '%"+keyword+"%'";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		return query.list();  
+		return query.list();
 	}
 
     public List<String> getTopicsbyDanmuNum(int num) {
@@ -99,6 +99,14 @@ public class TopicDaoImpl implements TopicDao {
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, topicID);
 		return (String) query.uniqueResult();
+	}
+
+	public List<Topic> getTopicsbyType(String typeID) {
+		String hql = "from Topic where id in(select topicID from TopicType where typeID=?)";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString(0, typeID);
+//		query.setCacheable(true);
+		return query.list();
 	}
 
 }

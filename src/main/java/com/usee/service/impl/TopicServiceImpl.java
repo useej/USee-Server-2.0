@@ -5,11 +5,13 @@ import com.usee.dao.RandomNameDao;
 import com.usee.dao.impl.CommentDaoImpl;
 import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.dao.impl.TopicDaoImpl;
+import com.usee.dao.impl.TopicTypeDaoImp;
 import com.usee.dao.impl.TopicimgDaoImp;
 import com.usee.dao.impl.UserTopicDaoImp;
 import com.usee.model.Comment;
 import com.usee.model.Danmu;
 import com.usee.model.Topic;
+import com.usee.model.TopicType;
 import com.usee.model.UserTopic;
 import com.usee.model.UserTopic_Visit;
 import com.usee.service.TopicService;
@@ -30,6 +32,8 @@ public class TopicServiceImpl implements TopicService {
 	@Resource
 	private TopicDaoImpl topicdao;
 	@Resource
+	private TopicTypeDaoImp topictypedao;
+	@Resource
 	private DanmuDaoImp danmudao;
 	@Resource
 	private UserTopicDaoImp userTopicDao;
@@ -41,14 +45,14 @@ public class TopicServiceImpl implements TopicService {
 	private CommentDaoImpl commentDao;
 	@Autowired
 	private TopicimgDaoImp topicimgDaoImp;
-	
+
 	private static final String DEFAULT_USERICON = "0.png";
-	
+
 	public static final int MAX_RANDOM_NAME_NUMBER = 590;
 	public static final int MAX_RANDOM_ICON_NUMBER = 6400;
     public static final int HOT_WORDS_NUM = 10;
     public static final int HOT_TOPIC_TITLE_NUM = 20;
-	
+
 	public RandomNumber randomNumber = new RandomNumber();
 	public int randomUserIconId = 0;
 
@@ -61,17 +65,17 @@ public class TopicServiceImpl implements TopicService {
 		return topic;
 	}
 
-	
+
 	public List<Topic> getAllTopic() {
 		return topicdao.getAllTopic();
 	}
 
-	
+
 	public void addTopic(Topic topic) {
 		topicdao.addTopic(topic);
 	}
 
-	
+
 	public boolean delTopic(String id) {
 		return topicdao.delTopic(id);
 	}
@@ -102,18 +106,18 @@ public class TopicServiceImpl implements TopicService {
 
         for(int i=0; i<list1.size();i++){
             String a = (String) list1.get(i);
-            
+
             List<Topic> list = topicdao.getUserTopics(a);
             for (Topic topic : list) {
 	            // 获取话题图片
 	            List<String> imgurls = topicimgDaoImp.gettopicimg(topic.getId());
 	            topic.setImgurls(imgurls.toArray(new String[imgurls.size()]));
-	            
+
 				JSONObject topicJSON = JSONObject.fromObject(topic);
 				userTopics.add(topicJSON.toString());
 			}
         }
-        
+
         JSONArray array = JSONArray.fromObject(userTopics);
         JSONArray array1 = JSONArray.fromObject(userTopics);
         int a1 = 0;
@@ -122,7 +126,7 @@ public class TopicServiceImpl implements TopicService {
             JSONObject tempJsonObject = array.getJSONObject(i);
             String topicId=tempJsonObject.getString("id");
             UserTopic usertopic =  userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userID, topicId);
-            
+
             if(usertopic!=null){
                 int like = usertopic.getDislike();
                 if(like == 1){
@@ -144,13 +148,13 @@ public class TopicServiceImpl implements TopicService {
         List list = new ArrayList();
         List<Topic> list1 = new ArrayList();
         list1 = topicdao.getAllTopic();
-        
+
         for (Topic topic : list1) {
             // 获取话题图片
             List<String> imgurls = topicimgDaoImp.gettopicimg(topic.getId());
             topic.setImgurls(imgurls.toArray(new String[imgurls.size()]));
 		}
-        
+
         JSONArray array = JSONArray.fromObject(list1);
         JSONArray array1 = JSONArray.fromObject(list1);
         JSONArray array2 = JSONArray.fromObject(list1);
@@ -219,7 +223,7 @@ public class TopicServiceImpl implements TopicService {
 		UserTopic existUserTopic = userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userId, topicId);
 		// 如果用户不是第一次在此话题底下进行操作,并且用户之前匿名操作过
 		if(existUserTopic != null && existUserTopic.getRandomNameID() != 0){
-			
+
 			int randomIconId = existUserTopic.getRandomIconID();
 			// 得到随机头像 id
 			int iconId = randomIconId / 100 + 1;
@@ -228,10 +232,10 @@ public class TopicServiceImpl implements TopicService {
 			String iconCode = colorDao.getColorById(iconColorId);
 			// 使用iconId和iconCode拼凑成一个userIcon
 			String userIcon = iconId + "_" + iconCode; // 63_E6A473
-			
+
 			int randomNameID = existUserTopic.getRandomNameID();
 			String username = randomNameDao.getRandomNameById(randomNameID);
-			
+
 			// 得到用户最近一次在此话题底下发的弹幕
 			int latestDanmuId = danmudao.getLatestDanmuIdByUserIdAndTopicId(userId, topicId);
 			// isAnonymous: 0为匿名,1为实名,2为不确定
@@ -245,16 +249,16 @@ public class TopicServiceImpl implements TopicService {
 					jsonObject.put("isAnonymous", 0);
 				}
 			}
-			
+
 			jsonObject.put("randomIconId", randomIconId);
 			jsonObject.put("iconname", userIcon);
 			jsonObject.put("username", username);
 			return jsonObject;
-			
+
 		}
 		else {
-			
-			// get list of existing userIcons search in user_topic table 
+
+			// get list of existing userIcons search in user_topic table
 			List<Integer> existingList = userTopicDao.getuserRandomIconIdsbyTopic(topicId);
 			// 得到随机数
 			randomUserIconId = RandomNumber.getRandomNum(existingList,MAX_RANDOM_ICON_NUMBER);
@@ -269,12 +273,12 @@ public class TopicServiceImpl implements TopicService {
 
 			int randomNameId = randomUserNameId;
 			String username = randomNameDao.getRandomNameById(randomNameId);
-			
+
 			// 得到用户最近一次在此话题底下发的弹幕
 			int latestDanmuId = danmudao.getLatestDanmuIdByUserIdAndTopicId(userId, topicId);
-			
+
 			System.out.println("latestDanmuId = " + latestDanmuId);
-			
+
 			// isAnonymous: 0为匿名,1为实名,2为不确定
 			if(latestDanmuId == -1) {
 				jsonObject.put("isAnonymous", 2);
@@ -286,14 +290,14 @@ public class TopicServiceImpl implements TopicService {
 					jsonObject.put("isAnonymous", 0);
 				}
 			}
-			
+
 			jsonObject.put("randomIconId", randomIconId);
 			jsonObject.put("iconname", userIcon);
 			jsonObject.put("username", username);
 			return jsonObject;
 		}
 	}
-	
+
 
 	public JSONObject getUserIconByComment(String userId, int danmuId) {
         int randomUserNameId = randomNumber.getRandom(1, MAX_RANDOM_NAME_NUMBER);
@@ -312,13 +316,13 @@ public class TopicServiceImpl implements TopicService {
 			int iconColorId = randomIconId % 100 + 1;
 			String iconCode = colorDao.getColorById(iconColorId);
 			String userIcon = iconId + "_" + iconCode; // 63_E6A473
-			
+
 			int randomNameID = existUserTopic.getRandomNameID();
 			String username = randomNameDao.getRandomNameById(randomNameID);
-			
+
 			// 得到用户最近一次在此话题底下发的评论
 			int latestCommentId = commentDao.getLatestCommentIdByUserIdAndDanmuId(userId, danmuId);
-			
+
 			if(latestCommentId == -1) {
 				jsonObject.put("isAnonymous", 2);
 			} else {
@@ -329,16 +333,16 @@ public class TopicServiceImpl implements TopicService {
 					jsonObject.put("isAnonymous", 0);
 				}
 			}
-			
+
 			jsonObject.put("randomIconId", randomIconId);
 			jsonObject.put("iconname", userIcon);
 			jsonObject.put("username", username);
 			return jsonObject;
-			
+
 		}
 		else {
-			
-			// get list of existing userIcons search in user_topic table 
+
+			// get list of existing userIcons search in user_topic table
 			List<Integer> existingList = userTopicDao.getuserRandomIconIdsbyTopic(topicId);
 			// 得到随机数
 			randomUserIconId = RandomNumber.getRandomNum(existingList,MAX_RANDOM_ICON_NUMBER);
@@ -349,13 +353,13 @@ public class TopicServiceImpl implements TopicService {
 			int iconColorId = randomIconId % 100 + 1;
 			String iconCode = colorDao.getColorById(iconColorId);
 			String userIcon = iconId + "_" + iconCode; // 63_E6A473
-			
+
 			int randomNameId = randomUserNameId;
 			String username = randomNameDao.getRandomNameById(randomNameId);
-			
+
 			// 得到用户最近一次在此话题底下发的评论
 			int latestCommentId = commentDao.getLatestCommentIdByUserIdAndDanmuId(userId, danmuId);
-			
+
 			if(latestCommentId == -1) {
 				jsonObject.put("isAnonymous", 2);
 			} else {
@@ -366,14 +370,14 @@ public class TopicServiceImpl implements TopicService {
 					jsonObject.put("isAnonymous", 0);
 				}
 			}
-			
+
 			jsonObject.put("randomIconId", randomIconId);
 			jsonObject.put("iconname", userIcon);
 			jsonObject.put("username", username);
 			return jsonObject;
 		}
 	}
-	
+
 	public void updateUser_topic(String userID, String topicID) {
 		TimeUtil timeutil = new TimeUtil();
 		String lastVisitTime = timeutil.currentTimeStamp;
@@ -405,14 +409,14 @@ public class TopicServiceImpl implements TopicService {
 		Double lon = topic.getDouble("lon");
 		Double lat = topic.getDouble("lat");
 		String userid = topic.getString("userid");
-		
+
 		List list = new ArrayList();
 		list=topicdao.getAllTopicId();
 		int max=0;
 		for(int i=0;i<list.size();i++){
 		int	a = Integer.valueOf((String) list.get(i));
 		if(a>max){
-			max=a;		
+			max=a;
 			}
 		}
 		max++;
@@ -427,8 +431,35 @@ public class TopicServiceImpl implements TopicService {
 		newtopic.setUserID(userid);
 		newtopic.setPoi(null);
 		newtopic.setCreate_time(currentTime);
-		topicdao.addTopic(newtopic);
-		
+
+
+		//增加内容分类
+		//获取包含的话题类型,如果传入参数不含type，则为type赋默认值0，否则正常赋值并写入到topic_type表中
+//		JSONArray typeIDs;
+		if(topic.has("type")){
+			String type = topic.getString("type");
+//			int type = typeIDs.size();
+			
+//			String type = "";
+//			String topicID = topicdao.addTopic(newtopic);
+			newtopic.setType(type);
+			topicdao.addTopic(newtopic);
+			
+			String typeID[] =type.split(","); //获取typeID值
+			for(int i=0; i<typeID.length; i++){
+				TopicType newtopictype = new TopicType();
+				newtopictype.setTopicid(newid);
+				newtopictype.setTypeid(Integer.parseInt(typeID[i]));
+				topictypedao.addTopictype(newtopictype);
+			}
+			
+
+		}
+		else{
+			newtopic.setType("0");
+			topicdao.addTopic(newtopic);
+		}
+
 		return newid;
 	}
 
@@ -437,7 +468,7 @@ public class TopicServiceImpl implements TopicService {
 		List list1 = new ArrayList();
 		List<String> userTopics = new ArrayList();
 		list1 = topicdao.searchTopic(keyword);
-		
+
 		 JSONArray array = JSONArray.fromObject(list1);
 		 JSONObject object = new JSONObject();
 			object.put("topic", array.toString());
@@ -501,4 +532,26 @@ public class TopicServiceImpl implements TopicService {
 	public String getTopicTitleForWeb(String topicID) {
 		return topicdao.getTopicTitleForWeb(topicID);
 	}
+
+	public String getTopicsbyType(String typeID){
+		List<Topic> list = new ArrayList<Topic>();
+//		typeID = "%"+typeID+"%";
+		list = topicdao.getTopicsbyType(typeID);
+
+		for (Topic topic : list) {
+						// 获取话题图片
+						List<String> imgurls = topicimgDaoImp.gettopicimg(topic.getId());
+						topic.setImgurls(imgurls.toArray(new String[imgurls.size()]));
+
+		}
+
+
+		JSONArray array = JSONArray.fromObject(list);
+		JSONObject object = new JSONObject();
+		object.put("topic", array.toString());
+
+		return object.toString();
+	}
+
+
 }
