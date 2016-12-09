@@ -33,4 +33,5 @@ public interface TopicDao {
 	public void updateType(String topicID, int type);
 	
 	public String getTopicIDBytitle(String topicTitle);
+
 }

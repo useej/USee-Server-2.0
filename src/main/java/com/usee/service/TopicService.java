@@ -50,4 +50,5 @@ public interface TopicService {
 	public String getTopicIDBytitle(String topicTitle);
 	
 	public void addTopicType(String topicID, List<Integer> typeIDList);
+
 }

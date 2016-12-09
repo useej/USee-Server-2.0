@@ -124,6 +124,7 @@ public class TopicDaoImpl implements TopicDao {
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, topicTitle);
 		return (String) query.uniqueResult();
+
 	}
 
 }
