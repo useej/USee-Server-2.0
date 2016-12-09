@@ -443,7 +443,8 @@ public class TopicServiceImpl implements TopicService {
 		//获取包含的话题类型,如果传入参数不含type，则为type赋默认值0，否则正常赋值并写入到topic_type表中
 //		JSONArray typeIDs;
 		if(topic.has("type")){
-			String type = topic.getString("type");
+			String[] typeID = topic.getString("type").split(",");
+			String type = Integer.toString(typeID.length);
 //			int type = typeIDs.size();
 			
 //			String type = "";
@@ -451,7 +452,7 @@ public class TopicServiceImpl implements TopicService {
 			newtopic.setType(type);
 			topicdao.addTopic(newtopic);
 			
-			String typeID[] =type.split(","); //获取typeID值
+//			String typeID[] =type.split(","); //获取typeID值
 			for(int i=0; i<typeID.length; i++){
 				TopicType newtopictype = new TopicType();
 				newtopictype.setTopicid(newid);
@@ -548,7 +549,7 @@ public class TopicServiceImpl implements TopicService {
 						// 获取话题图片
 						List<String> imgurls = topicimgDaoImp.gettopicimg(topic.getId());
 						topic.setImgurls(imgurls.toArray(new String[imgurls.size()]));
-
+						changeTypeOfTopic(topic);
 		}
 
 
@@ -558,6 +559,37 @@ public class TopicServiceImpl implements TopicService {
 
 		return object.toString();
 	}
+	
+	public void delTypeOfTopic(String typeID){
+		topictypedao.delTypeOfTopic(typeID);
+	}
+	
+	public void addTopicType(String topicID, String typeID){
+		TopicType newtopictype = new TopicType();
+		newtopictype.setTopicid(topicID);
+		newtopictype.setTypeid(Integer.parseInt(typeID));
+		topictypedao.addTopictype(newtopictype);
+//		topictypedao.addTypeOfTopic(topicID, typeID);
+	}
+
+
+	@Override
+	public String changeTypeOfTopic(Topic topic) {
+		// TODO Auto-generated method stub
+		JSONObject jsonObject= new JSONObject().fromObject(topic);
+		String topicID = jsonObject.getString("id");
+		String type = topictypedao.getTypeOfTopic(topicID);
+		type = type.replace("[", "");
+		type = type.replace("]", "");
+//		type = """+type+""";
+//		jsonObject.
+		jsonObject.put("type", type);
+		topic.setType(type);
+		String topicStr = jsonObject.toString();
+		return topicStr;
+//		jsonObject.put("type", type);
+	}
+
 
 
 }

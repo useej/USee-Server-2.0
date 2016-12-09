@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONException;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qiniu.api.auth.AuthException;
+import com.usee.dao.impl.TopicTypeDaoImp;
 import com.usee.model.Topic;
 import com.usee.model.Topicimg;
 import com.usee.service.impl.TopicImgServiceImp;
@@ -112,6 +114,7 @@ public class TopicController {
 		JSONObject newTopicJson = new JSONObject().fromObject(newTopic);
 		String newId = topicService.createTopic(newTopicJson);
 		Topic userTopics = topicService.getTopic(newId);
+		topicService.changeTypeOfTopic(userTopics);
 
 		// 保存图片
 		newTopicJson.put("topicID", userTopics.getId());
@@ -253,13 +256,36 @@ public class TopicController {
 	public String getTopicsbyType(@RequestBody String typeID){
 		JSONObject typeJsonObject = new JSONObject().fromObject(typeID);
 		typeID=typeJsonObject.getString("typeID");
-//		String pageNum = null;
-//		String pageSize = null;
 
 		String topic = topicService.getTopicsbyType(typeID);
+		
+		
+		
 		return topic;
 	}
-
+		/**
+		 * 更新话题类型     还没写好  暂用作测试
+		 * @param topictype
+		 * @return
+		 */
+	@RequestMapping(value = "updatetopictype", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String updateTopicType(@RequestBody String topictype){
+		JSONObject topictypeJsonObject = new JSONObject().fromObject(topictype);
+		String topicID = topictypeJsonObject.getString("topicID");
+		String typeID[] = topictypeJsonObject.getString("typeID").split(",");
+/*		
+		for(int i=0; i<typeID.length; i++){			
+			topicService.delTypeOfTopic(typeID[i]);
+			topicService.addTopicType(topicID,typeID[i]);
+		}
+*/		
+		
+		Topic topic = topicService.getTopic(topicID);
+		JSONObject jsonObject = new JSONObject().fromObject(topic);
+		String topicStr = topicService.changeTypeOfTopic(topic);
+		return topicStr;
+	}
 
 	
 
