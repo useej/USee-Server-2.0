@@ -78,7 +78,7 @@
       			  			maxLength = currentLen;
       			  }
       		}
-      	
+          
       		var window_width = $(window).width()  ;
 
 			// 控制弹幕密度

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONException;
@@ -19,13 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qiniu.api.auth.AuthException;
-import com.usee.dao.impl.TopicTypeDaoImp;
 import com.usee.model.Topic;
 import com.usee.model.Topicimg;
 import com.usee.service.impl.TopicImgServiceImp;
 import com.usee.service.impl.TopicServiceImpl;
 
 import net.sf.json.JSONObject;
+import net.sf.json.JSONArray;
 
 @Controller
 public class TopicController {
@@ -112,6 +111,7 @@ public class TopicController {
 	@ResponseBody
 	public Topic createtopic(@RequestBody String newTopic){
 		JSONObject newTopicJson = new JSONObject().fromObject(newTopic);
+		
 		String newId = topicService.createTopic(newTopicJson);
 		Topic userTopics = topicService.getTopic(newId);
 		topicService.changeTypeOfTopic(userTopics);
@@ -270,22 +270,29 @@ public class TopicController {
 		 */
 	@RequestMapping(value = "updatetopictype", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public String updateTopicType(@RequestBody String topictype){
-		JSONObject topictypeJsonObject = new JSONObject().fromObject(topictype);
-		String topicID = topictypeJsonObject.getString("topicID");
-		String typeID[] = topictypeJsonObject.getString("typeID").split(",");
+	public void updateTopicType(@RequestBody String topictype){
+		JSONObject topictypeJsonObject = JSONObject.fromObject(topictype);
 		
-		for(int i=0; i<typeID.length; i++){			
-//			topicService.delTypeOfTopic(typeID[i]);
-			topicService.addTopicType(topicID,typeID[i]);
+		String topicID = null;
+		if(topictypeJsonObject.containsKey("topicTitle")) {
+			String topicTitle = topictypeJsonObject.getString("topicTitle");
+			topicID = topicService.getTopicIDBytitle(topicTitle);
+			System.out.println(topicTitle + " : " + topicID);
+		} else {
+			topicID = topictypeJsonObject.getString("topicID");
 		}
 		
-		topicService.updateType(topicID,typeID.length);
+		JSONArray typeIDJson = topictypeJsonObject.getJSONArray("typeID");
+		List<Integer> typeIDList = JSONArray.toList(typeIDJson);
+		
+		topicService.addTopicType(topicID, typeIDList);
+		topicService.updateType(topicID,typeIDList.size());
 		
 		Topic topic = topicService.getTopic(topicID);
-		JSONObject jsonObject = new JSONObject().fromObject(topic);
 		String topicStr = topicService.changeTypeOfTopic(topic);
-		return topicStr;
+		System.out.println(topicStr);
+		
+		return;
 	}
 
 	

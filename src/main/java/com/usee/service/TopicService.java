@@ -46,4 +46,9 @@ public interface TopicService {
 	public String changeTypeOfTopic(Topic topic);
 
 	public void updateType(String topicID,int type);
+	
+	public String getTopicIDBytitle(String topicTitle);
+	
+	public void addTopicType(String topicID, List<Integer> typeIDList);
+
 }

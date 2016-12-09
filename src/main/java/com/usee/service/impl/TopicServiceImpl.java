@@ -1,5 +1,13 @@
 package com.usee.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.usee.dao.ColorDao;
 import com.usee.dao.RandomNameDao;
 import com.usee.dao.impl.CommentDaoImpl;
@@ -15,16 +23,14 @@ import com.usee.model.TopicType;
 import com.usee.model.UserTopic;
 import com.usee.model.UserTopic_Visit;
 import com.usee.service.TopicService;
-import com.usee.utils.*;
+import com.usee.utils.AnsjSegUtil;
+import com.usee.utils.CheckVersion;
+import com.usee.utils.Distance;
+import com.usee.utils.RandomNumber;
+import com.usee.utils.TimeUtil;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -558,19 +564,19 @@ public class TopicServiceImpl implements TopicService {
 		topictypedao.delTypeOfTopic(typeID);
 	}
 	
-	public void addTopicType(String topicID, String typeID){
-		TopicType newtopictype = new TopicType();
-		newtopictype.setTopicid(topicID);
-		newtopictype.setTypeid(Integer.parseInt(typeID));
-		topictypedao.addTopictype(newtopictype);
-//		topictypedao.addTypeOfTopic(topicID, typeID);
+	public void addTopicType(String topicID, List<Integer> typeIDList){
+		for (Integer typeID : typeIDList) {
+			TopicType newtopictype = new TopicType();
+			newtopictype.setTopicid(topicID);
+			newtopictype.setTypeid(typeID);
+			topictypedao.addTopictype(newtopictype);
+//			topictypedao.addTypeOfTopic(topicID, typeID);
+		}
 	}
-
 
 	@Override
 	public String changeTypeOfTopic(Topic topic) {
-		// TODO Auto-generated method stub
-		JSONObject jsonObject= new JSONObject().fromObject(topic);
+		JSONObject jsonObject= JSONObject.fromObject(topic);
 		String topicID = jsonObject.getString("id");
 		String type = topictypedao.getTypeOfTopic(topicID);
 		type = type.replace("[", "");
@@ -587,10 +593,13 @@ public class TopicServiceImpl implements TopicService {
 
 	@Override
 	public void updateType(String topicID, int type) {
-		// TODO Auto-generated method stub
 		topicdao.updateType(topicID, type);
 	}
 
 
+	@Override
+	public String getTopicIDBytitle(String topicTitle) {
+		return topicdao.getTopicIDBytitle(topicTitle);
+	}
 
 }
