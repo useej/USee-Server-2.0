@@ -1,5 +1,13 @@
 package com.usee.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.usee.dao.ColorDao;
 import com.usee.dao.RandomNameDao;
 import com.usee.dao.impl.CommentDaoImpl;
@@ -15,16 +23,14 @@ import com.usee.model.TopicType;
 import com.usee.model.UserTopic;
 import com.usee.model.UserTopic_Visit;
 import com.usee.service.TopicService;
-import com.usee.utils.*;
+import com.usee.utils.AnsjSegUtil;
+import com.usee.utils.CheckVersion;
+import com.usee.utils.Distance;
+import com.usee.utils.RandomNumber;
+import com.usee.utils.TimeUtil;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 @Service
 public class TopicServiceImpl implements TopicService {
