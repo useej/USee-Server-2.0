@@ -274,12 +274,13 @@ public class TopicController {
 		JSONObject topictypeJsonObject = new JSONObject().fromObject(topictype);
 		String topicID = topictypeJsonObject.getString("topicID");
 		String typeID[] = topictypeJsonObject.getString("typeID").split(",");
-/*		
+		
 		for(int i=0; i<typeID.length; i++){			
-			topicService.delTypeOfTopic(typeID[i]);
+//			topicService.delTypeOfTopic(typeID[i]);
 			topicService.addTopicType(topicID,typeID[i]);
 		}
-*/		
+		
+		topicService.updateType(topicID,typeID.length);
 		
 		Topic topic = topicService.getTopic(topicID);
 		JSONObject jsonObject = new JSONObject().fromObject(topic);

@@ -109,4 +109,14 @@ public class TopicDaoImpl implements TopicDao {
 		return query.list();
 	}
 
+	@Override
+	public void updateType(String topicID, int type) {
+		// TODO Auto-generated method stub
+		String hql = "update Topic set type=? where id=?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setInteger(0, type);
+		query.setString(1, topicID);
+		query.list();
+	}
+
 }

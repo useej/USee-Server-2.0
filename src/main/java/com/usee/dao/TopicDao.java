@@ -28,6 +28,8 @@ public interface TopicDao {
 
     public String getTopicTitleForWeb(String topicID);
 
-		public List<Topic> getTopicsbyType(String typeID);
+	public List<Topic> getTopicsbyType(String typeID);
+	
+	public void updateType(String topicID, int type);
 
 }
