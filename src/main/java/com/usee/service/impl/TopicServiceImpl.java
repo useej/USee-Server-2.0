@@ -585,5 +585,12 @@ public class TopicServiceImpl implements TopicService {
 	}
 
 
+	@Override
+	public void updateType(String topicID, int type) {
+		// TODO Auto-generated method stub
+		topicdao.updateType(topicID, type);
+	}
+
+
 
 }

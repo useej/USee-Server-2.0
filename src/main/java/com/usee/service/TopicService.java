@@ -45,5 +45,5 @@ public interface TopicService {
 	
 	public String changeTypeOfTopic(Topic topic);
 
-
+	public void updateType(String topicID,int type);
 }
