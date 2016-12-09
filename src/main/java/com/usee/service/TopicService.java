@@ -42,5 +42,8 @@ public interface TopicService {
     public String getTopicTitleForWeb(String topicID);
 
 	public String getTopicsbyType(String typeID);
+	
+	public String changeTypeOfTopic(Topic topic);
+
 
 }
