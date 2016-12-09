@@ -8,8 +8,8 @@ public class API {
 //	public static String SHERA_TOPIC_PATH = "/root/apache-tomcat-8.5.5/webapps/USee/res/shareUrl.txt";
 	
 	// 测试服务器
-	public static String PROJECT_PATH = "/root/apache-tomcat-8.5.5/webapps/USee/";
-	// 生成服务器
-//	public static String PROJECT_PATH = "/root/apache-tomcat-7.0.68/webapps/USee/";
+//	public static String PROJECT_PATH = "/root/apache-tomcat-8.5.5/webapps/USee/";
+	// 生产服务器
+	public static String PROJECT_PATH = "/root/apache-tomcat-7.0.68/webapps/USee/";
 	
 }

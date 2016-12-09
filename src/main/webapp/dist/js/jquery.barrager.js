@@ -41,9 +41,11 @@
 			var bottom = (barrage.bottom == 0) ? Math.floor(number* window_height /numOfYongDao + bottomHeight) : barrage.bottom;
 	    // TODO Avoid dup wait for the first one! 
 	    	current_DMMRight[number] = 0;
+	    	// alert("1: The Buttom is:"+bottom);
 		}
 		else { // Remove this Danmu ? or place to an empty one 
 			
+
 			if(typeof(current_DMMRight[number]) === "undefined")  {
 					bottom =  Math.floor(number* window_height /numOfYongDao + bottomHeight) ;
 			} else 
@@ -52,11 +54,20 @@
 					bottom = bottomHeight;
 					if(current_DMMRight[i] == 0)  {
 						bottom =  Math.floor(i* window_height /numOfYongDao + bottomHeight) ;
-						i=numOfYongDao;
+						// i=numOfYongDao;
+						
 					}
 				}
 			}
-				 
+			
+			if (time_elasped % 3 == 0) {
+				bottom = 30;
+			}
+			else {
+				bottom = 30 + window_height /numOfYongDao;
+			}
+
+			// alert("2: The Buttom is:"+bottom);
 		}
 
 		if (bottom > window_height) 
@@ -159,8 +170,8 @@
 		
 				if(window_width <800) {
 					speedRatio =10;
-					// runningTime 走完屏幕画的时间
-					runningTime = 5000;
+					// runningTime : 走完屏幕画的时间,越大，弹幕走的速度越慢
+					runningTime = 6000;
 				}
 				middleScreen = Math.floor(window_width / 2);
 	

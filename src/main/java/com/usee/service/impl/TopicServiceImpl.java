@@ -564,19 +564,19 @@ public class TopicServiceImpl implements TopicService {
 		topictypedao.delTypeOfTopic(typeID);
 	}
 	
-	public void addTopicType(String topicID, String typeID){
-		TopicType newtopictype = new TopicType();
-		newtopictype.setTopicid(topicID);
-		newtopictype.setTypeid(Integer.parseInt(typeID));
-		topictypedao.addTopictype(newtopictype);
-//		topictypedao.addTypeOfTopic(topicID, typeID);
+	public void addTopicType(String topicID, List<Integer> typeIDList){
+		for (Integer typeID : typeIDList) {
+			TopicType newtopictype = new TopicType();
+			newtopictype.setTopicid(topicID);
+			newtopictype.setTypeid(typeID);
+			topictypedao.addTopictype(newtopictype);
+//			topictypedao.addTypeOfTopic(topicID, typeID);
+		}
 	}
-
 
 	@Override
 	public String changeTypeOfTopic(Topic topic) {
-		// TODO Auto-generated method stub
-		JSONObject jsonObject= new JSONObject().fromObject(topic);
+		JSONObject jsonObject= JSONObject.fromObject(topic);
 		String topicID = jsonObject.getString("id");
 		String type = topictypedao.getTypeOfTopic(topicID);
 		type = type.replace("[", "");
@@ -591,5 +591,15 @@ public class TopicServiceImpl implements TopicService {
 	}
 
 
+	@Override
+	public void updateType(String topicID, int type) {
+		topicdao.updateType(topicID, type);
+	}
+
+
+	@Override
+	public String getTopicIDBytitle(String topicTitle) {
+		return topicdao.getTopicIDBytitle(topicTitle);
+	}
 
 }

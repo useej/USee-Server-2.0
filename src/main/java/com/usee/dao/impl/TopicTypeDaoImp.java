@@ -18,16 +18,9 @@ public class TopicTypeDaoImp implements TopicTypeDao{
 	private SessionFactory sessionFactory;
 	@Override
 	public void addTopictype(TopicType newtopictype) {
-		// TODO Auto-generated method stub
 		Session session = sessionFactory.getCurrentSession();
 		session.save(newtopictype);
 		session.flush();
-//		String hql = "insert into topic_type values(0, ?, ?)";
-//		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-//		query.setString(0, newtopictype.getTopicid());
-//		query.setInteger(1, newtopictype.getTypeid());
-
-//		query.executeUpdate();
 	}
 
 	@Override
