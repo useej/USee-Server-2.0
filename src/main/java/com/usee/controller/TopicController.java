@@ -264,7 +264,7 @@ public class TopicController {
 		return topic;
 	}
 		/**
-		 * 更新话题类型     还没写好  暂用作测试
+		 * 更新话题类型    用一个包含一个或多个typeID的String加上topicTitle或者topicID
 		 * @param topictype
 		 * @return
 		 */
@@ -285,10 +285,14 @@ public class TopicController {
 		JSONArray typeIDJson = topictypeJsonObject.getJSONArray("typeID");
 		List<Integer> typeIDList = JSONArray.toList(typeIDJson);
 		
+		//在添加新信息之前先删除原有信息，是为更新
+		topicService.delTypeOfTopic(topicID);
 		topicService.addTopicType(topicID, typeIDList);
 		topicService.updateType(topicID,typeIDList.size());
 		
 		Topic topic = topicService.getTopic(topicID);
+		
+		//原type字段表示类型个数，返回值需要的是以逗号隔开的typeID
 		String topicStr = topicService.changeTypeOfTopic(topic);
 		System.out.println(topicStr);
 		
