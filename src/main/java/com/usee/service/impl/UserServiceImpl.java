@@ -2,16 +2,13 @@ package com.usee.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.usee.dao.DanmuDao;
 import com.usee.dao.impl.DanmuDaoImp;
 import com.usee.dao.impl.TopicDaoImpl;
 import com.usee.dao.impl.TopicimgDaoImp;
@@ -22,15 +19,15 @@ import com.usee.model.Topic;
 import com.usee.model.User;
 import com.usee.model.UserTopic;
 import com.usee.service.UserService;
+import com.usee.utils.API;
 import com.usee.utils.MD5Util;
+import com.usee.utils.URL2PictureUtil;
+import com.usee.utils.UUIDGeneratorUtil;
 
 import net.sf.json.JSONObject;
 
 @Service
 public class UserServiceImpl implements UserService {
-	private static final String DEFAULT_NICKNAME = "无名氏";
-	private static final String DEFAULT_USERICON = "0.png";
-	private static final int DEFAULT_GENDER = 2;
 	
 	@Resource
 	private UserDaoImpl userDao;
@@ -75,16 +72,15 @@ public class UserServiceImpl implements UserService {
 		
 		// 设置默认的昵称
 		if(user.getNickname() == null) {
-			//random_nickname = UUIDGeneratorUtil.getUUID().substring(0, 10).toLowerCase();
-			user.setNickname(DEFAULT_NICKNAME);
+			user.setNickname(API.DEFAULT_NICKNAME);
 		}
 		// 设置默认的头像
 		if(user.getUserIcon() == null) {
-			user.setUserIcon(DEFAULT_USERICON);
+			user.setUserIcon(API.DEFAULT_USERICON);
 		}
 		
 		// 设置默认的性别
-		user.setGender(DEFAULT_GENDER);
+		user.setGender(API.DEFAULT_GENDER);
 
 		// 密码使用MD5加密
 		String md5Password = MD5Util.getMD5(user.getPassword());
@@ -170,6 +166,55 @@ public class UserServiceImpl implements UserService {
 		resultJson.put("topic", topicInfoList);
 		return resultJson.toString();
 	}
+
+	@Override
+	public void addUser_OAuth_UserInfo(User user, String fileRootDir) {
+		user.setUserID(UUIDGeneratorUtil.getUUID());
+		user.setCreateTime(new Date().getTime() + "");
+		
+		// 将用户头像保存到本地图片服务器
+		URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
+		user.setUserIcon(user.getUserID() + ".png");
+		// 设置默认的手机号
+		user.setCellphone(API.DEFAULT_INFO);
+		// 设置默认的密码
+		user.setPassword(API.DEFAULT_INFO);
+		user.setStatus("1");
+		userDao.addUser_OAuth(user);
+		return ;
+	}
+
+	@Override
+	public String addUser_OAuth_Base(String openId) {
+		User user = new User();
+		user.setUserID(UUIDGeneratorUtil.getUUID());
+		user.setCreateTime(new Date().getTime() + "");
+		
+		user.setOpenID_wx(openId);
+		
+		// 设置默认的性别
+		user.setGender(API.DEFAULT_GENDER);
+		// 设置默认的昵称
+		user.setNickname(API.DEFAULT_NICKNAME);
+		// 设置默认的头像
+		user.setUserIcon(API.DEFAULT_USERICON);
+		// 设置默认的手机号
+		user.setCellphone(API.DEFAULT_INFO);
+		// 设置默认的密码
+		user.setPassword(API.DEFAULT_INFO);
+		user.setStatus("1");
+		userDao.addUser_OAuth(user);
+		return user.getUserID();		
+	}
 	
+	@Override
+	public void updateUser_OAuth_UserInfo(User user, String fileRootDir) {
+		
+		// 将用户头像保存到本地图片服务器
+		URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
+		user.setUserIcon(user.getUserID() + ".png");
+		userDao.updateUser(user);
+		return ;
+	}
 
 }

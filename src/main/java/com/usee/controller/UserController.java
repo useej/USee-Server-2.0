@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usee.model.User;
 import com.usee.service.SqlInjectService;
 import com.usee.service.impl.UserServiceImpl;
+import com.usee.utils.API;
 import com.usee.utils.Json2ObjectUtil;
 import com.usee.utils.MD5Util;
 
@@ -32,8 +33,6 @@ import net.sf.json.JSONObject;
 public class UserController {
 
 	private static final String RETURN_INFO = "returnInfo";
-	private static final String DEFAULT_CELLPHONE = "<dbnull>";
-	private static final String DEFAULT_PASSWORD = "<dbnull>";
 	//private static final String USERICON_PREFIX = "http://114.215.209.102/USee/";
 	private static final long VALIDITY_TIME = 600000;
 
@@ -67,13 +66,13 @@ public class UserController {
 		// 数据库中对应的手机号的user信息(发送验证码时保存的)
 		User signinUser = userService.getUserByCellphone(cellphone);
 		// 如果手机号不准确直接返回错误
-		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE) ||
+		if (cellphone.length() != 11 || cellphone.equals(API.DEFAULT_INFO) ||
 				signinUser == null) {
 			returnMap.put(RETURN_INFO, "cellphoneErr");
 			return returnMap;
 		}
 		
-		if (!(signinUser.getPassword()).equals(DEFAULT_PASSWORD)) {
+		if (!(signinUser.getPassword()).equals(API.DEFAULT_INFO)) {
 			// 如果该手机号用户已经存在并且密码不等于默认的密码，则证明用户已经注册
 			returnMap.put(RETURN_INFO, "exist");
 			return returnMap;
@@ -120,7 +119,7 @@ public class UserController {
 
 		String cellphone = user.getCellphone();
 		// 如果手机号不准确直接返回错误
-		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE)) {
+		if (cellphone.length() != 11 || cellphone.equals(API.DEFAULT_INFO)) {
 			map.put(RETURN_INFO, "cellphoneErr");
 			return map;
 		}
@@ -162,7 +161,7 @@ public class UserController {
 		// 数据库中对应的手机号的user信息
 		User validateUser = userService.getUserByCellphone(cellphone);
 		// 如果手机号不准确直接返回错误
-		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE) ||
+		if (cellphone.length() != 11 || cellphone.equals(API.DEFAULT_INFO) ||
 				validateUser == null) {
 			returnMap.put(RETURN_INFO, "cellphoneErr");
 			return returnMap;
@@ -295,7 +294,7 @@ public class UserController {
 		String cellphone = user.getCellphone();
 		
 		// 如果手机号不准确直接返回错误
-		if (cellphone.length() != 11 || cellphone.equals(DEFAULT_CELLPHONE)) {
+		if (cellphone.length() != 11 || cellphone.equals(API.DEFAULT_INFO)) {
 			returnMap.put(RETURN_INFO, "cellphoneErr");
 			return returnMap;
 		}

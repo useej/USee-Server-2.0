@@ -80,7 +80,7 @@ public class DanmuServiceImp implements DanmuService{
         String lon = danmu.getString("lon");
         String lat = danmu.getString("lat");
         String result = amap.getLocationName(lon + "," + lat);
-        JSONObject addressJson = new JSONObject().fromObject(result);
+        JSONObject addressJson = JSONObject.fromObject(result);
         String address = addressJson.getJSONObject("regeocode").getString("formatted_address");
 
 		// 通过userId和topicId从数据库中获取存在的UserTopic信息

@@ -19,6 +19,7 @@ import com.usee.model.User;
 import com.usee.service.impl.OAuthLoginServiceImpl;
 import com.usee.service.impl.SqlInjectServiceImpl;
 import com.usee.service.impl.UserServiceImpl;
+import com.usee.utils.API;
 import com.usee.utils.Json2ObjectUtil;
 
 /*
@@ -27,7 +28,6 @@ import com.usee.utils.Json2ObjectUtil;
 @Controller
 @RequestMapping("/oauthlogin")
 public class OAuthLoginController {
-	private static final String DEFAULT_CELLPHONE = "<dbnull>";
 	//private static final String USERICON_PREFIX = "http://114.215.209.102/USee/";
 	
 	@Autowired
@@ -72,13 +72,13 @@ public class OAuthLoginController {
 			oauthLoginService.addUser(user, request.getSession().getServletContext().getRealPath("/"));
 			// 加入数据库中的user信息为默认的手机号(用户是用第三方登录的，没有设置手机号和密码)
 			// 则将手机号和密码置为空再返回给前端
-			if(user.getCellphone().equals(DEFAULT_CELLPHONE)) {
+			if(user.getCellphone().equals(API.DEFAULT_INFO)) {
 				user.setCellphone(null);
 				user.setPassword(null);
 			}
 			returnMap.put("user", user);
 		} else {
-			if(validateUser.getCellphone().equals(DEFAULT_CELLPHONE)) {
+			if(validateUser.getCellphone().equals(API.DEFAULT_INFO)) {
 				validateUser.setCellphone(null);
 			}
 			validateUser.setPassword(null);

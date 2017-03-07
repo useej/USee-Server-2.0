@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.usee.dao.CellphoneValidateDao;
 import com.usee.model.User;
 import com.usee.service.CellphoneValidateService;
+import com.usee.utils.API;
 import com.usee.utils.MD5Util;
 import com.usee.utils.UUIDGeneratorUtil;  
   
@@ -74,7 +75,7 @@ public class CellphoneValidateServiceImpl implements CellphoneValidateService {
     // 注册验证
 	public Boolean isRegister(String cellphon) {
 		User user = cellphoneValidateDao.getUserByCellphone(cellphon);
-		if(user == null || (user.getPassword()).equals(DEFAULT_PASSWORD)) {
+		if(user == null || (user.getPassword()).equals(API.DEFAULT_INFO)) {
 			return false;
 		} else {
 			return true;

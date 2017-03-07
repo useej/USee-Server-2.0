@@ -1,11 +1,11 @@
 package com.usee.utils;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import org.ansj.app.keyword.KeyWordComputer;
+import java.util.List;
+
 import org.ansj.app.keyword.Keyword;
 
-import java.util.List;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * Created by Jerry on 2016-08-12.

@@ -1,9 +1,6 @@
 package com.usee.service;
 
 public interface CellphoneValidateService {  
-  
-	public static final String DEFAULT_PASSWORD = "<dbnull>";
-	
     public static final String ACCOUNT = "0ro713";  
     public static final String PASSWORD = "SUy4Efd0";  
     public static final String NEED_STATUS = "true";
