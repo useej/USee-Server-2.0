@@ -34,7 +34,7 @@ public class DanmuController {
 	@RequestMapping(value = "senddanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public Map<String, Object> sendDanmu(@RequestBody String newDanmu){
-		JSONObject newDanmuJson = new JSONObject().fromObject(newDanmu);
+		JSONObject newDanmuJson = JSONObject.fromObject(newDanmu);
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		
 		// 检查弹幕
@@ -65,7 +65,7 @@ public class DanmuController {
 	@RequestMapping(value = "getdmbytopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getDanmubyTopic(@RequestBody String topicInfo){
-		JSONObject topicJsonObject = new JSONObject().fromObject(topicInfo);
+		JSONObject topicJsonObject = JSONObject.fromObject(topicInfo);
 		String pageNum = null;
 		String pageSize = null;
 		if(topicJsonObject.containsKey("pagenum")){
@@ -81,7 +81,7 @@ public class DanmuController {
 	@RequestMapping(value = "getdmdetails", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getDanmuDetails(@RequestBody String danmuId){
-		JSONObject danmuJson = new JSONObject().fromObject(danmuId);
+		JSONObject danmuJson = JSONObject.fromObject(danmuId);
 		String danmuDetails = danmuService.getDanmuDetails(danmuJson.getInt("danmuid"), danmuJson.getString("userid"));
 		System.out.println(danmuDetails);
 		return danmuDetails;
@@ -90,7 +90,7 @@ public class DanmuController {
 	@RequestMapping(value = "commentdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public Map<String, Object> commentDanmu(@RequestBody String danmuComment){
-		JSONObject commentJson = new JSONObject().fromObject(danmuComment);
+		JSONObject commentJson = JSONObject.fromObject(danmuComment);
 		System.out.println(commentJson);
 		
 		Map<String, Object> returnMap = new HashMap<String, Object>();
@@ -127,7 +127,7 @@ public class DanmuController {
 	@RequestMapping(value = "updanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String upDanmu(@RequestBody String info){
-		JSONObject danmuJson = new JSONObject().fromObject(info);
+		JSONObject danmuJson = JSONObject.fromObject(info);
 		boolean status = danmuService.upDanmu(danmuJson);
 		JSONObject result = new JSONObject();
 		result.put("status", status);
@@ -137,7 +137,7 @@ public class DanmuController {
 	@RequestMapping(value = "downdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String downDanmu(@RequestBody String info){
-		JSONObject danmuJson = new JSONObject().fromObject(info);
+		JSONObject danmuJson = JSONObject.fromObject(info);
 		boolean status = danmuService.downDanmu(danmuJson);
 		JSONObject result = new JSONObject();
 		result.put("status", status);
@@ -147,7 +147,7 @@ public class DanmuController {
 	@RequestMapping(value = "favdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String favDanmu(@RequestBody String info){
-		JSONObject danmuJson = new JSONObject().fromObject(info);
+		JSONObject danmuJson = JSONObject.fromObject(info);
 		boolean status = danmuService.favDanmu(danmuJson);
 		JSONObject result = new JSONObject();
 		result.put("status", status);
@@ -157,21 +157,21 @@ public class DanmuController {
 //	@RequestMapping(value = "clickdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 //	@ResponseBody
 //	public void clickDanmu(@RequestBody String info){
-//		JSONObject danmuJson = new JSONObject().fromObject(info);
+//		JSONObject danmuJson = JSONObject.fromObject(info);
 //		danmuService.updateUserDanmu(danmuJson);
 //	}
 	
 	@RequestMapping(value = "getfavdanmulist", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getFavDanmuList(@RequestBody String info){
-		JSONObject danmuJson = new JSONObject().fromObject(info);
+		JSONObject danmuJson = JSONObject.fromObject(info);
 		return danmuService.getFavDanmuList(danmuJson);
 	}
 	
 	@RequestMapping(value = "updateuseraction", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String updateUserAction(@RequestBody String info){
-		JSONObject danmuJson = new JSONObject().fromObject(info);
+		JSONObject danmuJson = JSONObject.fromObject(info);
 		int status = danmuService.updateUserAction(danmuJson);
 		JSONObject result = new JSONObject();
 		result.put("result", status);
@@ -181,7 +181,7 @@ public class DanmuController {
     @RequestMapping(value = "getlatestdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
     public String getLatestDanmu(@RequestBody String info){
-        JSONObject danmujson = new JSONObject().fromObject(info);
+        JSONObject danmujson = JSONObject.fromObject(info);
         String danmu = danmuService.getLatestDanmuList(danmujson);
         System.out.println(danmu);
         return danmu;
@@ -195,7 +195,7 @@ public class DanmuController {
     @RequestMapping(value = "havenewcomments", method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String haveNewComments(@RequestBody String info){
-        JSONObject danmuJson = new JSONObject().fromObject(info);
+        JSONObject danmuJson = JSONObject.fromObject(info);
         String result = danmuService.haveNewComments(danmuJson);
         return result;
     }
@@ -203,7 +203,7 @@ public class DanmuController {
     @RequestMapping(value = "reportcontent", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
     public String reportContent(@RequestBody String info){
-        JSONObject contentJson = new JSONObject().fromObject(info);
+        JSONObject contentJson = JSONObject.fromObject(info);
         String result = danmuService.reportContent(contentJson);
         return result;
     }
@@ -211,7 +211,7 @@ public class DanmuController {
     @RequestMapping(value = "deletecomment", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String deleteComment(@RequestBody String json){
-		JSONObject deleteCommentJson = new JSONObject().fromObject(json);
+		JSONObject deleteCommentJson = JSONObject.fromObject(json);
 		boolean isSuccess = danmuService.deleteComment(deleteCommentJson);
 		JSONObject result = new JSONObject();
 		result.put("status", isSuccess);
@@ -222,7 +222,7 @@ public class DanmuController {
     @RequestMapping(value = "deletedanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String deleteDanmu(@RequestBody String json){
-		JSONObject deleteDanmuJson = new JSONObject().fromObject(json);
+		JSONObject deleteDanmuJson = JSONObject.fromObject(json);
 		boolean isSuccess = danmuService.deleteDanmu(deleteDanmuJson);
 		JSONObject result = new JSONObject();
 		result.put("status", isSuccess);
@@ -233,7 +233,7 @@ public class DanmuController {
     @RequestMapping(value = "getnewdanmu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getNewDanmu(@RequestBody String json){
-		JSONObject newDanmuJson = new JSONObject().fromObject(json);
+		JSONObject newDanmuJson = JSONObject.fromObject(json);
 		String returnJson = danmuService.getNewDanmu(newDanmuJson);
 		System.out.println(returnJson);
 		return returnJson;
@@ -243,7 +243,7 @@ public class DanmuController {
     @RequestMapping(value = "getuserdmByInterval", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getIntervalDanmu(@RequestBody String json){
-		JSONObject intervalDmJson = new JSONObject().fromObject(json);
+		JSONObject intervalDmJson = JSONObject.fromObject(json);
 		String startTime = intervalDmJson.getString("startTime");
 		String endTime = intervalDmJson.getString("endTime");
 		String topicID = intervalDmJson.getString("topicID");

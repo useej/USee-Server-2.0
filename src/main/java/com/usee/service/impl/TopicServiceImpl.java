@@ -23,6 +23,7 @@ import com.usee.model.TopicType;
 import com.usee.model.UserTopic;
 import com.usee.model.UserTopic_Visit;
 import com.usee.service.TopicService;
+import com.usee.utils.API;
 import com.usee.utils.AnsjSegUtil;
 import com.usee.utils.CheckVersion;
 import com.usee.utils.Distance;
@@ -51,8 +52,6 @@ public class TopicServiceImpl implements TopicService {
 	private CommentDaoImpl commentDao;
 	@Autowired
 	private TopicimgDaoImp topicimgDaoImp;
-
-	private static final String DEFAULT_USERICON = "0.png";
 
 	public static final int MAX_RANDOM_NAME_NUMBER = 590;
 	public static final int MAX_RANDOM_ICON_NUMBER = 6400;
@@ -517,7 +516,7 @@ public class TopicServiceImpl implements TopicService {
                 newuserTopic.setLastVisit_time(currentTime);
                 newuserTopic.setFrequency(1);
                 newuserTopic.setDislike(1);
-                newuserTopic.setUserIcon(DEFAULT_USERICON);
+                newuserTopic.setUserIcon(API.DEFAULT_USERICON);
                 userTopicDao.saveUserTopic(newuserTopic);
             }
         }

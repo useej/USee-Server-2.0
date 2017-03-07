@@ -1,6 +1,13 @@
 package com.usee.utils;
 
 public class API {
+	
+	public static String DEFAULT_INFO = "<dbnull>";
+	public static String DEFAULT_NICKNAME = "无名氏";
+	public static String DEFAULT_USERICON = "0.png";
+	public static int DEFAULT_GENDER = 2;
+	
+	
 	public static int SocketPort =1000;
 	public static String SENSITIVE_WORD_PATH = "/root/apache-tomcat-7.0.68/webapps/USee/res/sensitive-word.properties";
 	public static String SENSITIVE_WORD_URL = "http://114.215.209.102/USee/res/sensitive-word.properties";

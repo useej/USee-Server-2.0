@@ -36,7 +36,7 @@ public class TopicController {
 	@RequestMapping(value = "getusertopics", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getUserTopics(@RequestBody String userID){
-		JSONObject userIDJson =  new JSONObject().fromObject(userID);
+		JSONObject userIDJson =  JSONObject.fromObject(userID);
 		String userTopics = topicService.getUserTopics(userIDJson.getString("userid"));
 		System.out.println(userTopics);
 		return userTopics ;
@@ -45,7 +45,7 @@ public class TopicController {
 	@RequestMapping(value = "getnearbytopics", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getNearbyTopics(@RequestBody String location ){
-		JSONObject locationJson = new JSONObject().fromObject(location);
+		JSONObject locationJson = JSONObject.fromObject(location);
 		double ux = locationJson.getDouble("lon");
 		double uy = locationJson.getDouble("lat");
 		int userRadius = locationJson.getInt("radius");
@@ -58,7 +58,7 @@ public class TopicController {
 	@RequestMapping(value = "getusericonbytopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getUserIconbyTopic(@RequestBody String userAndTopicInfo, HttpServletRequest request){
-		JSONObject userAndTopicInfoJson = new JSONObject().fromObject(userAndTopicInfo);
+		JSONObject userAndTopicInfoJson = JSONObject.fromObject(userAndTopicInfo);
 		String userId = userAndTopicInfoJson.getString("userid");
 		String topicId = userAndTopicInfoJson.getString("topicid");
 
@@ -80,7 +80,7 @@ public class TopicController {
 	@RequestMapping(value = "getusericonbycomment", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getUserIconByComment(@RequestBody String userAndTopicInfo, HttpServletRequest request){
-		JSONObject userAndTopicInfoJson = new JSONObject().fromObject(userAndTopicInfo);
+		JSONObject userAndTopicInfoJson = JSONObject.fromObject(userAndTopicInfo);
 		String userId = userAndTopicInfoJson.getString("userid");
 		int danmuId = userAndTopicInfoJson.getInt("danmuid");
 
@@ -103,14 +103,14 @@ public class TopicController {
 	@RequestMapping(value = "updateusertopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public void updateUser_topic(@RequestBody String ID){
-		JSONObject IDJson =  new JSONObject().fromObject(ID);
+		JSONObject IDJson =  JSONObject.fromObject(ID);
 		topicService.updateUser_topic(IDJson.getString("userid"),IDJson.getString("topicid"));
 	}
 
 	@RequestMapping(value = "createtopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public Topic createtopic(@RequestBody String newTopic){
-		JSONObject newTopicJson = new JSONObject().fromObject(newTopic);
+		JSONObject newTopicJson = JSONObject.fromObject(newTopic);
 		
 		String newId = topicService.createTopic(newTopicJson);
 		Topic userTopics = topicService.getTopic(newId);
@@ -129,7 +129,7 @@ public class TopicController {
 	@RequestMapping(value = "searchtopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String searchtopic(@RequestBody String keyword){
-		JSONObject keywordJson =  new JSONObject().fromObject(keyword);
+		JSONObject keywordJson =  JSONObject.fromObject(keyword);
 		String userTopics = topicService.searchTopic(keywordJson.getString("keyword"));
 		System.out.println(userTopics);
 		return userTopics ;
@@ -144,7 +144,7 @@ public class TopicController {
     @RequestMapping(value = "disliketopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
     public void disliketopic(@RequestBody String topic){
-        JSONObject topicjson =  new JSONObject().fromObject(topic);
+        JSONObject topicjson =  JSONObject.fromObject(topic);
         String userID = topicjson.getString("userid");
         String topics = topicjson.getString("topics");
         String[] topicArray = topics.split(",");
@@ -168,7 +168,7 @@ public class TopicController {
     @RequestMapping(value = "liketopic", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
     public void liketopic(@RequestBody String topic){
-        JSONObject topicjson =  new JSONObject().fromObject(topic);
+        JSONObject topicjson =  JSONObject.fromObject(topic);
         String userID = topicjson.getString("userid");
         String topics = topicjson.getString("topics");
         String[] topicArray = topics.split(",");
@@ -254,7 +254,7 @@ public class TopicController {
 		@RequestMapping(value = "gettopicsbytype", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String getTopicsbyType(@RequestBody String typeID){
-		JSONObject typeJsonObject = new JSONObject().fromObject(typeID);
+		JSONObject typeJsonObject = JSONObject.fromObject(typeID);
 		typeID=typeJsonObject.getString("typeID");
 
 		String topic = topicService.getTopicsbyType(typeID);

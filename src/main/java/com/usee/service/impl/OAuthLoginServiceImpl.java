@@ -14,15 +14,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usee.dao.UserDao;
 import com.usee.model.User;
 import com.usee.service.OAuthLoginService;
+import com.usee.utils.API;
 import com.usee.utils.URL2JsonUtil;
 import com.usee.utils.URL2PictureUtil;
 import com.usee.utils.UUIDGeneratorUtil;
 
 @Service
 public class OAuthLoginServiceImpl implements OAuthLoginService {
-	private static final String DEFAULT_CELLPHONE = "<dbnull>";
-	private static final String DEFAULT_PASSWORD = "<dbnull>";
-	private static final int DEFAULT_GENDER = 2;	
 	
 	@Resource
 	private UserDao userDao;
@@ -200,13 +198,13 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
 		URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
 		user.setUserIcon(user.getUserID() + ".png");
 		// 设置默认的手机号
-		user.setCellphone(DEFAULT_CELLPHONE);
+		user.setCellphone(API.DEFAULT_INFO);
 		// 设置默认的性别
-		user.setGender(DEFAULT_GENDER);
+		user.setGender(API.DEFAULT_GENDER);
 		// 设置默认的密码
 //		default_password = UUIDGeneratorUtil.getUUID();
 //		user.setPassword(default_password);
-		user.setPassword(DEFAULT_PASSWORD);
+		user.setPassword(API.DEFAULT_INFO);
 		user.setStatus("1");
 		userDao.addUser_OAuth(user);
 		

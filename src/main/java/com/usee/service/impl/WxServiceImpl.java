@@ -1,7 +1,6 @@
 package com.usee.service.impl;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,32 +10,29 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.usee.dao.UserDao;
 import com.usee.model.User;
-import com.usee.service.WechatRedirectService;
-import com.usee.utils.URL2PictureUtil;
-import com.usee.utils.UUIDGeneratorUtil;
+import com.usee.service.WxService;
 
 import net.sf.json.JSONObject;
 
 @Service
-public class WechatRedirectServiceImpl implements WechatRedirectService {
+public class WxServiceImpl implements WxService {
+	private static final String APPID = "wxd3321fb7bc0c69e5";
+	private static final String SECRET = "eed19265ee24481bea594734e860fd7f";
 	
-	private static final String DEFAULT_CELLPHONE = "<dbnull>";
-	private static final String DEFAULT_PASSWORD = "<dbnull>";
-//	private static final int DEFAULT_GENDER = 2;	
-
-	private static final String APPID = "";
-	private static final String SECRET = "";
-	
+	private static final String REDIRECT_URL = "http://www.useeba.com/wechat/login/";
+	private static final String GET_CODE_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=%s&scope=%s&state=%s#wechat_redirect";
 	private static final String GET_TOKEN_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code";
-	private static final String GET_USERINFO_URL = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN ";
+	private static final String GET_USERINFO_URL = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN";
 	
-	@Autowired
-	private UserDao userDao;
+	@Override
+	public String getCodeUrl(String scope, String userId) {
+		String redirect_url = REDIRECT_URL + scope;
+		String get_code_url = String.format(GET_CODE_URL, APPID, redirect_url, "code", "snsapi_base", "STATE");;
+		return get_code_url;
+	}
 	
 	@Override
 	public Map<String, String> getToken(String code) {
@@ -52,6 +48,10 @@ public class WechatRedirectServiceImpl implements WechatRedirectService {
 			httpResponse = httpClient.execute(httpGet);
 			HttpEntity httpEntity = httpResponse.getEntity();
 			String returnJson = EntityUtils.toString(httpEntity, "utf-8");
+			
+			
+			System.out.println("返回信息--------> " + returnJson);
+			
 			JSONObject tokenJson = JSONObject.fromObject(returnJson);
 			data.put("access_token", tokenJson.getString("access_token"));
 			data.put("expires_in", tokenJson.getString("refresh_token"));
@@ -77,8 +77,6 @@ public class WechatRedirectServiceImpl implements WechatRedirectService {
 		User user = new User();
 		String url = String.format(GET_USERINFO_URL, access_token, openid);
 		
-		System.out.println(url);
-		
 		CloseableHttpClient httpClient = HttpClients.createDefault();  
 		HttpGet httpGet = new HttpGet(url);
 		CloseableHttpResponse httpResponse = null;
@@ -86,10 +84,23 @@ public class WechatRedirectServiceImpl implements WechatRedirectService {
 			httpResponse = httpClient.execute(httpGet);
 			HttpEntity httpEntity = httpResponse.getEntity();
 			String returnJson = EntityUtils.toString(httpEntity, "utf-8");
+			
+			System.out.println("返回信息--------> " + returnJson);
+			
+			
 			JSONObject userInfoJson = JSONObject.fromObject(returnJson);
 			user.setOpenID_wx(userInfoJson.getString("openid"));
 			user.setNickname(userInfoJson.getString("nickname"));
-			user.setGender(userInfoJson.getInt("sex"));
+			if(userInfoJson.getInt("sex") == 2) {
+				// 微信中用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+				// USee中用户的性别，值为1时是男性，值为0时是女性，值为2时是未知
+				user.setGender(0);
+			} else if (userInfoJson.getInt("sex") == 1) {
+				user.setGender(1);
+			} else {
+				user.setGender(2);
+			}
+			
 			user.setUserIcon(userInfoJson.getString("headimgurl"));
 		} catch (Exception e) {		
 			e.printStackTrace();
@@ -104,22 +115,6 @@ public class WechatRedirectServiceImpl implements WechatRedirectService {
 				}       
         }  
 		return user;
-	}
-	
-	@Override
-	public void addUser(User user, String fileRootDir) {
-		user.setUserID(UUIDGeneratorUtil.getUUID());
-		user.setCreateTime(new Date().getTime() + "");
-		
-		// 将用户头像保存到本地图片服务器
-		URL2PictureUtil.download(user.getUserIcon(), user.getUserID(), fileRootDir);
-		user.setUserIcon(user.getUserID() + ".png");
-		// 设置默认的手机号
-		user.setCellphone(DEFAULT_CELLPHONE);
-		// 设置默认的密码
-		user.setPassword(DEFAULT_PASSWORD);
-		user.setStatus("1");
-		userDao.addUser_OAuth(user);
 	}
 
 }

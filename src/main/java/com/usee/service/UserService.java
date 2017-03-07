@@ -25,4 +25,11 @@ public interface UserService {
 	public void feedback(String messages);
 	
 	public String getRealnameInfo(String userID);
+	
+	
+	public void addUser_OAuth_UserInfo(User user, String fileRootDir);
+	
+	public String addUser_OAuth_Base(String openId);
+	
+	public void updateUser_OAuth_UserInfo(User user, String fileRootDir);
 }
