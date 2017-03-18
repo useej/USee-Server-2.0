@@ -30,13 +30,13 @@ public class TopicTypeDaoImp implements TopicTypeDao{
 	}
 	
 	@Override
-	public void delTypeOfTopic(String topicID) {
+	public boolean delTypeOfTopic(String topicID) {
 		// TODO Auto-generated method stub
 		String hql = "delete TopicType tt where tt.topicID = ?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setString(0, topicID);
 
-//		return (query.executeUpdate() > 0);
+		return (query.executeUpdate() > 0);
 	}
 
 	@Override

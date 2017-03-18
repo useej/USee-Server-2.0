@@ -559,8 +559,8 @@ public class TopicServiceImpl implements TopicService {
 		return object.toString();
 	}
 	
-	public void delTypeOfTopic(String typeID){
-		topictypedao.delTypeOfTopic(typeID);
+	public void delTypeOfTopic(String topicID){
+		topictypedao.delTypeOfTopic(topicID);
 	}
 	
 	public void addTopicType(String topicID, List<Integer> typeIDList){
