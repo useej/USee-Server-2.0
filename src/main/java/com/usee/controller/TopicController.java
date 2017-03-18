@@ -294,6 +294,21 @@ public class TopicController {
 		
 		return;
 	}
+	
+	/**
+	 * 原接口获取用户所有参与话题
+	 * 新加只获取用户创建话题
+	 * @param userID
+	 * @return
+	 */
+	@RequestMapping(value = "getcreatedtopicsbyuser", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public String getCreatedTopicsByUser(@RequestBody String userID){
+		JSONObject userIDJson =  JSONObject.fromObject(userID);
+		String userTopics = topicService.getCreatedTopicsByUser(userIDJson.getString("userid"));
+		System.out.println(userTopics);
+		return userTopics ;
+	}
 
 	
 

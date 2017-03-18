@@ -1,0 +1,33 @@
+.bt{
+	position: fixed;
+	z-index: 1;
+	width: 700px;
+	height: 40px;
+	background-color: #99CCFF;
+}
+
+#topic{
+	float: left;
+  position: relative;
+  background-color: #339999;
+  margin-top: 50px;
+  width: 500px;
+	z-index: 0;
+}
+.danmu{
+	float: left;
+  position: relative;
+  background-color: rgb(152,152,152);
+  margin-top: 50px;
+  width: 500px;
+	z-index: 0;
+}
+
+.login{
+	background-color: rgb(208,208,208);
+	margin: 0 0 0 0;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	z-index: 1000;
+}

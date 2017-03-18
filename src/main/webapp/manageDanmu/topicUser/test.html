@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Usee后台管理</title>
+        <link  href="style/demo.css" rel="stylesheet" type="text/css">
+        <script src="http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+
+    <body>
+        <div id="manager">
+
+
+         <div id = "topic">
+           <ul v-for="topic in topic">
+             <li><b>title：{{ topic.title }}</b>
+               <br>弹幕数：{{ topic.danmuNum }}<br>
+               描述：{{ topic.description }}<br>
+               <br></li>
+               <button type="button" name="button" v-on:click="updateNowtopic(topic)">选择</button>
+           </ul>
+         </div>
+
+         <div class="danmu">
+           <ul>
+             <textarea rows="10" cols="30">
+            </textarea>
+             <button type="button" name="button" v-on:click="newDanmu()">新增</button>
+           </ul>
+           <ul v-for="danmu in danmu">
+             <li>评论数：{{ danmu.commentnum }}<br>
+               描述：{{ danmu.messages }}<br>
+               </li>
+               <button type="button" name="button" v-on:click="deleteDanmu(danmu)">删除</button>
+           </ul>
+         </div>
+
+          ------------------
+          <li>{{ danmu }}</li>
+          --------------------------------------------
+
+
+
+        </div>
+        <script src="js/vue.js"></script>
+        <script>
+          //var USee = "http://114.215.209.102/USee/";
+          var userID = "888ADC3949BA59ABBE56E057F20F1569"//测试用户
+          var USee = "http://localhost:8080/server2.0/";
+            var vm = new Vue({
+                el: '#manager',
+                data: {
+                    //type: [1,2,3,4,5,6,7,8,9],
+                    //nowType: 0,//默认类型选项  无意义
+                    nowTopic: 0, //默认第0个话题 无意义
+                    topic: [],
+                    danmu: []
+                },
+                watch: {
+
+                              nowTopic: function(){
+                                              var xmlhttp;
+                                              if (window.XMLHttpRequest)
+                                              {
+                                                  //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+                                                  xmlhttp=new XMLHttpRequest();
+                                              }
+                                              else
+                                              {
+                                                  // IE6, IE5 浏览器执行代码
+                                                  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                                              }
+
+                                              xmlhttp.onreadystatechange = function  () {
+                                                  if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                                                    vm.danmu = [];
+                                                    //eval('(' + xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1) + ')');
+                                                    //  this.topic = eval("(" + xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1) + ")");
+                                                      var tag = xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1).split(/\{|\}/);
+                                                      for (var i = 1; i < tag.length; i=i+2) {
+                                                        vm.danmu.push(JSON.parse("{"+tag[i]+"}"));
+                                                  }
+                                                      //document.createElement("img");
+                                                  }
+                                                  else {
+                                                    vm.danmu = [];
+                                                    vm.danmu.push(JSON.parse('{"danmuNum":"0", "description":"无弹幕"}'));
+                                                  }
+                                                  // body...
+                                              }
+                                              xmlhttp.open("POST",USee+"getdmbytopic",true);
+                                              xmlhttp.setRequestHeader("Content-type","application/json");
+                                              xmlhttp.send('{"topicid":"'+this.nowTopic+'"}');
+                                          }
+                },
+                methods:{
+
+                  //delete
+                  updateNowtopic: function(topic){
+                    this.nowTopic = topic.id;
+                  },
+
+                  deleteDanmu: function(danmu){
+                    var index = $.inArray(danmu,this.danmu);
+                    if(index>=0){
+                      this.danmu.splice(index,1);
+                    }
+
+                            var xmlhttp;
+                            if (window.XMLHttpRequest)
+                            {
+                                //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+                                xmlhttp=new XMLHttpRequest();
+                            }
+                            else
+                            {
+                                // IE6, IE5 浏览器执行代码
+                                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                            }
+
+                            xmlhttp.onreadystatechange = function  () {
+                                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                                  alert("成功");
+                                  // vm.topic = [];
+                                  // //eval('(' + xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1) + ')');
+                                  // //  this.topic = eval("(" + xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1) + ")");
+                                  //   var tag = xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1).split(/\{|\}/);
+                                  //   for (var i = 1; i < tag.length; i=i+2) {
+                                  //     vm.topic.push(JSON.parse("{"+tag[i]+"}"));
+
+                                    //document.createElement("img");
+                                  }
+
+                                // body...
+                            }
+                            xmlhttp.open("POST",USee+"deletedanmu",true);
+                            xmlhttp.setRequestHeader("Content-type","application/json");
+                            xmlhttp.send('{"userID":"'+danmu.userId+'","danmuID":"'+danmu.id+'"}');
+
+                  },
+
+
+                  newDanmu: function(){
+                      var danmu = $("textarea").val();
+
+                                    var xmlhttp;
+                                    if (window.XMLHttpRequest)
+                                    {
+                                        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+                                        xmlhttp=new XMLHttpRequest();
+                                    }
+                                    else
+                                    {
+                                        // IE6, IE5 浏览器执行代码
+                                        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                                    }
+
+                                    xmlhttp.onreadystatechange = function  () {
+                                        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                                          var getJson = JSON.parse(xmlhttp.responseText);
+                                          if (getJson.code == "200") {
+                                            vm.danmu.unshift(getJson.danmu);
+                                            alert("成功");
+                                          }
+                                          else {
+                                            alert("添加失败");
+                                          }
+
+                                          // vm.topic = [];
+                                          // //eval('(' + xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1) + ')');
+                                          // //  this.topic = eval("(" + xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1) + ")");
+                                          //   var tag = xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1).split(/\{|\}/);
+                                          //   for (var i = 1; i < tag.length; i=i+2) {
+                                          //     vm.topic.push(JSON.parse("{"+tag[i]+"}"));
+
+                                            //document.createElement("img");
+                                          }
+
+                                        // body...
+                                    }
+                                    xmlhttp.open("POST",USee+"senddanmu",true);
+                                    xmlhttp.setRequestHeader("Content-type","application/json");
+                                    xmlhttp.send('{"messages":"'+danmu+'","userid":"'+userID+'","topicid":"'+vm.nowTopic+'","delete_time":"2020-01-01 10:10:10","devid":"866328023315987","isannoymous":false,"lat":"31.917352","lon":"118.786877","randomUserIcon":"6_E6A473","randomUserName":"Merry",	"randomIconId":598,"imgurls":[]}');
+                  }
+                }
+            })
+
+            function initTopic(){
+                    var xmlhttp;
+                    if (window.XMLHttpRequest)
+                    {
+                        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+                        xmlhttp=new XMLHttpRequest();
+                    }
+                    else
+                    {
+                        // IE6, IE5 浏览器执行代码
+                        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+
+                    xmlhttp.onreadystatechange = function  () {
+                        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                          vm.topic = [];
+                          //eval('(' + xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1) + ')');
+                          //  this.topic = eval("(" + xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1) + ")");
+                            var tag = xmlhttp.responseText.slice(10,xmlhttp.responseText.length-1).split(/\{|\}/);
+                            for (var i = 1; i < tag.length; i=i+2) {
+                              vm.topic.push(JSON.parse("{"+tag[i]+"}"));
+                        }
+                          vm.nowTopic = vm.topic[0].id;
+                            //document.createElement("img");
+                        }
+
+                        // body...
+                    }
+                    xmlhttp.open("POST",USee+"getcreatedtopicsbyuser",true);
+                    xmlhttp.setRequestHeader("Content-type","application/json");
+                    xmlhttp.send('{"userid":"'+userID+'"}');
+            };
+            initTopic();
+
+
+            // $("body").click(vm.updateTopic);
+            //vm.nowType =1;
+            //vm.nowTopic = 1;
+        </script>
+
+    </body>
+
+</html>
