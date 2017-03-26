@@ -559,8 +559,8 @@ public class TopicServiceImpl implements TopicService {
 		return object.toString();
 	}
 	
-	public void delTypeOfTopic(String typeID){
-		topictypedao.delTypeOfTopic(typeID);
+	public void delTypeOfTopic(String topicID){
+		topictypedao.delTypeOfTopic(topicID);
 	}
 	
 	public void addTopicType(String topicID, List<Integer> typeIDList){
@@ -600,5 +600,53 @@ public class TopicServiceImpl implements TopicService {
 	public String getTopicIDBytitle(String topicTitle) {
 		return topicdao.getTopicIDBytitle(topicTitle);
 	}
+	
+	public String getCreatedTopicsByUser(String userID) {
+        List list1 = new ArrayList();
+        //List list2 = new ArrayList();
+        List list3 = new ArrayList();
+        List<String> userTopics = new ArrayList();
+        list1 = topicdao.getUserTopicsID(userID);
+        //list2 = danmudao.getDanmubyUserId(userID);
+
+        //list1.addAll(list2);
+
+        for(int i=0; i<list1.size();i++){
+            String a = (String) list1.get(i);
+
+            List<Topic> list = topicdao.getUserTopics(a);
+            for (Topic topic : list) {
+	            // 获取话题图片
+	            List<String> imgurls = topicimgDaoImp.gettopicimg(topic.getId());
+	            topic.setImgurls(imgurls.toArray(new String[imgurls.size()]));
+
+				JSONObject topicJSON = JSONObject.fromObject(topic);
+				userTopics.add(topicJSON.toString());
+			}
+        }
+
+        JSONArray array = JSONArray.fromObject(userTopics);
+        JSONArray array1 = JSONArray.fromObject(userTopics);
+        int a1 = 0;
+        int number = array.size();
+        for(int i=0;i<number;i++){
+            JSONObject tempJsonObject = array.getJSONObject(i);
+            String topicId=tempJsonObject.getString("id");
+            UserTopic usertopic =  userTopicDao.getUniqueUserTopicbyUserIdandTopicId(userID, topicId);
+
+            if(usertopic!=null){
+                int like = usertopic.getDislike();
+                if(like == 1){
+                    array1.discard(i-a1);
+                    a1=a1+1;
+                }
+            }
+        }
+        JSONObject object = new JSONObject();
+        object.put("topic", array1.toString());
+
+
+        return object.toString();
+    }
 
 }

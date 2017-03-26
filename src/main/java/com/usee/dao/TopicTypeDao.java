@@ -8,7 +8,7 @@ public interface TopicTypeDao {
 	
 	public void updateTopictype(TopicType topictype);
 	
-	public void delTypeOfTopic(String topicID);
+	public boolean delTypeOfTopic(String topicID);
 	
 	public String getTypeOfTopic(String topicID);
 
